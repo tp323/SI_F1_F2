@@ -6,7 +6,7 @@ BEGIN transaction;
 		nome varchar(20),
 		morada varchar(150),
 		telefone varchar(10),
-		refcliente varchar(20),
+		refcliente int,
 		FOREIGN KEY (refcliente)
      		REFERENCES Cliente_Particular (CC) ON DELETE CASCADE ON UPDATE cascade
 	);
@@ -17,7 +17,10 @@ BEGIN transaction;
 		nome varchar(20),
 		morada varchar(150),
 		telefone varchar(10),
-		nome_de_contacto varchar(20)
+		nome_de_contacto varchar(20),
+		refcliente int,
+		FOREIGN KEY (refcliente)
+     		REFERENCES Cliente_Particular (CC) ON DELETE CASCADE ON UPDATE cascade
 	);
 
 	--Coordenadas(id, latitude, longitude)
@@ -29,6 +32,15 @@ BEGIN transaction;
 
 	--Frota Veiculos(Cliente)
 
+	--Veiculo(matricula, nome, telefone condutor atual, id equipamento, estado equipamento)
+	create table IF NOT EXISTS Veiculo(
+		matricula varchar(6) primary key,
+		nome varchar(20),
+		telefone_condutor_atual varchar(10),
+		id_equipamento int,
+		estado_equipamento varchar(15),
+		constraint estado_equipamento check (estado_equipamento IN ('Activo', 'PausaDeAlarmes', 'Inactivo'))
+	);
 
 	--Zona Verde(coordenadas, raio)
 	create table IF NOT EXISTS Zona_Verde(
@@ -43,16 +55,7 @@ BEGIN transaction;
 	);
 
 
-	--Veiculo(matricula, nome, telefone condutor atual, id equipamento, estado equipamento)
-	create table IF NOT EXISTS Veiculo(
-		matricula varchar(6) primary key,
-		nome varchar(20),
-		telefone_condutor_atual varchar(10),
-		id_equipamento int,
-		estado_equipamento varchar(15),
-		constraint estado_equipamento check (estado IN ('Activo', 'PausaDeAlarmes', 'Inactivo'))
-	);
-
+	
 	--Bip Equipamento Eletronico(id, marca temp, coordenadas)
 	create table IF NOT EXISTS Bip_Equipamento_Eletronico(
 		id int,
