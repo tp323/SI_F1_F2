@@ -16,6 +16,13 @@ BEGIN transaction;
 		FOREIGN KEY (cliente)
      		REFERENCES Cliente (NIF) ON DELETE CASCADE ON UPDATE cascade
 	);
+
+ALTER table if EXISTS Cliente DROP constraint if EXISTS ref_cliente_part;
+
+ALTER table if EXISTS Cliente
+ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Particular(CC) DEFERRABLE INITIALLY DEFERRED;
+
+
 	--Cliente_Institucional(nome de contacto, cliente)
 	create table IF NOT EXISTS Cliente_Institucional(
 		nome_contacto varchar(20),

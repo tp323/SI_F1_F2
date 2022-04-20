@@ -6,6 +6,9 @@ DROP TABLE IF EXISTS Bip_Equipamento_Eletronico;
 DROP TABLE IF EXISTS Coordenadas;
 DROP TABLE IF EXISTS Equipamento_Eletronico;
 DROP TABLE IF EXISTS Cliente_Institucional;
+
+ALTER table if EXISTS Cliente DROP constraint if EXISTS ref_cliente_part;
+
 DROP TABLE IF EXISTS Cliente_Particular;
 DROP TABLE IF EXISTS Cliente;
 
