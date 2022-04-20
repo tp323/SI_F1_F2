@@ -2,7 +2,7 @@ BEGIN transaction;
 	--Cliente(NIF, nome, morada, telefone, ref cliente)
 	create table IF NOT EXISTS Cliente(
 		NIF int primary key,
-		nome varchar(20),
+		nome varchar(25),
 		morada varchar(150),
 		telefone varchar(10),
 		ref_cliente int--,
@@ -25,7 +25,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 
 	--Cliente_Institucional(nome de contacto, cliente)
 	create table IF NOT EXISTS Cliente_Institucional(
-		nome_contacto varchar(20),
+		nome_contacto varchar(25),
 		cliente int primary key,
 		FOREIGN KEY (cliente)
      		REFERENCES Cliente (NIF) ON DELETE CASCADE ON UPDATE cascade
@@ -47,7 +47,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	create table IF NOT EXISTS Bip_Equipamento_Eletronico(
 		id int,
 		equipamento int,
-		marca_temporal date, 
+		marca_temporal time, 
 		coordenadas int,
 		primary key(id, equipamento),
 		FOREIGN KEY (equipamento)
@@ -55,9 +55,9 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
      	FOREIGN KEY (coordenadas)
      		REFERENCES Coordenadas (id) ON DELETE CASCADE ON UPDATE cascade
 	);
-	--Condutor(nome, contacto)
+	--Condutor(CC, nome, contacto)
 	create table IF NOT EXISTS Condutor(
-		id int primary key, 
+		CC int primary key, 
 		nome varchar(20),
 		contacto varchar(10)
 	);
@@ -68,7 +68,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 		equipamento int,
 		cliente int,
 		FOREIGN KEY (condutor)
-     		REFERENCES Condutor (id) ON DELETE CASCADE ON UPDATE cascade,
+     		REFERENCES Condutor (CC) ON DELETE CASCADE ON UPDATE cascade,
      	FOREIGN KEY (equipamento)
      		REFERENCES Equipamento_Eletronico (id) ON DELETE CASCADE ON UPDATE cascade,
      	FOREIGN KEY (cliente)
