@@ -77,7 +77,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	--Zona Verde(veiculo, coordenadas, raio)
 	create table IF NOT EXISTS Zona_Verde(
 		coordenadas int,
-		veiculo varchar(6),
+		veiculo varchar(6) not null,
 		raio int,
 		primary key (coordenadas, veiculo),
 		FOREIGN KEY (coordenadas)
