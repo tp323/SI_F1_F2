@@ -4,7 +4,7 @@ ALTER table if EXISTS Cliente DROP constraint if EXISTS ref_cliente_part;
 
 	--Cliente(NIF, nome, morada, telefone, ref cliente)
 INSERT INTO Cliente (NIF, nome, morada, telefone, ref_cliente)
-VALUES (111222333, 'O maior da minha aldeia', 'Vila Nova de Robiães', 911222111, null),
+VALUES (111222333, 'O maior da minha aldeia', 'Vila Nova de Robiães', 911222111, DEFAULT),
 (121222333, 'Limitada', 'Ali', 911333222, 12122233);
 
 	--Cliente_Particular(CC, cliente)
@@ -25,7 +25,7 @@ VALUES (1, 'Activo');
 
 	--Coordenadas(id, latitude, longitude)
 INSERT INTO Coordenadas(id, latitude, longitude)
-VALUES (1, 0.1, 0.2),(2, 0, 0);
+VALUES (DEFAULT, 0.1, 0.2),(DEFAULT, 0, 0);
 
 	--Bip Equipamento Eletronico(id, equipamento, marca temp, coordenadas)
 INSERT into Bip_Equipamento_Eletronico(id, equipamento, marca_temporal, coordenadas)

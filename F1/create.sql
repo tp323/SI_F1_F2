@@ -5,9 +5,7 @@ BEGIN transaction;
 		nome varchar(25),
 		morada varchar(150),
 		telefone varchar(10),
-		ref_cliente int--,
-		--FOREIGN KEY (ref_cliente)
-     	--	REFERENCES Cliente_Particular (CC) ON DELETE CASCADE ON UPDATE cascade
+		ref_cliente int DEFAULT null
 	);
 	--Cliente_Particular(CC, cliente)
 	create table IF NOT EXISTS Cliente_Particular(
@@ -39,16 +37,16 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	);
 	--Coordenadas(id, latitude, longitude)
 	create table IF NOT EXISTS Coordenadas(
-		id int primary key,
-		latitude numeric(3,1),
-		longitude numeric(3,1)
+		id serial primary key,
+		latitude numeric(3,1) NOT NULL,
+		longitude numeric(3,1) NOT NULL
 	);
 	--Bip Equipamento Eletronico(id, equipamento, marca temp, coordenadas)
 	create table IF NOT EXISTS Bip_Equipamento_Eletronico(
-		id int,
-		equipamento int,
-		marca_temporal time, 
-		coordenadas int,
+		id serial, --id é relativo ao numero do bit para o atual equi eletronico
+		equipamento int NOT NULL,
+		marca_temporal time NOT NULL, 
+		coordenadas int NOT NULL,
 		primary key(id, equipamento),
 		FOREIGN KEY (equipamento)
      		REFERENCES Equipamento_Eletronico (id) ON DELETE CASCADE ON UPDATE cascade,
@@ -64,9 +62,9 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	--Veiculo(matricula, condutor, equipamento, cliente)
 	create table IF NOT EXISTS Veiculo(
 		matricula varchar(6) primary key,
-		condutor int,
-		equipamento int,
-		cliente int,
+		condutor int NOT NULL,
+		equipamento int NOT NULL,
+		cliente int NOT NULL,
 		FOREIGN KEY (condutor)
      		REFERENCES Condutor (CC) ON DELETE CASCADE ON UPDATE cascade,
      	FOREIGN KEY (equipamento)
@@ -77,8 +75,8 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	--Zona Verde(veiculo, coordenadas, raio)
 	create table IF NOT EXISTS Zona_Verde(
 		coordenadas int,
-		veiculo varchar(6) not null,
-		raio int,
+		veiculo varchar(6) NOT NULL,
+		raio int NOT NULL,
 		primary key (coordenadas, veiculo),
 		FOREIGN KEY (coordenadas)
      		REFERENCES Coordenadas (id) ON DELETE CASCADE ON UPDATE cascade,
