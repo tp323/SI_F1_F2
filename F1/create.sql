@@ -74,15 +74,22 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	);
 	--Zona Verde(veiculo, coordenadas, raio)
 	create table IF NOT EXISTS Zona_Verde(
+		id serial primary key,
 		coordenadas int,
 		veiculo varchar(6) NOT NULL,
 		raio int NOT NULL,
-		primary key (coordenadas, veiculo),
 		FOREIGN KEY (coordenadas)
      		REFERENCES Coordenadas (id) ON DELETE CASCADE ON UPDATE cascade,
      	FOREIGN KEY (veiculo)
      		REFERENCES Veiculo (matricula) ON DELETE CASCADE ON UPDATE cascade
 	);
 
-
+	--Alarmes(id, zona verde)
+		create table IF NOT EXISTS Alarmes(
+		id serial primary key,
+		zona_verde serial,
+		FOREIGN KEY (zona_verde)
+     		REFERENCES Zona_Verde (id) ON DELETE CASCADE ON UPDATE cascade
+	);
+	
 commit transaction;

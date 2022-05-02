@@ -1,4 +1,5 @@
 --remove modelo fisico
+DROP TABLE IF EXISTS Alarmes;
 DROP TABLE IF EXISTS Zona_Verde;
 DROP TABLE IF EXISTS Veiculo;
 DROP TABLE IF EXISTS Condutor;
