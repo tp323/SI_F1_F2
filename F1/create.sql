@@ -85,11 +85,29 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	);
 
 	--Alarmes(id, zona verde)
-		create table IF NOT EXISTS Alarmes(
+	create table IF NOT EXISTS Alarmes(
 		id serial primary key,
 		zona_verde serial,
 		FOREIGN KEY (zona_verde)
      		REFERENCES Zona_Verde (id) ON DELETE CASCADE ON UPDATE cascade
+	);
+	
+	--Requests(id, equipamento, marca temp, coordenadas)
+	create table IF NOT EXISTS Requests(
+		id serial, --id é relativo ao numero do bit para o atual equi eletronico
+		equipamento int,
+		marca_temporal time, 
+		coordenadas int,
+		primary key(id, equipamento)
+	);
+	
+	--Invalid Requests()
+	create table IF NOT EXISTS Invalid_Requests(
+		id serial, --id é relativo ao numero do bit para o atual equi eletronico
+		equipamento int,
+		marca_temporal time, 
+		coordenadas int,
+		primary key(id, equipamento)
 	);
 	
 commit transaction;

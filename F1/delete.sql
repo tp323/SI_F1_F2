@@ -1,5 +1,7 @@
 --apaga todos os dados existentes nas tabelas
 BEGIN transaction;
+DELETE FROM Requests;
+DELETE FROM Invalid_Requests;
 DELETE FROM Alarmes;
 DELETE FROM Zona_Verde;
 DELETE FROM Veiculo;

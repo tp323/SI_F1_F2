@@ -1,4 +1,6 @@
 --remove modelo fisico
+DROP TABLE IF EXISTS Requests;
+DROP TABLE IF EXISTS Invalid_Requests;
 DROP TABLE IF EXISTS Alarmes;
 DROP TABLE IF EXISTS Zona_Verde;
 DROP TABLE IF EXISTS Veiculo;
