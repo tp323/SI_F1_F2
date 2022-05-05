@@ -1,6 +1,44 @@
 
+--------------- PONTO E ---------------
 
---------------- PONTO F
+CREATE OR REPLACE FUNCTION alarm_number(registration varchar(6), year numeric) RETURNS int AS $$
+    DECLARE
+        number int := null;
+        target varchar(6) := '*';
+    BEGIN
+
+        if (year is null)then
+            RAISE EXCEPTION 'Year cannot be null!';
+        end if;
+
+        if (registration is not null) then
+
+            SELECT matricula INTO target
+            FROM veiculo
+            WHERE matricula = registration;
+
+            if (target is null) then RETURN NULL; end if;
+
+            SELECT COUNT(*) INTO number
+            FROM alarmes
+            INNER JOIN bip_equipamento_eletronico b on b.id = alarmes.bip
+            INNER JOIN veiculo v on b.equipamento = v.equipamento
+            WHERE extract(YEAR FROM marca_temporal) = year AND matricula = target;
+            RETURN number;
+
+        end if;
+
+        SELECT COUNT(*) INTO number
+        FROM alarmes
+        INNER JOIN bip_equipamento_eletronico bee on bee.id = alarmes.bip
+        WHERE extract(YEAR FROM marca_temporal) = year;
+
+        RETURN number;
+    end;$$LANGUAGE plpgsql;
+
+
+
+--------------- PONTO F ---------------
 
 CREATE OR REPLACE PROCEDURE validateRequest(requestID int, equipamentoID int, requestMarca_temporal time, requestLatitude numeric, requestLongitude numeric)
     LANGUAGE plpgsql

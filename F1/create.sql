@@ -86,10 +86,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	--Alarmes(id, zona verde)
 	create table IF NOT EXISTS Alarmes(
 		id serial primary key,
-		veiculo varchar(6) not null,
 		bip int not null,
-		FOREIGN KEY (veiculo)
-     		REFERENCES Veiculo (matricula) ON DELETE CASCADE ON UPDATE cascade,
      	FOREIGN KEY (bip)
      		REFERENCES Bip_Equipamento_Eletronico (id) ON DELETE CASCADE ON UPDATE cascade
 	);
