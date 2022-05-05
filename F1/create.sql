@@ -97,7 +97,8 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 		id serial, --id é relativo ao numero do bit para o atual equi eletronico
 		equipamento int,
 		marca_temporal time, 
-		coordenadas int,
+		latitude numeric(3,1),
+		longitude numeric(3,1),
 		primary key(id, equipamento)
 	);
 	
@@ -106,7 +107,8 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 		id serial, --id é relativo ao numero do bit para o atual equi eletronico
 		equipamento int,
 		marca_temporal time, 
-		coordenadas int,
+		latitude numeric(3,1),
+		longitude numeric(3,1),
 		primary key(id, equipamento)
 	);
 	
