@@ -43,11 +43,10 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	);
 	--Bip Equipamento Eletronico(id, equipamento, marca temp, coordenadas)
 	create table IF NOT EXISTS Bip_Equipamento_Eletronico(
-		id serial, --id é relativo ao numero do bit para o atual equi eletronico
+		id serial primary key , --id é relativo ao numero do bit para o atual equi eletronico
 		equipamento int NOT NULL,
-		marca_temporal time NOT NULL, 
+		marca_temporal timestamp NOT NULL,
 		coordenadas int NOT NULL,
-		primary key(id, equipamento),
 		FOREIGN KEY (equipamento)
      		REFERENCES Equipamento_Eletronico (id) ON DELETE CASCADE ON UPDATE cascade,
      	FOREIGN KEY (coordenadas)
@@ -87,29 +86,30 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	--Alarmes(id, zona verde)
 	create table IF NOT EXISTS Alarmes(
 		id serial primary key,
-		zona_verde serial,
-		FOREIGN KEY (zona_verde)
-     		REFERENCES Zona_Verde (id) ON DELETE CASCADE ON UPDATE cascade
+		veiculo varchar(6) not null,
+		bip int not null,
+		FOREIGN KEY (veiculo)
+     		REFERENCES Veiculo (matricula) ON DELETE CASCADE ON UPDATE cascade,
+     	FOREIGN KEY (bip)
+     		REFERENCES Bip_Equipamento_Eletronico (id) ON DELETE CASCADE ON UPDATE cascade
 	);
 	
 	--Requests(id, equipamento, marca temp, coordenadas)
 	create table IF NOT EXISTS Requests(
-		id serial, --id é relativo ao numero do bit para o atual equi eletronico
+		id serial primary key, --id é relativo ao numero do bit para o atual equi eletronico
 		equipamento int,
-		marca_temporal time, 
+		marca_temporal timestamp,
 		latitude numeric(3,1),
-		longitude numeric(3,1),
-		primary key(id, equipamento)
+		longitude numeric(3,1)
 	);
 	
 	--Invalid Requests()
 	create table IF NOT EXISTS Invalid_Requests(
-		id serial, --id é relativo ao numero do bit para o atual equi eletronico
+		id serial primary key, --id é relativo ao numero do bit para o atual equi eletronico
 		equipamento int,
-		marca_temporal time, 
+		marca_temporal timestamp,
 		latitude numeric(3,1),
-		longitude numeric(3,1),
-		primary key(id, equipamento)
+		longitude numeric(3,1)
 	);
 	
 commit transaction;

@@ -16,8 +16,6 @@ AS
     WHERE bip_equipamento_eletronico.id = equipamentoID
     LIMIT 1;
 
-    raise notice 'Value: %', equip;
-
     if(requestMarca_temporal is null OR requestLatitude is null OR requestLongitude is null OR equip is null) then
         INSERT INTO invalid_requests(id, equipamento, marca_temporal, latitude, longitude)
         VALUES (DEFAULT, equipamentoID, requestMarca_temporal, requestLatitude, requestLongitude);
@@ -54,7 +52,7 @@ AS
 
         id int;
 		equipamento int;
-		marca_temporal time;
+		marca_temporal timestamp;
 		latitude numeric(3,1);
 		longitude numeric(3,1);
     BEGIN
