@@ -103,4 +103,86 @@ AS
         end loop;
         CLOSE ITERATOR;
     END;
-    $$
+    $$;
+
+--------------- PONTO G ---------------
+
+CREATE OR REPLACE FUNCTION zonaVerdeValida(beepCoordenates int, gzCoordenates int, raio int) RETURNS BOOLEAN AS
+    $$DECLARE
+        gzLat numeric(3,1);
+        gzLong numeric(3,1);
+
+        beepLat numeric(3,1);
+        beepLong numeric(3,1);
+    BEGIN
+        SELECT latitude, longitude INTO beepLat, beepLong
+        FROM coordenadas
+        WHERE id = beepCoordenates;
+        SELECT latitude, longitude INTO gzLat, gzLong
+        FROM coordenadas
+        WHERE id = gzCoordenates;
+
+        if(beepLat NOT BETWEEN gzLat - raio AND gzLat + raio OR beepLong NOT BETWEEN gzLong - raio AND gzLong + raio)then
+            RETURN FALSE;
+        end if;
+        RETURN TRUE;
+    end;$$LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION checkAlarm() RETURNS TRIGGER AS
+    $$DECLARE
+        nZones int:= null;
+        status varchar:= null;
+        raio int := null;
+        cords int := null;
+        isValid boolean := true;
+
+        ITERATOR CURSOR FOR
+            SELECT raio, coordenadas
+            FROM zona_verde
+            INNER JOIN veiculo v2 on v2.matricula = zona_verde.veiculo
+            INNER JOIN equipamento_eletronico ee on ee.id = v2.equipamento
+            WHERE ee.id = NEW.equipamento;
+    BEGIN
+        SELECT estado INTO status
+        FROM equipamento_eletronico
+        WHERE equipamento_eletronico.id = NEW.equipamento;
+
+        if(status = 'PausaDeAlarmes') then
+            RETURN;
+        end if;
+
+        SELECT COUNT(*) INTO nZones
+        FROM zona_verde
+        INNER JOIN veiculo v on v.matricula = zona_verde.veiculo
+        INNER JOIN bip_equipamento_eletronico bee on v.equipamento = bee.equipamento
+        WHERE v.equipamento = NEW.equipamento;
+
+        if(nZones = 0) then
+            RETURN;
+        end if;
+
+        OPEN ITERATOR;
+        FETCH NEXT FROM ITERATOR INTO raio, cords;
+
+        WHILE (FOUND) LOOP
+            --isValid := zonaVerdeValida(new.coordenadas, cords, raio);
+
+            if (isValid = false) then
+                INSERT INTO alarmes VALUES (DEFAULT, NEW.id);
+                UPDATE equipamento_eletronico SET estado = 'Activo' WHERE id = NEW.equipamento;
+                CLOSE ITERATOR;
+                RETURN;
+            end if;
+
+            FETCH NEXT FROM ITERATOR INTO raio, cords;
+        end loop;
+        CLOSE ITERATOR;
+        RETURN;
+
+end;$$LANGUAGE plpgsql;
+
+CREATE TRIGGER newBip AFTER INSERT ON bip_equipamento_eletronico
+    FOR EACH ROW;
+END;
+
+
