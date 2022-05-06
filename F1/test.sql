@@ -11,7 +11,7 @@ LANGUAGE 'plpgsql'
 AS $$
     BEGIN    
         INSERT INTO cliente VALUES (nif,nome,morada,telefone,ref_cliente);
-		if(nif not in (SELECT cliente.nif FROM cliente)) then
+		if(nif not in (SELECT nif FROM cliente)) then
         	RAISE NOTICE 'Cliente nao inserido';        
         END IF;
         INSERT INTO cliente_particular VALUES (cc,nif);
@@ -34,9 +34,9 @@ LANGUAGE plpgsql AS
 $$
     begin
 		--check if nif is valid
-		IF (nif_to_update NOT IN (SELECT cliente.nif FROM cliente)) then
+		IF (nif_to_update NOT IN (SELECT nif FROM cliente)) then
 			RAISE NOTICE 'Nao existe cliente para esse nif';        
-		end if;
+		END IF;
 		IF (new_nome IS NOT null) THEN 
        		UPDATE cliente SET nome = new_nome WHERE nif = nif_to_update; 
        	END IF;

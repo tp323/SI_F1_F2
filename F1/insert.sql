@@ -21,7 +21,7 @@ VALUES ('aquele', 121222333);
 
 	--Equipamento(id, estado)
 INSERT INTO Equipamento_Eletronico(id, estado)
-VALUES (1, 'Activo');
+VALUES (1, 'Inactivo'),(2, 'Inactivo');
 
 	--Coordenadas(id, latitude, longitude)
 INSERT INTO Coordenadas(id, latitude, longitude)
@@ -29,7 +29,7 @@ VALUES (DEFAULT, 0.1, 0.2),(DEFAULT, 0, 0);
 
 	--Bip Equipamento Eletronico(id, equipamento, marca temp, coordenadas)
 INSERT into Bip_Equipamento_Eletronico(id, equipamento, marca_temporal, coordenadas)
-VALUES (1,1,'2015-01-10 00:51:14',1);
+VALUES (DEFAULT,1,'2015-01-10 00:51:14',1),(DEFAULT,2,'2015-01-10 00:51:14',1);
 
 	--Condutor(CC, nome, contacto)
 INSERT INTO Condutor(CC, nome, contacto)
@@ -38,7 +38,7 @@ VALUES (111222111,'Charles Leclerc',922555888),(111333111,'Carlos Sainz',9225556
 
 	--Veiculo(matricula, condutor, equipamento, cliente)
 INSERT INTO Veiculo(matricula, condutor, equipamento, cliente)
-VALUES ('FF17FF',111222111,1,111222333);
+VALUES ('FF17FF',111222111,1,111222333), ('FF18FF',111333111,2,111222333);
 
 	--Zona Verde(veiculo, coordenadas, raio)
 INSERT INTO Zona_Verde(veiculo, coordenadas, raio)
