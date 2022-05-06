@@ -10,6 +10,8 @@ DELETE FROM Bip_Equipamento_Eletronico;
 DELETE FROM Coordenadas;
 DELETE FROM Equipamento_Eletronico;
 DELETE FROM Cliente_Institucional;
+DELETE FROM requests;
+DELETE FROM invalid_requests;
 
 ALTER table if EXISTS Cliente DROP constraint if EXISTS ref_cliente_part;
 
