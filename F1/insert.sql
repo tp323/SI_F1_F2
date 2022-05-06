@@ -24,12 +24,12 @@ INSERT INTO Equipamento_Eletronico(id, estado)
 VALUES (1, 'Inactivo'),(2, 'Inactivo');
 
 	--Coordenadas(id, latitude, longitude)
-INSERT INTO Coordenadas(id, latitude, longitude)
-VALUES (DEFAULT, 0.1, 0.2),(DEFAULT, 0, 0);
+INSERT INTO Coordenadas(latitude, longitude)
+VALUES (0.1, 0.2),(0, 0);
 
 	--Bip Equipamento Eletronico(id, equipamento, marca temp, coordenadas)
-INSERT into Bip_Equipamento_Eletronico(id, equipamento, marca_temporal, coordenadas)
-VALUES (DEFAULT,1,'2015-01-10 00:51:14',1),(DEFAULT,2,'2015-01-10 00:51:14',1);
+INSERT into Bip_Equipamento_Eletronico(equipamento, marca_temporal, coordenadas)
+VALUES (1,'2015-01-10 00:51:14',1),(2,'2015-01-10 00:51:14',1);
 
 	--Condutor(CC, nome, contacto)
 INSERT INTO Condutor(CC, nome, contacto)
