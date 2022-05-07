@@ -21,26 +21,29 @@ VALUES ('aquele', 121222333);
 
 	--Equipamento(id, estado)
 INSERT INTO Equipamento_Eletronico(id, estado)
-VALUES (1, 'Inactivo'),(2, 'Inactivo');
+VALUES (1, 'Inactivo'),(2, 'Inactivo'),(3, 'Activo');
 
 	--Coordenadas(id, latitude, longitude)
 INSERT INTO Coordenadas(latitude, longitude)
-VALUES (0.1, 0.2),(0, 0);
+VALUES (0.1, 0.2),(0, 0),(21.2, 23.4);
 
 	--Bip Equipamento Eletronico(id, equipamento, marca temp, coordenadas)
 INSERT into Bip_Equipamento_Eletronico(equipamento, marca_temporal, coordenadas)
-VALUES (1,'2015-01-10 00:51:14',1),(2,'2015-01-10 00:51:14',1);
+VALUES (1,'2015-01-10 00:51:14',1),(2,'2015-01-10 00:51:14',3);
 
 	--Condutor(CC, nome, contacto)
 INSERT INTO Condutor(CC, nome, contacto)
-VALUES (111222111,'Charles Leclerc',922555888),(111333111,'Carlos Sainz',922555688),
-(111444111,'Fernando Alonso',922555788);
+VALUES (111111113,'Charles Leclerc',922555888),(111111114,'Carlos Sainz',922755688),(111111115,'Max Verstappen',912555688),
+(111111116,'Fernando Alonso',922555788);
 
 	--Veiculo(matricula, condutor, equipamento, cliente)
 INSERT INTO Veiculo(matricula, condutor, equipamento, cliente)
-VALUES ('FF17FF',111222111,1,111222333), ('FF18FF',111333111,2,111222333);
+VALUES ('FF17FF',111111113,1,111222333), ('FF18FF',111111114,2,111222333), ('RB16RB',111111115,3,121222333);
 
 	--Zona Verde(veiculo, coordenadas, raio)
 INSERT INTO Zona_Verde(veiculo, coordenadas, raio)
 VALUES ('FF17FF',2,3);
+
+INSERT INTO alarmes(bip)
+VALUES (1),(2),(2),(2);
 commit transaction;

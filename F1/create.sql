@@ -2,9 +2,9 @@ BEGIN transaction;
 	--Cliente(NIF, nome, morada, telefone, ref cliente)
 	create table IF NOT EXISTS Cliente(
 		NIF int primary key,
-		nome varchar(25),
-		morada varchar(150),
-		telefone varchar(10),
+		nome varchar(25) not null,
+		morada varchar(150) not null,
+		telefone varchar(10) not null,
 		ref_cliente int DEFAULT null
 	);
 	--Cliente_Particular(CC, cliente)

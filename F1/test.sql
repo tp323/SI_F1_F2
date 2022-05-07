@@ -34,22 +34,14 @@ LANGUAGE plpgsql AS
 $$
     begin
 		--check if nif is valid
+		--not sure if this exception should exist
 		IF (nif_to_update NOT IN (SELECT nif FROM cliente)) then
 			RAISE NOTICE 'Nao existe cliente para esse nif';        
 		END IF;
-		IF (new_nome IS NOT null) THEN 
-       		UPDATE cliente SET nome = new_nome WHERE nif = nif_to_update; 
-       	END IF;
-       	IF (new_morada IS NOT null) THEN 
-       		UPDATE cliente SET morada = new_morada WHERE nif = nif_to_update;
-       	END IF; 
-       	IF (new_telefone IS NOT null) THEN 
-       		UPDATE cliente SET telefone = new_telefone WHERE nif = nif_to_update;
-       	END IF; 
-	   	--check if cc from new_ref_cliente is valid
-       	IF (new_ref_cliente IS NOT null) THEN 
-       		UPDATE cliente SET ref_cliente = new_ref_cliente WHERE nif = nif_to_update;
-       	END IF;
+       	UPDATE cliente SET nome = new_nome WHERE nif = nif_to_update;
+       	UPDATE cliente SET morada = new_morada WHERE nif = nif_to_update;
+       	UPDATE cliente SET telefone = new_telefone WHERE nif = nif_to_update;
+       	UPDATE cliente SET ref_cliente = new_ref_cliente WHERE nif = nif_to_update;
 	END;
 $$;
 
