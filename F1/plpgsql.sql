@@ -4,6 +4,7 @@
 CREATE OR REPLACE FUNCTION alarm_number(registration varchar(6), year numeric) RETURNS int AS $$
     DECLARE
         number int := null;
+        target varchar(6) := '*';
     BEGIN
 
         if (year is null)then
@@ -12,17 +13,17 @@ CREATE OR REPLACE FUNCTION alarm_number(registration varchar(6), year numeric) R
 
         if (registration is not null) then
 
-            SELECT matricula
+            SELECT matricula INTO target
             FROM veiculo
             WHERE matricula = registration;
 
-            if NOT FOUND then RETURN NULL; end if;
+            if (target is null) then RETURN NULL; end if;
 
             SELECT COUNT(*) INTO number
             FROM alarmes
             INNER JOIN bip_equipamento_eletronico b on b.id = alarmes.bip
             INNER JOIN veiculo v on b.equipamento = v.equipamento
-            WHERE extract(YEAR FROM marca_temporal) = year AND matricula = registration;
+            WHERE extract(YEAR FROM marca_temporal) = year AND matricula = target;
             RETURN number;
 
         end if;
@@ -192,37 +193,41 @@ CREATE OR REPLACE PROCEDURE createVehicle(newRegistration varchar(6), newDriver 
 AS
     $$
     DECLARE
+        registrationCheck varchar(6);
+        driverCheck int;
+        equipCheck int;
+        clientCheck int;
         cords int;
     BEGIN
-        SELECT matricula
+        SELECT matricula INTO registrationCheck
         FROM veiculo
         WHERE matricula = newRegistration;
 
-        IF(FOUND) then
+        IF(registrationCheck is not null) then
             RAISE EXCEPTION 'This vehicle registration already exists!';
         end if;
 
-        SELECT cc
+        SELECT cc INTO driverCheck
         FROM condutor
         WHERE cc = newDriver;
 
-        IF(NOT FOUND) then
+        IF(driverCheck is null) then
             RAISE EXCEPTION 'This driver reference does not exist!';
         end if;
 
-        SELECT id
+        SELECT id INTO equipCheck
         FROM equipamento_eletronico
         WHERE id = newEquip;
 
-        IF(NOT FOUND) then
+        IF(equipCheck is null) then
             RAISE EXCEPTION 'This equipment reference does not exist!';
         end if;
 
-        SELECT nif
+        SELECT nif INTO clientCheck
         FROM cliente
         WHERE nif = newClient;
 
-        IF(NOT FOUND) then
+        IF(clientCheck is null) then
             RAISE EXCEPTION 'This client reference does not exist!';
         end if;
 
