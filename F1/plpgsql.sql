@@ -148,7 +148,7 @@ CREATE OR REPLACE FUNCTION checkAlarm() RETURNS TRIGGER AS
         WHERE equipamento_eletronico.id = NEW.equipamento;
 
         if(status = 'PausaDeAlarmes') then
-            RETURN;
+            RETURN NEW;
         end if;
 
         SELECT COUNT(*) INTO nZones
@@ -158,31 +158,160 @@ CREATE OR REPLACE FUNCTION checkAlarm() RETURNS TRIGGER AS
         WHERE v.equipamento = NEW.equipamento;
 
         if(nZones = 0) then
-            RETURN;
+            RETURN NEW;
         end if;
 
         OPEN ITERATOR;
         FETCH NEXT FROM ITERATOR INTO raio, cords;
 
         WHILE (FOUND) LOOP
-            --isValid := zonaVerdeValida(new.coordenadas, cords, raio);
+            isValid := zonaVerdeValida(new.coordenadas, cords, raio);
 
             if (isValid = false) then
                 INSERT INTO alarmes VALUES (DEFAULT, NEW.id);
                 UPDATE equipamento_eletronico SET estado = 'Activo' WHERE id = NEW.equipamento;
                 CLOSE ITERATOR;
-                RETURN;
+                RETURN NEW;
             end if;
 
             FETCH NEXT FROM ITERATOR INTO raio, cords;
         end loop;
         CLOSE ITERATOR;
-        RETURN;
+        RETURN NEW;
 
 end;$$LANGUAGE plpgsql;
 
 CREATE TRIGGER newBip AFTER INSERT ON bip_equipamento_eletronico
-    FOR EACH ROW;
+    FOR EACH ROW
+    EXECUTE FUNCTION checkAlarm();
 END;
 
+--------------- PONTO H ---------------
 
+CREATE OR REPLACE PROCEDURE createVehicle(newRegistration varchar(6), newDriver int, newEquip int, newClient int, raio int = null, lat numeric = null, long numeric = null)
+    LANGUAGE plpgsql
+AS
+    $$
+    DECLARE
+        registrationCheck varchar(6);
+        driverCheck int;
+        equipCheck int;
+        clientCheck int;
+        cords int;
+    BEGIN
+        SELECT matricula INTO registrationCheck
+        FROM veiculo
+        WHERE matricula = newRegistration;
+
+        IF(registrationCheck is not null) then
+            RAISE EXCEPTION 'This vehicle registration already exists!';
+        end if;
+
+        SELECT cc INTO driverCheck
+        FROM condutor
+        WHERE cc = newDriver;
+
+        IF(driverCheck is null) then
+            RAISE EXCEPTION 'This driver reference does not exist!';
+        end if;
+
+        SELECT id INTO equipCheck
+        FROM equipamento_eletronico
+        WHERE id = newEquip;
+
+        IF(equipCheck is null) then
+            RAISE EXCEPTION 'This equipment reference does not exist!';
+        end if;
+
+        SELECT nif INTO clientCheck
+        FROM cliente
+        WHERE nif = newClient;
+
+        IF(clientCheck is null) then
+            RAISE EXCEPTION 'This client reference does not exist!';
+        end if;
+
+        INSERT INTO veiculo VALUES (newRegistration, newDriver, newEquip, newClient);
+
+        if(raio is null or lat is null or long is null) then
+            RETURN;
+        end if;
+
+        SELECT id INTO cords
+        FROM coordenadas
+        WHERE latitude = lat AND longitude = long;
+
+        if(cords is null) then
+            INSERT INTO coordenadas VALUES (DEFAULT, lat, long) RETURNING id INTO cords;
+        end if;
+
+        INSERT INTO zona_verde VALUES (DEFAULT, cords, newRegistration, raio);
+    END;
+    $$;
+
+--------------- PONTO I ---------------
+
+--------------- PONTO J ---------------
+
+--------------- PONTO K ---------------
+
+CREATE OR REPLACE PROCEDURE deleteInvalids()
+    LANGUAGE plpgsql AS
+    $$
+    DECLARE
+        currentDate date := current_date;
+        targetID int;
+        targetDate date;
+        ITERATOR CURSOR FOR
+            SELECT id, marca_temporal::date
+            FROM invalid_requests;
+    BEGIN
+        OPEN ITERATOR;
+        FETCH NEXT FROM ITERATOR INTO targetID, targetDate;
+
+        WHILE (FOUND) LOOP
+
+            if currentDate - targetDate >= 15 THEN
+                DELETE FROM invalid_requests WHERE id = targetID;
+            end if;
+
+            FETCH NEXT FROM ITERATOR INTO targetID, targetDate;
+        end loop;
+        CLOSE ITERATOR;
+
+    END;
+$$;
+
+--------------- PONTO L ---------------
+
+--------------- PONTO M ---------------
+
+CREATE OR REPLACE FUNCTION createAlarmCounter() RETURNS TRIGGER AS
+    $$BEGIN
+        INSERT INTO n_alarms VALUES (NEW.matricula, 0);
+        RETURN NEW;
+END;$$LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION incrementAlarm()RETURNS TRIGGER AS
+    $$DECLARE
+        target varchar(6);
+    BEGIN
+
+        SELECT matricula INTO target
+        FROM equipamento_eletronico
+        INNER JOIN veiculo v on equipamento_eletronico.id = v.equipamento
+        WHERE id = NEW.ID;
+
+        UPDATE n_alarms set alarms = alarms + 1 WHERE veiculo = target;
+        RETURN NEW;
+END;$$LANGUAGE plpgsql;
+
+CREATE TRIGGER veichuleCreated AFTER INSERT ON veiculo
+        FOR EACH ROW
+        EXECUTE FUNCTION createAlarmCounter();
+END;
+
+CREATE TRIGGER alarmAdded AFTER INSERT ON alarmes
+        FOR EACH ROW
+        EXECUTE FUNCTION incrementAlarm();
+END;

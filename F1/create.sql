@@ -109,5 +109,14 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 		latitude numeric(3,1),
 		longitude numeric(3,1)
 	);
+
+    --Alarm number per vehicle
+    create table IF NOT EXISTS N_Alarms(
+        veiculo varchar(6),
+        alarms int not null,
+        PRIMARY KEY (veiculo),
+        FOREIGN KEY (veiculo)
+            REFERENCES Veiculo (matricula) ON DELETE CASCADE ON UPDATE cascade
+    );
 	
 commit transaction;
