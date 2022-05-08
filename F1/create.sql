@@ -57,7 +57,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	create table IF NOT EXISTS Condutor(
 		CC int primary key, 
 		nome varchar(20) not null,
-		contacto varchar(10) not null
+		contacto varchar(10)
 	);
 	--Veiculo(matricula, condutor, equipamento, cliente)
 	create table IF NOT EXISTS Veiculo(
@@ -101,9 +101,9 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 		longitude numeric(3,1)
 	);
 	
-	--Invalid Requests()
+	--Invalid Requests(id, equipamento, marca temp, coordenadas)
 	create table IF NOT EXISTS Invalid_Requests(
-		id serial primary key, --id é relativo ao numero do bit para o atual equi eletronico
+		id serial primary key,
 		equipamento int,
 		marca_temporal timestamp,
 		latitude numeric(3,1),

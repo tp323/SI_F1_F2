@@ -16,14 +16,14 @@ CREATE OR REPLACE FUNCTION insert_view_alarme()
 RETURNS trigger AS $$
 	DECLARE
 	equip int:= null;
-	cond int:= randomInt(9);
+	cond int:= random_number(9);
 	eq_id int:= null;
 	coord_id int:= null;
 	bip_id int:= null;
 	cliente_hardcoded int:= 111222333;
     BEGIN
 		INSERT INTO Equipamento_Eletronico(estado) values('Inactivo') returning id into eq_id;
-		insert into Condutor(CC, nome, contacto) values(cond, new.nome, randomInt(9));
+		insert into Condutor(CC, nome, contacto) values(cond, new.nome, null);
        	insert into veiculo(matricula, condutor, equipamento, cliente) values(new.matricula, cond, eq_id, cliente_hardcoded);
 		INSERT INTO Coordenadas(latitude, longitude) VALUES (new.latitude, new.longitude) returning id into coord_id;
 		INSERT into Bip_Equipamento_Eletronico(equipamento, marca_temporal, coordenadas) VALUES (eq_id, new.marca_temporal,coord_id) returning id into bip_id;

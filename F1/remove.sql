@@ -1,6 +1,8 @@
 --remove modelo fisico
 DROP VIEW IF EXISTS clientes;
 DROP VIEW IF EXISTS todos_alarmes;
+DROP TABLE IF EXISTS N_Alarms;
+
 DROP TABLE IF EXISTS Requests;
 DROP TABLE IF EXISTS Invalid_Requests;
 DROP TABLE IF EXISTS Alarmes;
