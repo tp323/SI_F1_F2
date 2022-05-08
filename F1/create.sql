@@ -32,7 +32,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 
 	--Equipamento(id, estado)
 	create table IF NOT EXISTS Equipamento_Eletronico(
-		id int primary key, --maybe serial
+		id serial primary key,
 		estado varchar(15),
 		constraint estado check (estado IN ('Activo', 'PausaDeAlarmes', 'Inactivo'))
 	);
@@ -109,8 +109,8 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 		latitude numeric(3,1),
 		longitude numeric(3,1)
 	);
-
-    --Alarm number per vehicle
+	
+	--Alarm number per vehicle
     create table IF NOT EXISTS N_Alarms(
         veiculo varchar(6),
         alarms int not null,

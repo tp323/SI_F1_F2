@@ -20,8 +20,8 @@ INSERT INTO Cliente_Institucional(nome_contacto, cliente)
 VALUES ('aquele', 121222333);
 
 	--Equipamento(id, estado)
-INSERT INTO Equipamento_Eletronico(id, estado)
-VALUES (1, 'Inactivo'),(2, 'Inactivo'),(3, 'Activo');
+INSERT INTO Equipamento_Eletronico(estado)
+VALUES ('Inactivo'),('Inactivo'),('Activo');
 
 	--Coordenadas(id, latitude, longitude)
 INSERT INTO Coordenadas(latitude, longitude)
