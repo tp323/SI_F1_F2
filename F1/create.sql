@@ -5,12 +5,13 @@ BEGIN transaction;
 		nome varchar(25) not null,
 		morada varchar(150) not null,
 		telefone varchar(10) not null,
-		ref_cliente int DEFAULT null
+		ref_cliente int DEFAULT null,
+		ativo boolean DEFAULT TRUE not null
 	);
 	--Cliente_Particular(CC, cliente)
 	create table IF NOT EXISTS Cliente_Particular(
 		CC int primary key,
-		cliente int,
+		cliente int not null,
 		FOREIGN KEY (cliente)
      		REFERENCES Cliente (NIF) ON DELETE CASCADE ON UPDATE cascade
 	);
@@ -23,7 +24,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 
 	--Cliente_Institucional(nome de contacto, cliente)
 	create table IF NOT EXISTS Cliente_Institucional(
-		nome_contacto varchar(25),
+		nome_contacto varchar(25) not null,
 		cliente int primary key,
 		FOREIGN KEY (cliente)
      		REFERENCES Cliente (NIF) ON DELETE CASCADE ON UPDATE cascade
@@ -31,7 +32,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 
 	--Equipamento(id, estado)
 	create table IF NOT EXISTS Equipamento_Eletronico(
-		id int primary key,
+		id int primary key, --maybe serial
 		estado varchar(15),
 		constraint estado check (estado IN ('Activo', 'PausaDeAlarmes', 'Inactivo'))
 	);
@@ -55,8 +56,8 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	--Condutor(CC, nome, contacto)
 	create table IF NOT EXISTS Condutor(
 		CC int primary key, 
-		nome varchar(20),
-		contacto varchar(10)
+		nome varchar(20) not null,
+		contacto varchar(10) not null
 	);
 	--Veiculo(matricula, condutor, equipamento, cliente)
 	create table IF NOT EXISTS Veiculo(
@@ -74,7 +75,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	--Zona Verde(veiculo, coordenadas, raio)
 	create table IF NOT EXISTS Zona_Verde(
 		id serial primary key,
-		coordenadas int,
+		coordenadas int not null,
 		veiculo varchar(6) NOT NULL,
 		raio int NOT NULL,
 		FOREIGN KEY (coordenadas)

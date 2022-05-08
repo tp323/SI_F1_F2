@@ -1,5 +1,5 @@
--- PROCEDURE: public.insert_particular(integer, character varying, character varying, character varying, integer, integer)
-
+--d
+--insert cliente particular
 CREATE OR REPLACE PROCEDURE insert_cliente_particular(
 	IN nif int,
 	IN nome varchar,
@@ -22,6 +22,7 @@ $$;
 --test insert_cliente_particular
 --call insert_cliente_particular(122226709 ,'o individuo' ,'Rua x','967992934', NULL, 333992934); 
 
+--update cliente particular
 --cc and nif can't be changed
 --check if parameter is equal to avoid unecessary writes to DB
 CREATE OR REPLACE PROCEDURE update_cliente_particular(
@@ -46,9 +47,9 @@ $$
 $$;
 
 --test update
-call update_cliente_particular(123456799 ,'outro individuo' , 'ali', '967992934', 123456700);
+--call update_cliente_particular(123456799 ,'outro individuo' , 'ali', '967992934', 123456700);
 
-
+--remove cliente particular
 CREATE OR REPLACE PROCEDURE remove_cliente_particular(
 	IN nif_to_delete int,
 	IN cc_to_delete int)
@@ -62,4 +63,32 @@ AS $$
 $$;
 
 --test delete
-call remove_cliente_particular(123456700, 123456700);
+--call remove_cliente_particular(123456700, 123456700);
+delete trigger delete_cliente;
+drop function delete_clientes();
+
+
+
+--l
+CREATE OR REPLACE FUNCTION delete_clientes()
+RETURNS trigger AS $$
+	DECLARE
+	nif_to_delete int:= old.nif;
+    BEGIN
+       	UPDATE cliente SET ativo = FALSE WHERE nif = nif_to_delete;
+		return new;
+	END;
+$$LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE TRIGGER delete_cliente
+BEFORE DELETE ON cliente
+FOR EACH ROW
+EXECUTE FUNCTION delete_clientes();
+
+
+DELETE FROM cliente;
+
+--não funciona mas a linha de baixo faz o pretendido
+--UPDATE clientes SET ativo = FALSE WHERE nif = 121222333;

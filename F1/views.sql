@@ -7,3 +7,9 @@ inner join veiculo v on eq.id = v.equipamento
 inner join condutor cond on v.condutor=cond.cc
 inner join coordenadas coord on coordenadas = coord.id;
 
+--CREATE OR REPLACE VIEW clientes AS
+--SELECT nif, nome, morada, telefone, ref_cliente, ativo
+--FROM cliente;
+
+
+--SELECT ativo from cliente;
