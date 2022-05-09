@@ -72,6 +72,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
      	FOREIGN KEY (cliente)
      		REFERENCES Cliente (NIF) ON DELETE CASCADE ON UPDATE cascade
 	);
+	
 	--Zona Verde(veiculo, coordenadas, raio)
 	create table IF NOT EXISTS Zona_Verde(
 		id serial primary key,
@@ -118,5 +119,29 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
         FOREIGN KEY (veiculo)
             REFERENCES Veiculo (matricula) ON DELETE CASCADE ON UPDATE cascade
     );
+	
+	
+	CREATE OR REPLACE FUNCTION check_veiculos_particular()
+	RETURNS trigger AS $$
+		DECLARE
+			cnt integer := 0;
+			is_particular integer := 0;
+		BEGIN
+			select count(*) into is_particular from cliente_particular where cliente = new.cliente;
+			IF is_particular != 0 THEN
+				select count(matricula) into cnt from veiculo where cliente = new.cliente;
+				IF cnt >= 3 then
+					raise exception 'Cliente Particular ja alcançou numero maximo de veiculos permitidos 3';
+				END IF;
+			END IF;
+		RETURN new;
+		END;
+	$$LANGUAGE plpgsql;
+	
+	CREATE OR REPLACE TRIGGER max3_veiculo_particular
+	BEFORE INSERT ON veiculo
+	FOR EACH ROW
+	EXECUTE FUNCTION check_veiculos_particular();
+
 	
 commit transaction;

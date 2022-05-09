@@ -20,15 +20,15 @@ RETURNS trigger AS $$
 	eq_id int:= null;
 	coord_id int:= null;
 	bip_id int:= null;
-	cliente_hardcoded int:= 111222333;
+	cliente_hardcoded int:= 121222333;
     BEGIN
 		INSERT INTO Equipamento_Eletronico(estado) values('Inactivo') returning id into eq_id;
-		insert into Condutor(CC, nome, contacto) values(cond, new.nome, null);
-       	insert into veiculo(matricula, condutor, equipamento, cliente) values(new.matricula, cond, eq_id, cliente_hardcoded);
+		INSERT INTO Condutor(CC, nome, contacto) values(cond, new.nome, null);
+       	INSERT INTO veiculo(matricula, condutor, equipamento, cliente) values(new.matricula, cond, eq_id, cliente_hardcoded);
 		INSERT INTO Coordenadas(latitude, longitude) VALUES (new.latitude, new.longitude) returning id into coord_id;
 		INSERT into Bip_Equipamento_Eletronico(equipamento, marca_temporal, coordenadas) VALUES (eq_id, new.marca_temporal,coord_id) returning id into bip_id;
 		INSERT INTO alarmes(bip) VALUES (bip_id);
-		return new;
+		RETURN new;
 	END;
 $$LANGUAGE plpgsql;
 
@@ -57,3 +57,7 @@ RETURNS int AS $$
 	RETURN numb;
 	END;
 $$LANGUAGE plpgsql;
+
+
+--test restriction
+--INSERT INTO Veiculo(matricula, condutor, equipamento, cliente) VALUES ('F26G5F',111111113,1,111222333);

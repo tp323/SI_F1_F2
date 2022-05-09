@@ -1,8 +1,11 @@
 --remove modelo fisico
+DROP TRIGGER IF EXISTS max3_veiculo_particular ON Veiculo;
+DROP FUNCTION IF EXISTS check_veiculos_particular;
+
 DROP VIEW IF EXISTS clientes;
 DROP VIEW IF EXISTS todos_alarmes;
-DROP TABLE IF EXISTS N_Alarms;
 
+DROP TABLE IF EXISTS N_Alarms;
 DROP TABLE IF EXISTS Requests;
 DROP TABLE IF EXISTS Invalid_Requests;
 DROP TABLE IF EXISTS Alarmes;
