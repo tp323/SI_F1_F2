@@ -8,7 +8,7 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
         client INT;
         part_client INT;
     BEGIN
-        CALL insert_cliente_particular(1334545634, 'Ernesto Ferrero-Roche', 'Albal', 926021405, NULL, '3954785467');
+        CALL insert_cliente_particular(1334545634, 'Ernesto Ferrero-Roche', 'Albal', '926021405', NULL, 3954785467);
 
         SELECT nif INTO client
         FROM cliente
@@ -22,7 +22,7 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
             RETURN;
         END IF;
 
-        CALL update_cliente_particular(1334545634, 'Ernesto Ferrero-Roche', 'Albal', 926021405, 111222333);
+        CALL update_cliente_particular(1334545634, 'Ernesto Ferrero-Roche', 'Albal', '926021405', 111222333);
 
         SELECT ref_cliente INTO client
         FROM cliente
@@ -36,7 +36,7 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
             RETURN;
         END IF;
 
-        CALL remove_cliente_particular(1334545634, '3954785467');
+        CALL remove_cliente_particular(1334545634, 3954785467);
 
         SELECT nif INTO client
         FROM cliente
@@ -44,7 +44,7 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
 
         SELECT cc INTO part_client
         FROM cliente_particular
-        WHERE cc = '3954785467';
+        WHERE cc = 3954785467;
 
         IF(client IS NULL AND part_client IS NULL) THEN
             DELETE FROM cliente WHERE nif = 1334545634;
@@ -237,11 +237,85 @@ CALL createVehicle_testing();
 
 --------------- PONTO I ---------------
 
+CREATE OR REPLACE PROCEDURE todos_alarmes_testing() LANGUAGE plpgsql
+    AS
+    $$
+    DECLARE
+        registry VARCHAR(6);
+    BEGIN
+        INSERT INTO equipamento_eletronico VALUES(135464, 'Activo');
+        INSERT INTO veiculo VALUES('FJ45LF', 111111116, 135464, 121222333);
+        INSERT INTO bip_equipamento_eletronico VALUES(3774375, 135464, '2034-03-04 10:43:35', 1);
+        INSERT INTO alarmes VALUES(764645, 3774375);
 
+        SELECT matricula INTO registry
+        FROM todos_alarmes
+        WHERE matricula = 'FJ45LF';
+
+        IF(registry IS NOT NULL) THEN
+            RAISE NOTICE 'Added values that affected the view OK';
+        ELSE
+            RAISE WARNING 'Added values that affected the view NOT OK';
+        END IF;
+
+        DELETE FROM equipamento_eletronico WHERE id = 135464;
+    END;
+    $$;
+
+CALL todos_alarmes_testing();
 
 --------------- PONTO J ---------------
 
+CREATE OR REPLACE PROCEDURE insert_view_alarmes() LANGUAGE plpgsql
+    AS
+    $$
+    DECLARE
+        vehicle VARCHAR(6);
+        equipment INT;
+        driver INT;
+        bip_equip INT;
+        coordinates INT;
+        alarm INT;
+    BEGIN
+        INSERT INTO todos_alarmes VALUES('HF45KS', 'Joao Sapato', 45, 32, '2022-11-03 04:43:12');
 
+        SELECT id INTO vehicle
+        FROM equipamento_eletronico
+        INNER JOIN veiculo v ON equipamento_eletronico.id = v.equipamento
+        WHERE matricula = 'HF45KS';
+
+        SELECT id INTO equipment
+        FROM equipamento_eletronico
+        INNER JOIN veiculo v ON equipamento_eletronico.id = v.equipamento
+        WHERE matricula = 'HF45KS';
+
+        SELECT nome INTO driver
+        FROM condutor
+        INNER JOIN veiculo v ON condutor.cc = v.condutor
+        WHERE matricula = 'HF45KS';
+
+        SELECT id INTO bip_equip
+        FROM bip_equipamento_eletronico
+        WHERE equipamento = equipment;
+
+        SELECT coordenadas.id INTO coordinates
+        FROM coordenadas
+        INNER JOIN bip_equipamento_eletronico bee ON coordenadas.id = bee.coordenadas
+        WHERE bee.id = bip_equip;
+
+        SELECT id INTO alarm
+        FROM alarmes
+        WHERE bip = bip_equip;
+
+        IF(vehicle = 'HF45KS' AND equipment IS NOT NULL AND driver = 'Joao Sapato' AND bip_equip IS NOT NULL AND coordinates IS NOT NULL AND alarm IS NOT NULL) THEN
+            RAISE NOTICE 'Added the values through the view OK';
+        ELSE
+            RAISE WARNING 'Added the values through the view NOT OK';
+        END IF;
+    END;
+    $$;
+
+CALL insert_view_alarmes();
 
 --------------- PONTO K ---------------
 
@@ -286,6 +360,34 @@ CALL deleteInvalids_testing();
 
 --------------- PONTO L ---------------
 
+CREATE OR REPLACE PROCEDURE delete_clientes_testing() LANGUAGE plpgsql
+    AS
+    $$
+    DECLARE
+        client INT;
+        active BOOLEAN;
+    BEGIN
+        CALL insert_cliente_particular(3453213345, 'Joao Gabarola', 'Lisboa', 962345321, NULL, 3456421345);
+        DELETE FROM cliente WHERE nif = 3453213345;
+
+        SELECT cc INTO client
+        FROM cliente_particular
+        WHERE cc = 3456421345;
+
+        SELECT ativo INTO active
+        FROM cliente
+        WHERE nif = 3453213345;
+
+        IF(client IS NULL AND active = FALSE) THEN
+            RAISE NOTICE 'Deleting clients OK';
+        ELSE
+            RAISE WARNING 'Deleting clients NOT OK';
+        END IF;
+    END;
+    $$;
+
+CALL delete_clientes_testing();
+
 --------------- PONTO M ---------------
 
 CREATE OR REPLACE PROCEDURE alarmCounter_testing() LANGUAGE plpgsql
@@ -315,16 +417,14 @@ CREATE OR REPLACE PROCEDURE alarmCounter_testing() LANGUAGE plpgsql
         WHERE veiculo = 'AS45FR';
 
         IF(alarm_count >= 1) THEN
-            DELETE FROM veiculo WHERE matricula = 'AS45FR';
-            DELETE FROM alarmes WHERE id = 23445;
-            DELETE FROM equipamento_eletronico WHERE id = 234543;
             RAISE NOTICE 'Incrementing alarm number on vehicle OK';
         ELSE
             RAISE WARNING 'Incrementing alarm number on vehicle NOT OK';
         END IF;
+
+        DELETE FROM veiculo WHERE matricula = 'AS45FR';
+        DELETE FROM equipamento_eletronico WHERE id = 234543;
     END;
     $$;
 
 CALL alarmCounter_testing();
-
---------------- PONTO N ---------------
