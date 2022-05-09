@@ -10,7 +10,7 @@ CREATE OR REPLACE PROCEDURE insert_cliente_particular(
 LANGUAGE 'plpgsql'
 AS $$
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+        --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
         INSERT INTO cliente VALUES (nif,nome,morada,telefone,ref_cliente);
 		if(nif not in (SELECT cliente.nif FROM cliente)) then
@@ -35,7 +35,7 @@ CREATE OR REPLACE PROCEDURE update_cliente_particular(
 LANGUAGE plpgsql AS
 $$
     begin
-        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+        --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
 		--check if nif is valid
 		--not sure if this exception should exist
@@ -59,7 +59,7 @@ CREATE OR REPLACE PROCEDURE remove_cliente_particular(
 LANGUAGE 'plpgsql'
 AS $$
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+        --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
 		DELETE FROM Cliente WHERE nif = nif_to_delete;
 		UPDATE Cliente set ref_cliente = null WHERE ref_cliente = cc_to_delete;
@@ -77,7 +77,7 @@ RETURNS trigger AS $$
 	DECLARE
 	nif_to_delete int:= old.nif;
     BEGIN
-	    SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+	    --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
        	UPDATE cliente SET ativo = FALSE WHERE nif = nif_to_delete;
 		return new;
@@ -103,7 +103,7 @@ RETURNS trigger AS $$
 	bip_id int:= null;
 	cliente_hardcoded int:= 121222333;
     BEGIN
-	    SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+	    --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
 		INSERT INTO Equipamento_Eletronico(estado) values('Inactivo') returning id into eq_id;
 		INSERT INTO Condutor(CC, nome, contacto) values(cond, new.nome, null);
@@ -121,7 +121,7 @@ CREATE OR REPLACE TRIGGER insert_view_alarmes
 	EXECUTE FUNCTION insert_view_alarme();
 
 --test insert_view_alarme
---insert into todos_alarmes(matricula, nome, latitude, longitude, marca_temporal) values ('ff22ff', 'elu', 2.0, 3.4, '2016-01-10 13:34:14');
+--insert into todos_alarmes(matricula, nome, latitude, longitude, marca_temporal) values ('f222ff', 'ef', 2.2, 3.4, '2016-01-10 13:34:14');
 
 CREATE OR REPLACE FUNCTION random_number(length integer)
 RETURNS int AS $$
