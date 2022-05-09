@@ -120,7 +120,17 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
             REFERENCES Veiculo (matricula) ON DELETE CASCADE ON UPDATE cascade
     );
 	
-	
+	------------------------------VIEWS------------------------------
+	CREATE OR REPLACE VIEW todos_alarmes AS
+		SELECT matricula, nome, latitude, longitude, marca_temporal
+		FROM alarmes al 
+		inner join bip_equipamento_eletronico bip on al.bip=bip.id 
+		inner join equipamento_eletronico eq on equipamento = eq.id 
+		inner join veiculo v on eq.id = v.equipamento
+		inner join condutor cond on v.condutor=cond.cc
+		inner join coordenadas coord on coordenadas = coord.id;
+
+	----------------------------FUNCTIONS---------------------------
 	CREATE OR REPLACE FUNCTION check_veiculos_particular()
 	RETURNS trigger AS $$
 		DECLARE
@@ -138,6 +148,8 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 		END;
 	$$LANGUAGE plpgsql;
 	
+	
+	----------------------------TRIGGERS----------------------------
 	CREATE OR REPLACE TRIGGER max3_veiculo_particular
 	BEFORE INSERT ON veiculo
 	FOR EACH ROW
