@@ -24,7 +24,6 @@ $$;
 
 --update cliente particular
 --cc and nif can't be changed
---check if parameter is equal to avoid unecessary writes to DB
 CREATE OR REPLACE PROCEDURE update_cliente_particular(
 	IN nif_to_update int, 
 	IN new_nome varchar, 
@@ -37,7 +36,7 @@ $$
 		--check if nif is valid
 		--not sure if this exception should exist
 		IF (nif_to_update NOT IN (SELECT nif FROM cliente)) then
-			RAISE NOTICE 'Nao existe cliente para esse nif';        
+			RAISE NOTICE 'Nao existe cliente para este nif';        
 		END IF;
        	UPDATE cliente SET nome = new_nome WHERE nif = nif_to_update;
        	UPDATE cliente SET morada = new_morada WHERE nif = nif_to_update;
@@ -83,9 +82,6 @@ BEFORE DELETE ON cliente
 FOR EACH ROW
 EXECUTE FUNCTION delete_clientes();
 
-
---não funciona mas a linha de baixo faz o pretendido
---UPDATE clientes SET ativo = FALSE WHERE nif = 121222333;
 
 --j
 --todos_alarmes(matricula, nome, latitude, longitude, marca_temporal)
