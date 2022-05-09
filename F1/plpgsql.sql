@@ -66,16 +66,7 @@ AS
         RETURN;
     end if;
 
-    SELECT id INTO cords
-    FROM coordenadas
-    WHERE longitude = requestLongitude AND latitude = requestLatitude
-    LIMIT 1;
-
-    if (cords is null) then
-        INSERT INTO coordenadas(id, latitude, longitude)
-        VALUES (DEFAULT, requestLatitude, requestLongitude)
-        RETURNING id INTO cords;
-    end if;
+    SELECT checkCords(requestLatitude, requestLongitude) INTO cords;
 
     INSERT INTO bip_equipamento_eletronico(id, equipamento, marca_temporal, coordenadas)
     VALUES (DEFAULT, equip, requestMarca_temporal, cords);
@@ -295,13 +286,7 @@ $$;
 
 --------------- PONTO M ---------------
 
-CREATE OR REPLACE FUNCTION createAlarmCounter() RETURNS TRIGGER AS
-    $$BEGIN
-        SET TRANSACTION ISOLATION LEVEL read committed;
 
-        INSERT INTO n_alarms VALUES (NEW.matricula, 0);
-        RETURN NEW;
-END;$$LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION incrementAlarm()RETURNS TRIGGER AS
     $$DECLARE
@@ -319,10 +304,41 @@ CREATE OR REPLACE FUNCTION incrementAlarm()RETURNS TRIGGER AS
         RETURN NEW;
 END;$$LANGUAGE plpgsql;
 
+CREATE TRIGGER alarmAdded AFTER INSERT ON alarmes
+        FOR EACH ROW
+        EXECUTE FUNCTION incrementAlarm();
+
+--------------- AUXILIARIES ---------------
+
+CREATE OR REPLACE FUNCTION createAlarmCounter() RETURNS TRIGGER AS
+    $$BEGIN
+        SET TRANSACTION ISOLATION LEVEL read committed;
+
+        INSERT INTO n_alarms VALUES (NEW.matricula, 0);
+        RETURN NEW;
+END;$$LANGUAGE plpgsql;
+
 CREATE TRIGGER veichuleCreated AFTER INSERT ON veiculo
         FOR EACH ROW
         EXECUTE FUNCTION createAlarmCounter();
 
-CREATE TRIGGER alarmAdded AFTER INSERT ON alarmes
-        FOR EACH ROW
-        EXECUTE FUNCTION incrementAlarm();
+CREATE OR REPLACE FUNCTION checkCords(lat numeric, long numeric) RETURNS INT AS
+    $$DECLARE
+        target int = null;
+    BEGIN
+        SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+
+        SELECT id INTO target
+        FROM coordenadas
+        WHERE longitude = long AND latitude = lat
+        LIMIT 1;
+
+    if (target is null) then
+        INSERT INTO coordenadas(id, latitude, longitude)
+        VALUES (DEFAULT, lat, long)
+        RETURNING id INTO target;
+    end if;
+
+    RETURN target;
+
+END;$$LANGUAGE plpgsql;
