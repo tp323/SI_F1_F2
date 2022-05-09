@@ -50,6 +50,7 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
         ELSE
             RAISE WARNING 'Deleting Ernesto NOT OK';
         END IF;
+        ROLLBACK;
     END;
     $$;
 
@@ -86,10 +87,11 @@ CREATE OR REPLACE PROCEDURE alarm_number_testing() LANGUAGE plpgsql
 
         num = alarm_number('1', NULL);
         RAISE WARNING 'Year NULL test NOT OK';
+        ROLLBACK;
         EXCEPTION
             WHEN RAISE_EXCEPTION THEN
                 RAISE NOTICE 'Year NULL test OK';
-                RETURN;
+                ROLLBACK;
     END;
     $$;
 
@@ -113,7 +115,6 @@ CREATE OR REPLACE PROCEDURE processRequests_testing() LANGUAGE plpgsql
         WHERE equipamento IS NULL AND marca_temporal = '2029-05-02 03:04:05' AND latitude IS NULL AND longitude IS NULL;
 
         IF (request IS NOT NULL) THEN
-            DELETE FROM invalid_requests WHERE id = request;
             RAISE NOTICE 'Request invalidation OK';
         ELSE
             RAISE WARNING 'Request invalidation NOT OK';
@@ -128,11 +129,11 @@ CREATE OR REPLACE PROCEDURE processRequests_testing() LANGUAGE plpgsql
         WHERE equipamento = 2 AND marca_temporal = '2024-12-06 03:11:43' AND coordenadas = coordinates;
 
         IF (request IS NOT NULL) THEN
-            DELETE FROM coordenadas WHERE id = coordinates;
             RAISE NOTICE 'Request validation OK';
         ELSE
             RAISE WARNING 'Request validation NOT OK';
         END IF;
+        ROLLBACK;
     END;
     $$;
 
@@ -199,7 +200,6 @@ CREATE OR REPLACE PROCEDURE createVehicle_testing() LANGUAGE plpgsql
         WHERE matricula = 'FF40AS';
 
         IF(registration IS NOT NULL) THEN
-            DELETE FROM veiculo WHERE matricula = 'FF40AS';
             RAISE NOTICE 'Creating a valid vehicle only OK';
         ELSE
             RAISE WARNING 'Creating a valid vehicle only NOT OK';
@@ -216,8 +216,6 @@ CREATE OR REPLACE PROCEDURE createVehicle_testing() LANGUAGE plpgsql
         WHERE veiculo = 'FF44DF';
 
         IF(registration IS NOT NULL AND green_zone IS NOT NULL) THEN
-            DELETE FROM coordenadas WHERE latitude = 12 AND longitude = 35;
-            DELETE FROM veiculo WHERE matricula = 'FF44DF';
             RAISE NOTICE 'Creating a valid vehicle alongside a green zone OK';
         ELSE
             RAISE WARNING 'Creating a valid vehicle alongside a green zone NOT OK';
@@ -225,9 +223,11 @@ CREATE OR REPLACE PROCEDURE createVehicle_testing() LANGUAGE plpgsql
 
         CALL createVehicle('FF17FF', NULL, NULL, NULL);
         RAISE WARNING 'Adding a vehicle with an already existing registry NOT OK';
+        ROLLBACK;
         EXCEPTION
             WHEN RAISE_EXCEPTION THEN
                 RAISE NOTICE 'Adding a vehicle with an already existing registry OK';
+                ROLLBACK;
     END;
     $$;
 
@@ -255,8 +255,7 @@ CREATE OR REPLACE PROCEDURE todos_alarmes_testing() LANGUAGE plpgsql
         ELSE
             RAISE WARNING 'Added values that affected the view NOT OK';
         END IF;
-
-        DELETE FROM equipamento_eletronico WHERE id = 135464;
+        ROLLBACK;
     END;
     $$;
 
@@ -306,13 +305,11 @@ CREATE OR REPLACE PROCEDURE insert_view_alarme_testing() LANGUAGE plpgsql
         WHERE bip = bip_equip;
 
         IF(vehicle = 'HF45KS' AND equipment IS NOT NULL AND driver = 'Joao Sapato' AND bip_equip IS NOT NULL AND coordinates IS NOT NULL AND alarm IS NOT NULL) THEN
-            DELETE FROM equipamento_eletronico WHERE id = equipment;
-            DELETE FROM condutor WHERE nome = 'Joao Sapato';
-            DELETE FROM coordenadas WHERE id = coordinates;
             RAISE NOTICE 'Added the values through the view OK';
         ELSE
             RAISE WARNING 'Added the values through the view NOT OK';
         END IF;
+        ROLLBACK;
     END;
     $$;
 
@@ -338,7 +335,6 @@ CREATE OR REPLACE PROCEDURE deleteInvalids_testing() LANGUAGE plpgsql
             RAISE NOTICE 'Deleting invalid request older than 15 days OK';
         ELSE
             RAISE WARNING 'Deleting invalid request older than 15 days NOT OK';
-            DELETE FROM invalid_requests WHERE equipamento = 43 AND marca_temporal = '1243-12-21 03:45:14' AND latitude = 43 AND longitude = 56;
         END IF;
 
         INSERT INTO invalid_requests VALUES(DEFAULT, 43, time, 43, 56);
@@ -349,11 +345,11 @@ CREATE OR REPLACE PROCEDURE deleteInvalids_testing() LANGUAGE plpgsql
         WHERE equipamento = 43 AND marca_temporal = time AND latitude = 43 AND longitude = 56;
 
         IF(invalid_request IS NOT NULL) THEN
-            DELETE FROM invalid_requests WHERE equipamento = 43 AND marca_temporal = time AND latitude = 43 AND longitude = 56;
             RAISE NOTICE 'Not deleting invalid request older than 15 days OK';
         ELSE
             RAISE WARNING 'Not deleting invalid request older than 15 days NOT OK';
         END IF;
+        ROLLBACK;
     END;
     $$;
 
@@ -384,6 +380,7 @@ CREATE OR REPLACE PROCEDURE delete_clientes_testing() LANGUAGE plpgsql
         ELSE
             RAISE WARNING 'Deleting clients NOT OK';
         END IF;
+        ROLLBACK;
     END;
     $$;
 
@@ -422,9 +419,7 @@ CREATE OR REPLACE PROCEDURE alarmCounter_testing() LANGUAGE plpgsql
         ELSE
             RAISE WARNING 'Incrementing alarm number on vehicle NOT OK';
         END IF;
-
-        DELETE FROM veiculo WHERE matricula = 'AS45FR';
-        DELETE FROM equipamento_eletronico WHERE id = 234543;
+        ROLLBACK;
     END;
     $$;
 
