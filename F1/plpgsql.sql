@@ -149,7 +149,7 @@ CREATE OR REPLACE FUNCTION checkAlarm() RETURNS TRIGGER AS
             INNER JOIN equipamento_eletronico ee on ee.id = v2.equipamento
             WHERE ee.id = NEW.equipamento;
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        --SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
         SELECT estado INTO status
         FROM equipamento_eletronico
@@ -298,7 +298,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION createAlarmCounter() RETURNS TRIGGER AS
     $$BEGIN
-        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+        --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
         INSERT INTO n_alarms VALUES (NEW.matricula, 0);
         RETURN NEW;
@@ -308,7 +308,7 @@ CREATE OR REPLACE FUNCTION incrementAlarm()RETURNS TRIGGER AS
     $$DECLARE
         target varchar(6);
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+        --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
         SELECT matricula INTO target
         FROM equipamento_eletronico

@@ -7,8 +7,9 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
     DECLARE
         client INT;
         part_client INT;
+        active BOOLEAN;
     BEGIN
-        CALL insert_cliente_particular(1334545634, 'Ernesto Ferrero-Roche', 'Albal', '926021405', NULL, 3954785467);
+        CALL insert_cliente_particular(1334545634, CAST ('Ernesto Ferrero-Roche' AS VARCHAR), CAST ('Albal' AS VARCHAR), '926021405', NULL, 395478546);
 
         SELECT nif INTO client
         FROM cliente
@@ -22,32 +23,29 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
             RETURN;
         END IF;
 
-        CALL update_cliente_particular(1334545634, 'Ernesto Ferrero-Roche', 'Albal', '926021405', 111222333);
+        CALL update_cliente_particular(1334545634, 'Ernesto Ferrero-Roche', 'Albal', '926021405', 12122233);
 
         SELECT ref_cliente INTO client
         FROM cliente
         WHERE nif = 1334545634;
 
-        IF(client = 111222333) THEN
+        IF(client = 12122233) THEN
             RAISE NOTICE 'Updating Ernesto OK';
         ELSE
             RAISE WARNING 'Updating Ernesto NOT OK';
-            DELETE FROM cliente WHERE nif = 1334545634;
-            RETURN;
         END IF;
 
-        CALL remove_cliente_particular(1334545634, 3954785467);
+        CALL remove_cliente_particular(1334545634, 395478546);
 
-        SELECT nif INTO client
+        SELECT ativo INTO active
         FROM cliente
         WHERE nif = 1334545634;
 
         SELECT cc INTO part_client
         FROM cliente_particular
-        WHERE cc = 3954785467;
+        WHERE cc = 395478546;
 
-        IF(client IS NULL AND part_client IS NULL) THEN
-            DELETE FROM cliente WHERE nif = 1334545634;
+        IF(active IS FALSE AND part_client IS NULL) THEN
             RAISE NOTICE 'Deleting Ernesto OK';
         ELSE
             RAISE WARNING 'Deleting Ernesto NOT OK';
@@ -266,20 +264,20 @@ CALL todos_alarmes_testing();
 
 --------------- PONTO J ---------------
 
-CREATE OR REPLACE PROCEDURE insert_view_alarmes() LANGUAGE plpgsql
+CREATE OR REPLACE PROCEDURE insert_view_alarme_testing() LANGUAGE plpgsql
     AS
     $$
     DECLARE
         vehicle VARCHAR(6);
         equipment INT;
-        driver INT;
+        driver VARCHAR(20);
         bip_equip INT;
         coordinates INT;
         alarm INT;
     BEGIN
         INSERT INTO todos_alarmes VALUES('HF45KS', 'Joao Sapato', 45, 32, '2022-11-03 04:43:12');
 
-        SELECT id INTO vehicle
+        SELECT matricula INTO vehicle
         FROM equipamento_eletronico
         INNER JOIN veiculo v ON equipamento_eletronico.id = v.equipamento
         WHERE matricula = 'HF45KS';
@@ -308,6 +306,9 @@ CREATE OR REPLACE PROCEDURE insert_view_alarmes() LANGUAGE plpgsql
         WHERE bip = bip_equip;
 
         IF(vehicle = 'HF45KS' AND equipment IS NOT NULL AND driver = 'Joao Sapato' AND bip_equip IS NOT NULL AND coordinates IS NOT NULL AND alarm IS NOT NULL) THEN
+            DELETE FROM equipamento_eletronico WHERE id = equipment;
+            DELETE FROM condutor WHERE nome = 'Joao Sapato';
+            DELETE FROM coordenadas WHERE id = coordinates;
             RAISE NOTICE 'Added the values through the view OK';
         ELSE
             RAISE WARNING 'Added the values through the view NOT OK';
@@ -315,7 +316,7 @@ CREATE OR REPLACE PROCEDURE insert_view_alarmes() LANGUAGE plpgsql
     END;
     $$;
 
-CALL insert_view_alarmes();
+CALL insert_view_alarme_testing();
 
 --------------- PONTO K ---------------
 
@@ -367,18 +368,18 @@ CREATE OR REPLACE PROCEDURE delete_clientes_testing() LANGUAGE plpgsql
         client INT;
         active BOOLEAN;
     BEGIN
-        CALL insert_cliente_particular(3453213345, 'Joao Gabarola', 'Lisboa', 962345321, NULL, 3456421345);
-        DELETE FROM cliente WHERE nif = 3453213345;
+        CALL insert_cliente_particular(345321334, 'Joao Gabarola', 'Lisboa', '962345321', NULL, 345641345);
+        DELETE FROM cliente WHERE nif = 345321334;
 
         SELECT cc INTO client
         FROM cliente_particular
-        WHERE cc = 3456421345;
+        WHERE cc = 345641345;
 
         SELECT ativo INTO active
         FROM cliente
-        WHERE nif = 3453213345;
+        WHERE nif = 345321334;
 
-        IF(client IS NULL AND active = FALSE) THEN
+        IF(client IS NOT NULL AND active = FALSE) THEN
             RAISE NOTICE 'Deleting clients OK';
         ELSE
             RAISE WARNING 'Deleting clients NOT OK';
