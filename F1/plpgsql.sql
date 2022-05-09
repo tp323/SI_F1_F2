@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION alarm_number(registration varchar(6), year numeric) R
         number int := null;
         target varchar(6) := '*';
     BEGIN
-        --SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
         if (year is null)then
             RAISE EXCEPTION 'Year cannot be null!';
@@ -49,7 +49,7 @@ AS
         equip int := null;
         cords int := null;
     BEGIN
-        --SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
     SELECT id INTO equip
     FROM bip_equipamento_eletronico
@@ -96,7 +96,7 @@ AS
 		latitude numeric(3,1);
 		longitude numeric(3,1);
     BEGIN
-        --SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+        SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
         OPEN ITERATOR;
         FETCH NEXT FROM ITERATOR INTO id, equipamento, marca_temporal, latitude, longitude;
@@ -119,7 +119,7 @@ CREATE OR REPLACE FUNCTION zonaVerdeValida(beepCoordenates int, gzCoordenates in
         beepLat numeric(3,1);
         beepLong numeric(3,1);
     BEGIN
-        --SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+        SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
         SELECT latitude, longitude INTO beepLat, beepLong
         FROM coordenadas
@@ -149,7 +149,7 @@ CREATE OR REPLACE FUNCTION checkAlarm() RETURNS TRIGGER AS
             INNER JOIN equipamento_eletronico ee on ee.id = v2.equipamento
             WHERE ee.id = NEW.equipamento;
     BEGIN
-        --SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
         SELECT estado INTO status
         FROM equipamento_eletronico
@@ -189,7 +189,7 @@ CREATE OR REPLACE FUNCTION checkAlarm() RETURNS TRIGGER AS
 
 end;$$LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER newBip AFTER INSERT ON bip_equipamento_eletronico
+CREATE TRIGGER newBip AFTER INSERT ON bip_equipamento_eletronico
     FOR EACH ROW
     EXECUTE FUNCTION checkAlarm();
 
@@ -206,7 +206,7 @@ AS
         clientCheck int;
         cords int;
     BEGIN
-        --SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
         SELECT matricula INTO registrationCheck
         FROM veiculo
@@ -267,15 +267,14 @@ AS
 CREATE OR REPLACE PROCEDURE deleteInvalids()
     LANGUAGE plpgsql AS
     $$
-    DECLARE
-        currentDate date := current_date;
+    DECLARE currentDate date := current_date;
         targetID int;
         targetDate date;
         ITERATOR CURSOR FOR
             SELECT id, marca_temporal::date
             FROM invalid_requests;
     BEGIN
-        --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
         OPEN ITERATOR;
         FETCH NEXT FROM ITERATOR INTO targetID, targetDate;
@@ -298,7 +297,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION createAlarmCounter() RETURNS TRIGGER AS
     $$BEGIN
-        --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+        SET TRANSACTION ISOLATION LEVEL read committed;
 
         INSERT INTO n_alarms VALUES (NEW.matricula, 0);
         RETURN NEW;
@@ -308,7 +307,7 @@ CREATE OR REPLACE FUNCTION incrementAlarm()RETURNS TRIGGER AS
     $$DECLARE
         target varchar(6);
     BEGIN
-        --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+        SET TRANSACTION ISOLATION LEVEL repeatable read;
 
         SELECT matricula INTO target
         FROM equipamento_eletronico
@@ -320,10 +319,10 @@ CREATE OR REPLACE FUNCTION incrementAlarm()RETURNS TRIGGER AS
         RETURN NEW;
 END;$$LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER veichuleCreated AFTER INSERT ON veiculo
+CREATE TRIGGER veichuleCreated AFTER INSERT ON veiculo
         FOR EACH ROW
         EXECUTE FUNCTION createAlarmCounter();
 
-CREATE OR REPLACE TRIGGER alarmAdded AFTER INSERT ON alarmes
+CREATE TRIGGER alarmAdded AFTER INSERT ON alarmes
         FOR EACH ROW
         EXECUTE FUNCTION incrementAlarm();
