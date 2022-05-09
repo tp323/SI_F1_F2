@@ -20,6 +20,7 @@ DROP FUNCTION IF EXISTS incrementAlarm;
 ---------------FUNCTIONS----------------
 DROP FUNCTION IF EXISTS alarm_number;
 DROP FUNCTION IF EXISTS random_number;
+DROP FUNCTION IF EXISTS zonaverdevalida(INT, INT);
 DROP FUNCTION IF EXISTS zonaverdevalida;
 
 ---------------PROCEDURES---------------
@@ -53,3 +54,15 @@ ALTER table if EXISTS Cliente DROP constraint if EXISTS ref_cliente_part;
 DROP TABLE IF EXISTS Cliente_Particular;
 DROP TABLE IF EXISTS Cliente;
 
+-----------------TESTS------------------
+
+DROP PROCEDURE IF EXISTS alarm_number_testing;
+DROP PROCEDURE IF EXISTS alarmcounter_testing;
+DROP PROCEDURE IF EXISTS client_testing;
+DROP PROCEDURE IF EXISTS createvehicle_testing;
+DROP PROCEDURE IF EXISTS delete_clientes_testing;
+DROP PROCEDURE IF EXISTS deleteinvalids_testing;
+DROP PROCEDURE IF EXISTS insert_view_alarme_testing;
+DROP PROCEDURE IF EXISTS newbip_testing;
+DROP PROCEDURE IF EXISTS processrequests_testing;
+DROP PROCEDURE IF EXISTS todos_alarmes_testing;

@@ -151,7 +151,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	
 	
 	----------------------------TRIGGERS----------------------------
-	CREATE OR REPLACE TRIGGER max3_veiculo_particular
+	CREATE TRIGGER max3_veiculo_particular
 	BEFORE INSERT ON veiculo
 	FOR EACH ROW
 	EXECUTE FUNCTION check_veiculos_particular();
