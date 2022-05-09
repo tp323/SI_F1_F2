@@ -181,10 +181,9 @@ CREATE OR REPLACE FUNCTION checkAlarm() RETURNS TRIGGER AS
 
 end;$$LANGUAGE plpgsql;
 
-CREATE TRIGGER newBip AFTER INSERT ON bip_equipamento_eletronico
+CREATE OR REPLACE TRIGGER newBip AFTER INSERT ON bip_equipamento_eletronico
     FOR EACH ROW
     EXECUTE FUNCTION checkAlarm();
-END;
 
 --------------- PONTO H ---------------
 
@@ -278,7 +277,6 @@ CREATE OR REPLACE PROCEDURE deleteInvalids()
             FETCH NEXT FROM ITERATOR INTO targetID, targetDate;
         end loop;
         CLOSE ITERATOR;
-
     END;
 $$;
 
@@ -307,12 +305,10 @@ CREATE OR REPLACE FUNCTION incrementAlarm()RETURNS TRIGGER AS
         RETURN NEW;
 END;$$LANGUAGE plpgsql;
 
-CREATE TRIGGER veichuleCreated AFTER INSERT ON veiculo
+CREATE OR REPLACE TRIGGER veichuleCreated AFTER INSERT ON veiculo
         FOR EACH ROW
         EXECUTE FUNCTION createAlarmCounter();
-END;
 
-CREATE TRIGGER alarmAdded AFTER INSERT ON alarmes
+CREATE OR REPLACE TRIGGER alarmAdded AFTER INSERT ON alarmes
         FOR EACH ROW
         EXECUTE FUNCTION incrementAlarm();
-END;

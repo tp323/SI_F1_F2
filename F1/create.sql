@@ -57,7 +57,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 	create table IF NOT EXISTS Condutor(
 		CC int primary key, 
 		nome varchar(20) not null,
-		contacto varchar(10) not null
+		contacto varchar(10)
 	);
 	--Veiculo(matricula, condutor, equipamento, cliente)
 	create table IF NOT EXISTS Veiculo(
@@ -72,6 +72,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
      	FOREIGN KEY (cliente)
      		REFERENCES Cliente (NIF) ON DELETE CASCADE ON UPDATE cascade
 	);
+	
 	--Zona Verde(veiculo, coordenadas, raio)
 	create table IF NOT EXISTS Zona_Verde(
 		id serial primary key,
@@ -101,9 +102,9 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 		longitude numeric(3,1)
 	);
 	
-	--Invalid Requests()
+	--Invalid Requests(id, equipamento, marca temp, coordenadas)
 	create table IF NOT EXISTS Invalid_Requests(
-		id serial primary key, --id é relativo ao numero do bit para o atual equi eletronico
+		id serial primary key,
 		equipamento int,
 		marca_temporal timestamp,
 		latitude numeric(3,1),
@@ -118,5 +119,41 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
         FOREIGN KEY (veiculo)
             REFERENCES Veiculo (matricula) ON DELETE CASCADE ON UPDATE cascade
     );
+	
+	------------------------------VIEWS------------------------------
+	CREATE OR REPLACE VIEW todos_alarmes AS
+		SELECT matricula, nome, latitude, longitude, marca_temporal
+		FROM alarmes al 
+		inner join bip_equipamento_eletronico bip on al.bip=bip.id 
+		inner join equipamento_eletronico eq on equipamento = eq.id 
+		inner join veiculo v on eq.id = v.equipamento
+		inner join condutor cond on v.condutor=cond.cc
+		inner join coordenadas coord on coordenadas = coord.id;
+
+	----------------------------FUNCTIONS---------------------------
+	CREATE OR REPLACE FUNCTION check_veiculos_particular()
+	RETURNS trigger AS $$
+		DECLARE
+			cnt integer := 0;
+			is_particular integer := 0;
+		BEGIN
+			select count(*) into is_particular from cliente_particular where cliente = new.cliente;
+			IF is_particular != 0 THEN
+				select count(matricula) into cnt from veiculo where cliente = new.cliente;
+				IF cnt >= 3 then
+					raise exception 'Cliente Particular ja alcançou numero maximo de veiculos permitidos 3';
+				END IF;
+			END IF;
+		RETURN new;
+		END;
+	$$LANGUAGE plpgsql;
+	
+	
+	----------------------------TRIGGERS----------------------------
+	CREATE OR REPLACE TRIGGER max3_veiculo_particular
+	BEFORE INSERT ON veiculo
+	FOR EACH ROW
+	EXECUTE FUNCTION check_veiculos_particular();
+
 	
 commit transaction;
