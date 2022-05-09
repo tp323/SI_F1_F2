@@ -1,3 +1,0 @@
-@echo off
-@echo Setup DB with values
-for %%G in (*)

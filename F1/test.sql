@@ -96,19 +96,26 @@ EXECUTE FUNCTION delete_clientes();
 CREATE OR REPLACE FUNCTION insert_view_alarme()
 RETURNS trigger AS $$
 	DECLARE
-	equip int:= null;
-	cond int:= random_number(9);
+	eq_count int:= null;
 	eq_id int:= null;
 	coord_id int:= null;
 	bip_id int:= null;
-	cliente_hardcoded int:= 121222333;
     BEGIN
 	    --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+		select COUNT(*) into eq_count from veiculo v 
+		inner join condutor cond on v.condutor = cond.cc
+		where matricula = new.matricula and nome = new.nome;
+		
+		IF eq_count = 0 THEN
+			RAISE EXCEPTION 'matricula ou nome incorretos, ou condutor não conduz o veiculo declarado';
+		END IF;
+		
+		select distinct on (v.equipamento) v.equipamento into eq_id from veiculo v 
+		inner join condutor cond on v.condutor = cond.cc
+		where matricula = new.matricula and nome = new.nome;
+		
+		SELECT checkCords(new.latitude, new.longitude) into coord_id;
 
-		INSERT INTO Equipamento_Eletronico(estado) values('Inactivo') returning id into eq_id;
-		INSERT INTO Condutor(CC, nome, contacto) values(cond, new.nome, null);
-       	INSERT INTO veiculo(matricula, condutor, equipamento, cliente) values(new.matricula, cond, eq_id, cliente_hardcoded);
-		INSERT INTO Coordenadas(latitude, longitude) VALUES (new.latitude, new.longitude) returning id into coord_id;
 		INSERT into Bip_Equipamento_Eletronico(equipamento, marca_temporal, coordenadas) VALUES (eq_id, new.marca_temporal,coord_id) returning id into bip_id;
 		INSERT INTO alarmes(bip) VALUES (bip_id);
 		RETURN new;
@@ -120,28 +127,9 @@ CREATE OR REPLACE TRIGGER insert_view_alarmes
 	FOR EACH ROW
 	EXECUTE FUNCTION insert_view_alarme();
 
+
 --test insert_view_alarme
---insert into todos_alarmes(matricula, nome, latitude, longitude, marca_temporal) values ('f222ff', 'ef', 2.2, 3.4, '2016-01-10 13:34:14');
-
-CREATE OR REPLACE FUNCTION random_number(length integer)
-RETURNS int AS $$
-	DECLARE
-		numbers text[] := '{0,1,2,3,4,5,6,7,8,9}';
-		numb text := '';
-		n integer := 0;
-		cnt integer=0;
-	BEGIN
-		IF length < 0 then
-			raise exception 'Given length cannot be less than 0';
-		END IF;
-		for n in 1..length loop
-			numb := numb || numbers[1+random()*(array_length(numbers, 1)-1)];
-			cnt = cnt +1;
-		END loop;
-	RETURN numb;
-	END;
-$$LANGUAGE plpgsql;
-
+--insert into todos_alarmes(matricula, nome, latitude, longitude, marca_temporal) values ('FF18FF', 'Carlos Sainz', 0.1, 0.2, '2016-01-10 13:34:14');
 
 --test restriction
 --INSERT INTO Veiculo(matricula, condutor, equipamento, cliente) VALUES ('F26G5F',111111113,1,111222333);
