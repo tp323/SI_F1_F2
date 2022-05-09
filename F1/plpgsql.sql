@@ -6,6 +6,7 @@ CREATE OR REPLACE FUNCTION alarm_number(registration varchar(6), year numeric) R
         number int := null;
         target varchar(6) := '*';
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
         if (year is null)then
             RAISE EXCEPTION 'Year cannot be null!';
@@ -48,6 +49,7 @@ AS
         equip int := null;
         cords int := null;
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
     SELECT id INTO equip
     FROM bip_equipamento_eletronico
@@ -94,6 +96,8 @@ AS
 		latitude numeric(3,1);
 		longitude numeric(3,1);
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+
         OPEN ITERATOR;
         FETCH NEXT FROM ITERATOR INTO id, equipamento, marca_temporal, latitude, longitude;
 
@@ -115,6 +119,8 @@ CREATE OR REPLACE FUNCTION zonaVerdeValida(beepCoordenates int, gzCoordenates in
         beepLat numeric(3,1);
         beepLong numeric(3,1);
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+
         SELECT latitude, longitude INTO beepLat, beepLong
         FROM coordenadas
         WHERE id = beepCoordenates;
@@ -143,6 +149,8 @@ CREATE OR REPLACE FUNCTION checkAlarm() RETURNS TRIGGER AS
             INNER JOIN equipamento_eletronico ee on ee.id = v2.equipamento
             WHERE ee.id = NEW.equipamento;
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
         SELECT estado INTO status
         FROM equipamento_eletronico
         WHERE equipamento_eletronico.id = NEW.equipamento;
@@ -198,6 +206,8 @@ AS
         clientCheck int;
         cords int;
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
         SELECT matricula INTO registrationCheck
         FROM veiculo
         WHERE matricula = newRegistration;
@@ -265,6 +275,8 @@ CREATE OR REPLACE PROCEDURE deleteInvalids()
             SELECT id, marca_temporal::date
             FROM invalid_requests;
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
         OPEN ITERATOR;
         FETCH NEXT FROM ITERATOR INTO targetID, targetDate;
 
@@ -286,6 +298,8 @@ $$;
 
 CREATE OR REPLACE FUNCTION createAlarmCounter() RETURNS TRIGGER AS
     $$BEGIN
+        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
         INSERT INTO n_alarms VALUES (NEW.matricula, 0);
         RETURN NEW;
 END;$$LANGUAGE plpgsql;
@@ -294,6 +308,7 @@ CREATE OR REPLACE FUNCTION incrementAlarm()RETURNS TRIGGER AS
     $$DECLARE
         target varchar(6);
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
         SELECT matricula INTO target
         FROM equipamento_eletronico

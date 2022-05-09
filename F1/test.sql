@@ -9,7 +9,9 @@ CREATE OR REPLACE PROCEDURE insert_cliente_particular(
 	IN cc int)
 LANGUAGE 'plpgsql'
 AS $$
-    BEGIN    
+    BEGIN
+        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
         INSERT INTO cliente VALUES (nif,nome,morada,telefone,ref_cliente);
 		if(nif not in (SELECT cliente.nif FROM cliente)) then
         	RAISE NOTICE 'Cliente nao inserido';        
@@ -33,6 +35,8 @@ CREATE OR REPLACE PROCEDURE update_cliente_particular(
 LANGUAGE plpgsql AS
 $$
     begin
+        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
 		--check if nif is valid
 		--not sure if this exception should exist
 		IF (nif_to_update NOT IN (SELECT nif FROM cliente)) then
@@ -55,6 +59,8 @@ CREATE OR REPLACE PROCEDURE remove_cliente_particular(
 LANGUAGE 'plpgsql'
 AS $$
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
 		DELETE FROM Cliente WHERE nif = nif_to_delete;
 		UPDATE Cliente set ref_cliente = null WHERE ref_cliente = cc_to_delete;
         DELETE FROM Cliente_Particular WHERE cc = cc_to_delete;
@@ -71,6 +77,8 @@ RETURNS trigger AS $$
 	DECLARE
 	nif_to_delete int:= old.nif;
     BEGIN
+	    SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
        	UPDATE cliente SET ativo = FALSE WHERE nif = nif_to_delete;
 		return new;
 	END;
@@ -95,6 +103,8 @@ RETURNS trigger AS $$
 	bip_id int:= null;
 	cliente_hardcoded int:= 121222333;
     BEGIN
+	    SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
 		INSERT INTO Equipamento_Eletronico(estado) values('Inactivo') returning id into eq_id;
 		INSERT INTO Condutor(CC, nome, contacto) values(cond, new.nome, null);
        	INSERT INTO veiculo(matricula, condutor, equipamento, cliente) values(new.matricula, cond, eq_id, cliente_hardcoded);

@@ -22,6 +22,8 @@ RETURNS trigger AS $$
 	bip_id int:= null;
 	cliente_hardcoded int:= 111222333;
     BEGIN
+	    SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
 		INSERT INTO Equipamento_Eletronico(estado) values('Inactivo') returning id into eq_id;
 		insert into Condutor(CC, nome, contacto) values(cond, new.nome, random_number(9));
        	insert into veiculo(matricula, condutor, equipamento, cliente) values(new.matricula, cond, eq_id, cliente_hardcoded);
