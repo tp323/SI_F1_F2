@@ -11,7 +11,7 @@ LANGUAGE 'plpgsql'
 AS $$
     BEGIN    
         INSERT INTO cliente VALUES (nif,nome,morada,telefone,ref_cliente);
-		if(nif not in (SELECT nif FROM cliente)) then
+		if(nif not in (SELECT cliente.nif FROM cliente)) then
         	RAISE NOTICE 'Cliente nao inserido';        
         END IF;
         INSERT INTO cliente_particular VALUES (cc,nif);
@@ -64,8 +64,8 @@ $$;
 
 --test delete
 --call remove_cliente_particular(123456700, 123456700);
-delete trigger delete_cliente;
-drop function delete_clientes();
+--drop trigger delete_cliente;
+--drop function delete_clientes();
 
 
 
@@ -82,13 +82,13 @@ $$LANGUAGE plpgsql;
 
 
 
-CREATE OR REPLACE TRIGGER delete_cliente
+CREATE TRIGGER delete_cliente
 BEFORE DELETE ON cliente
 FOR EACH ROW
 EXECUTE FUNCTION delete_clientes();
 
 
-DELETE FROM cliente;
+--DELETE FROM cliente;
 
 --não funciona mas a linha de baixo faz o pretendido
 --UPDATE clientes SET ativo = FALSE WHERE nif = 121222333;

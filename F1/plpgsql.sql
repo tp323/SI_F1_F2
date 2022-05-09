@@ -40,7 +40,7 @@ CREATE OR REPLACE FUNCTION alarm_number(registration varchar(6), year numeric) R
 
 --------------- PONTO F ---------------
 
-CREATE OR REPLACE PROCEDURE validateRequest(requestID int, equipamentoID int, requestMarca_temporal time, requestLatitude numeric, requestLongitude numeric)
+CREATE OR REPLACE PROCEDURE validateRequest(requestID int, equipamentoID int, requestMarca_temporal timestamp, requestLatitude numeric, requestLongitude numeric)
     LANGUAGE plpgsql
 AS
     $$
@@ -300,7 +300,8 @@ CREATE OR REPLACE FUNCTION incrementAlarm()RETURNS TRIGGER AS
         SELECT matricula INTO target
         FROM equipamento_eletronico
         INNER JOIN veiculo v on equipamento_eletronico.id = v.equipamento
-        WHERE id = NEW.ID;
+        INNER JOIN bip_equipamento_eletronico bee ON equipamento_eletronico.id = bee.equipamento
+        WHERE bee.id = NEW.bip;
 
         UPDATE n_alarms set alarms = alarms + 1 WHERE veiculo = target;
         RETURN NEW;
