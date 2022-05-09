@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION alarm_number(registration varchar(6), year numeric) R
         number int := null;
         target varchar(6) := '*';
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+        --SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
         if (year is null)then
             RAISE EXCEPTION 'Year cannot be null!';
@@ -49,7 +49,7 @@ AS
         equip int := null;
         cords int := null;
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        --SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
     SELECT id INTO equip
     FROM bip_equipamento_eletronico
@@ -96,7 +96,7 @@ AS
 		latitude numeric(3,1);
 		longitude numeric(3,1);
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+        --SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
         OPEN ITERATOR;
         FETCH NEXT FROM ITERATOR INTO id, equipamento, marca_temporal, latitude, longitude;
@@ -119,7 +119,7 @@ CREATE OR REPLACE FUNCTION zonaVerdeValida(beepCoordenates int, gzCoordenates in
         beepLat numeric(3,1);
         beepLong numeric(3,1);
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+        --SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
         SELECT latitude, longitude INTO beepLat, beepLong
         FROM coordenadas
@@ -206,7 +206,7 @@ AS
         clientCheck int;
         cords int;
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        --SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
         SELECT matricula INTO registrationCheck
         FROM veiculo
@@ -275,7 +275,7 @@ CREATE OR REPLACE PROCEDURE deleteInvalids()
             SELECT id, marca_temporal::date
             FROM invalid_requests;
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+        --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
         OPEN ITERATOR;
         FETCH NEXT FROM ITERATOR INTO targetID, targetDate;

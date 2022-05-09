@@ -121,7 +121,7 @@ CREATE OR REPLACE TRIGGER insert_view_alarmes
 	EXECUTE FUNCTION insert_view_alarme();
 
 --test insert_view_alarme
---insert into todos_alarmes(matricula, nome, latitude, longitude, marca_temporal) values ('ff22ff', 'elu', 2.0, 3.4, '2016-01-10 13:34:14');
+--insert into todos_alarmes(matricula, nome, latitude, longitude, marca_temporal) values ('f222ff', 'ef', 2.2, 3.4, '2016-01-10 13:34:14');
 
 CREATE OR REPLACE FUNCTION random_number(length integer)
 RETURNS int AS $$

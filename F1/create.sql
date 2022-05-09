@@ -16,6 +16,7 @@ BEGIN transaction;
      		REFERENCES Cliente (NIF) ON DELETE CASCADE ON UPDATE cascade
 	);
 
+
 ALTER table if EXISTS Cliente DROP constraint if EXISTS ref_cliente_part;
 
 ALTER table if EXISTS Cliente
