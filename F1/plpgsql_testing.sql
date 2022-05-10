@@ -374,8 +374,8 @@ CREATE OR REPLACE PROCEDURE alarmCounter_testing() LANGUAGE plpgsql
         INSERT INTO veiculo VALUES('AS45FR', 111111116, 234543, 111222333);
 
         SELECT alarms INTO alarm_count
-        FROM n_alarms
-        WHERE veiculo = 'AS45FR';
+        FROM veiculo
+        WHERE matricula = 'AS45FR';
 
         IF alarm_count = 0 THEN
             RAISE NOTICE 'Adding alarm to a newly added vehicle OK';
@@ -386,8 +386,8 @@ CREATE OR REPLACE PROCEDURE alarmCounter_testing() LANGUAGE plpgsql
         INSERT INTO alarmes VALUES(23445, 454643);
 
         SELECT alarms INTO alarm_count
-        FROM n_alarms
-        WHERE veiculo = 'AS45FR';
+        FROM veiculo
+        WHERE matricula = 'AS45FR';
 
         IF alarm_count >= 1 THEN
             RAISE NOTICE 'Incrementing alarm number on vehicle OK';

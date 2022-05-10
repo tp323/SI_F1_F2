@@ -49,6 +49,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 		equipamento int NOT NULL,
 		marca_temporal timestamp NOT NULL,
 		coordenadas int NOT NULL,
+		alarme boolean DEFAULT FALSE not null,
 		FOREIGN KEY (equipamento)
      		REFERENCES Equipamento_Eletronico (id) ON DELETE CASCADE ON UPDATE cascade,
      	FOREIGN KEY (coordenadas)
@@ -66,6 +67,7 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 		condutor int NOT NULL,
 		equipamento int NOT NULL,
 		cliente int NOT NULL,
+		alarms int not null default 0,
 		FOREIGN KEY (condutor)
      		REFERENCES Condutor (CC) ON DELETE CASCADE ON UPDATE cascade,
      	FOREIGN KEY (equipamento)
@@ -84,14 +86,6 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
      		REFERENCES Coordenadas (id) ON DELETE CASCADE ON UPDATE cascade,
      	FOREIGN KEY (veiculo)
      		REFERENCES Veiculo (matricula) ON DELETE CASCADE ON UPDATE cascade
-	);
-
-	--Alarmes(id, zona verde)
-	create table IF NOT EXISTS Alarmes(
-		id serial primary key,
-		bip int not null,
-     	FOREIGN KEY (bip)
-     		REFERENCES Bip_Equipamento_Eletronico (id) ON DELETE CASCADE ON UPDATE cascade
 	);
 	
 	--Requests(id, equipamento, marca temp, coordenadas)
@@ -112,20 +106,11 @@ ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Par
 		longitude numeric(3,1)
 	);
 	
-	--Alarm number per vehicle
-    create table IF NOT EXISTS N_Alarms(
-        veiculo varchar(6),
-        alarms int not null,
-        PRIMARY KEY (veiculo),
-        FOREIGN KEY (veiculo)
-            REFERENCES Veiculo (matricula) ON DELETE CASCADE ON UPDATE cascade
-    );
 	
 	------------------------------VIEWS------------------------------
 	CREATE OR REPLACE VIEW todos_alarmes AS
 		SELECT matricula, nome, latitude, longitude, marca_temporal
-		FROM alarmes al 
-		inner join bip_equipamento_eletronico bip on al.bip=bip.id 
+		FROM bip_equipamento_eletronico bip
 		inner join equipamento_eletronico eq on equipamento = eq.id 
 		inner join veiculo v on eq.id = v.equipamento
 		inner join condutor cond on v.condutor=cond.cc

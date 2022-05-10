@@ -28,8 +28,8 @@ INSERT INTO Coordenadas(latitude, longitude)
 VALUES (0.1, 0.2),(0, 0),(21.2, 23.4);
 
 	--Bip Equipamento Eletronico(id, equipamento, marca temp, coordenadas)
-INSERT into Bip_Equipamento_Eletronico(equipamento, marca_temporal, coordenadas)
-VALUES (1,'2015-01-10 00:51:14',1),(2,'2015-01-10 00:51:14',3);
+INSERT into Bip_Equipamento_Eletronico(equipamento, marca_temporal, coordenadas, alarme)
+VALUES (1,'2015-01-10 00:51:14',1,TRUE),(2,'2015-01-10 00:51:14',3,DEFAULT);
 
 	--Condutor(CC, nome, contacto)
 INSERT INTO Condutor(CC, nome, contacto)
@@ -44,6 +44,4 @@ VALUES ('FF17FF',111111113,1,111222333), ('FF18FF',111111114,2,111222333), ('RB1
 INSERT INTO Zona_Verde(veiculo, coordenadas, raio)
 VALUES ('FF17FF',2,3);
 
-INSERT INTO alarmes(bip)
-VALUES (1),(2),(2),(2);
-commit transaction;
+commit;

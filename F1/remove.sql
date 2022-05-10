@@ -7,7 +7,7 @@ DROP TRIGGER IF EXISTS delete_cliente ON cliente;
 DROP TRIGGER IF EXISTS insert_view_alarmes ON todos_alarmes;
 DROP TRIGGER IF EXISTS newBip ON bip_equipamento_eletronico;
 DROP TRIGGER IF EXISTS veichuleCreated ON veiculo;
-DROP TRIGGER IF EXISTS alarmAdded ON alarmes;
+DROP TRIGGER IF EXISTS alarmIncrement ON equipamento_eletronico;
 
 -----FUNCTIONS-RELATED-TO-TRIGGERS------
 DROP FUNCTION IF EXISTS check_veiculos_particular;

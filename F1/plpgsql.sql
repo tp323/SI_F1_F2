@@ -73,8 +73,7 @@ CREATE OR REPLACE FUNCTION alarm_number(registration varchar(6), year numeric) R
             if (target is null) then RETURN NULL; end if;
 
             SELECT COUNT(*) INTO number
-            FROM alarmes
-            INNER JOIN bip_equipamento_eletronico b on b.id = alarmes.bip
+            FROM bip_equipamento_eletronico b
             INNER JOIN veiculo v on b.equipamento = v.equipamento
             WHERE extract(YEAR FROM marca_temporal) = year AND matricula = target;
             RETURN number;
@@ -82,8 +81,7 @@ CREATE OR REPLACE FUNCTION alarm_number(registration varchar(6), year numeric) R
         end if;
 
         SELECT COUNT(*) INTO number
-        FROM alarmes
-        INNER JOIN bip_equipamento_eletronico bee on bee.id = alarmes.bip
+        FROM bip_equipamento_eletronico bee
         WHERE extract(YEAR FROM marca_temporal) = year;
 
         RETURN number;
@@ -213,8 +211,9 @@ CREATE OR REPLACE FUNCTION checkAlarm() RETURNS TRIGGER AS
             isValid := zonaVerdeValida(new.coordenadas, cords, raio);
 
             if (isValid = false) then
-                INSERT INTO alarmes VALUES (DEFAULT, NEW.id);
+				UPDATE bip_equipamento_eletronico SET alarme = TRUE WHERE bip = NEW.id;
                 UPDATE equipamento_eletronico SET estado = 'Activo' WHERE id = NEW.equipamento;
+				UPDATE equipamento_eletronico SET estado = 'Inactivo' WHERE id = NEW.equipamento;
                 CLOSE ITERATOR;
                 RETURN NEW;
             end if;
@@ -323,7 +322,8 @@ RETURNS trigger AS $$
 		SELECT checkCords(new.latitude, new.longitude) into coord_id;
 
 		INSERT into Bip_Equipamento_Eletronico(equipamento, marca_temporal, coordenadas) VALUES (eq_id, new.marca_temporal,coord_id) returning id into bip_id;
-		INSERT INTO alarmes(bip) VALUES (bip_id);
+		UPDATE bip_equipamento_eletronico SET alarme = TRUE WHERE id=bip_id;
+
 		RETURN new;
 	END;
 $$LANGUAGE plpgsql;
@@ -386,33 +386,35 @@ CREATE OR REPLACE FUNCTION incrementAlarm()RETURNS TRIGGER AS
     $$DECLARE
         target varchar(6);
     BEGIN
-
-        SELECT matricula INTO target
-        FROM equipamento_eletronico
-        INNER JOIN veiculo v on equipamento_eletronico.id = v.equipamento
-        INNER JOIN bip_equipamento_eletronico bee ON equipamento_eletronico.id = bee.equipamento
-        WHERE bee.id = NEW.bip;
-
-        UPDATE n_alarms set alarms = alarms + 1 WHERE veiculo = target;
+		IF old.estado = 'Inactivo' AND new.estado = 'Activo' THEN
+			SELECT matricula INTO target FROM veiculo WHERE equipamento = new.id;
+			UPDATE veiculo set alarms = alarms + 1 WHERE matricula = target;
+		END IF;
         RETURN NEW;
 END;$$LANGUAGE plpgsql;
 
-CREATE TRIGGER alarmAdded AFTER INSERT ON alarmes
+CREATE OR REPLACE FUNCTION incrementAlarmOnInsert()RETURNS TRIGGER AS
+    $$DECLARE
+        target varchar(6);
+    BEGIN
+		IF new.alarme = TRUE THEN
+			SELECT matricula INTO target FROM veiculo WHERE equipamento = new.equipamento;
+			UPDATE veiculo set alarms = alarms + 1 WHERE matricula = target;
+		END IF;
+        RETURN NEW;
+END;$$LANGUAGE plpgsql;
+
+CREATE TRIGGER alarmIncrement AFTER UPDATE ON equipamento_eletronico
         FOR EACH ROW
         EXECUTE FUNCTION incrementAlarm();
+		
+CREATE TRIGGER alarmIncrementIfpassedAsTrue AFTER INSERT ON bip_equipamento_eletronico
+        FOR EACH ROW
+        EXECUTE FUNCTION incrementAlarmOnInsert();
+
 
 --------------- AUXILIARIES ---------------
 
-CREATE OR REPLACE FUNCTION createAlarmCounter() RETURNS TRIGGER AS
-    $$BEGIN
-
-        INSERT INTO n_alarms VALUES (NEW.matricula, 0);
-        RETURN NEW;
-END;$$LANGUAGE plpgsql;
-
-CREATE TRIGGER veichuleCreated AFTER INSERT ON veiculo
-        FOR EACH ROW
-        EXECUTE FUNCTION createAlarmCounter();
 
 CREATE OR REPLACE FUNCTION checkCords(lat numeric, long numeric) RETURNS INT AS
     $$DECLARE
