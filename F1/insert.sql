@@ -3,11 +3,13 @@ begin transaction;
 	--Cliente(NIF, nome, morada, telefone, ref cliente)
 INSERT INTO Cliente (NIF, nome, morada, telefone, ref_cliente)
 VALUES (111222333, 'O maior da minha aldeia', 'Vila Nova de Robiães', 911222111, DEFAULT),
-(121222333, 'Limitada', 'Ali', 911333222, 12122233);
+(121222333, 'Limitada', 'Ali', 911333222, 121222333),
+(100000000, 'O menor da minha aldeia', 'Vila Velha de Robiães', 911332111, DEFAULT),
+(999999999, 'Aquele', 'ali', 911722111, DEFAULT);
 
 	--Cliente_Particular(CC, cliente)
 INSERT INTO Cliente_Particular(CC, cliente)
-VALUES (12122233, 111222333);
+VALUES (121222333, 111222333),(100000000,100000000),(999999999,999999999);
 
 	--Cliente_Institucional(nome de contacto, cliente)
 INSERT INTO Cliente_Institucional(nome_contacto, cliente)

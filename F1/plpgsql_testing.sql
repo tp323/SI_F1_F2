@@ -9,24 +9,24 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
         part_client INT;
         active BOOLEAN;
     BEGIN
-        CALL insert_cliente_particular(1334545634, CAST ('Ernesto Ferrero-Roche' AS VARCHAR), CAST ('Albal' AS VARCHAR), '926021405', NULL, 395478546);
+        CALL insert_cliente_particular(133454563, CAST ('Ernesto Ferrero-Roche' AS VARCHAR), CAST ('Albal' AS VARCHAR), '926021405', NULL, 395478546);
         SELECT nif INTO client
         FROM cliente
-        WHERE nif = 1334545634;
+        WHERE nif = 133454563;
 
         IF client IS NOT NULL THEN
             RAISE NOTICE 'Inserting Ernesto OK';
         ELSE
             RAISE WARNING 'Inserting Ernesto NOT OK';
-            DELETE FROM cliente WHERE nif = 1334545634;
+            DELETE FROM cliente WHERE nif = 133454563;
             RETURN;
         END IF;
 
-        CALL update_cliente_particular(1334545634, 'Ernesto Ferrero-Roche', 'Albal', '926021405', 12122233);
+        CALL update_cliente_particular(133454563, 'Ernesto Ferrero-Roche', 'Albal', '926021405', 12122233);
 
         SELECT ref_cliente INTO client
         FROM cliente
-        WHERE nif = 1334545634;
+        WHERE nif = 133454563;
 
         IF client = 12122233 THEN
             RAISE NOTICE 'Updating Ernesto OK';
@@ -34,11 +34,11 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
             RAISE WARNING 'Updating Ernesto NOT OK';
         END IF;
 
-        CALL remove_cliente_particular(1334545634, 395478546);
+        CALL remove_cliente_particular(133454563, 395478546);
 
         SELECT ativo INTO active
         FROM cliente
-        WHERE nif = 1334545634;
+        WHERE nif = 133454563;
 
         SELECT cc INTO part_client
         FROM cliente_particular
