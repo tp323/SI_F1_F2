@@ -8,11 +8,8 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
         client INT;
         part_client INT;
         active BOOLEAN;
-		status varchar;
     BEGIN
-		SELECT current_setting('transaction_isolation') INTO status;
-        RAISE NOTICE '%', status;
-        CALL insert_cliente_particular(133454563, CAST ('Ernesto Ferrero-Roche' AS VARCHAR), CAST ('Albal' AS VARCHAR), '926021405', NULL, 395478546);
+        CALL insert_cliente_particular(1334545634, CAST ('Ernesto Ferrero-Roche' AS VARCHAR), CAST ('Albal' AS VARCHAR), '926021405', NULL, 395478546);
         SELECT nif INTO client
         FROM cliente
         WHERE nif = 133454563;

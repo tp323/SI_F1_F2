@@ -211,7 +211,7 @@ CREATE OR REPLACE FUNCTION checkAlarm() RETURNS TRIGGER AS
             isValid := zonaVerdeValida(new.coordenadas, cords, raio);
 
             if (isValid = false) then
-				UPDATE bip_equipamento_eletronico SET alarme = TRUE WHERE bip = NEW.id;
+				UPDATE bip_equipamento_eletronico SET alarme = TRUE WHERE id = NEW.id;
                 UPDATE equipamento_eletronico SET estado = 'Activo' WHERE id = NEW.equipamento;
 				UPDATE equipamento_eletronico SET estado = 'Inactivo' WHERE id = NEW.equipamento;
                 CLOSE ITERATOR;
