@@ -5,11 +5,13 @@ ALTER table if EXISTS Cliente DROP constraint if EXISTS ref_cliente_part;
 	--Cliente(NIF, nome, morada, telefone, ref cliente)
 INSERT INTO Cliente (NIF, nome, morada, telefone, ref_cliente)
 VALUES (111222333, 'O maior da minha aldeia', 'Vila Nova de Robiães', 911222111, DEFAULT),
-(121222333, 'Limitada', 'Ali', 911333222, 12122233);
+(121222333, 'Limitada', 'Ali', 911333222, 121222333),
+(100000000, 'O menor da minha aldeia', 'Vila Velha de Robiães', 911332111, DEFAULT),
+(999999999, 'Aquele', 'ali', 911722111, DEFAULT);
 
 	--Cliente_Particular(CC, cliente)
 INSERT INTO Cliente_Particular(CC, cliente)
-VALUES (12122233, 111222333);
+VALUES (121222333, 111222333),(100000000,100000000),(999999999,999999999);
 
 ALTER table if EXISTS Cliente
 ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Particular(CC) DEFERRABLE INITIALLY DEFERRED;

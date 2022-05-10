@@ -8,6 +8,8 @@ DROP TRIGGER IF EXISTS insert_view_alarmes ON todos_alarmes;
 DROP TRIGGER IF EXISTS newBip ON bip_equipamento_eletronico;
 DROP TRIGGER IF EXISTS veichuleCreated ON veiculo;
 DROP TRIGGER IF EXISTS alarmIncrement ON equipamento_eletronico;
+DROP TRIGGER IF EXISTS incrementalarmoninsert ON bip_equipamento_eletronico;
+
 
 -----FUNCTIONS-RELATED-TO-TRIGGERS------
 DROP FUNCTION IF EXISTS check_veiculos_particular;
@@ -22,6 +24,8 @@ DROP FUNCTION IF EXISTS alarm_number;
 DROP FUNCTION IF EXISTS random_number;
 DROP FUNCTION IF EXISTS zonaverdevalida(INT, INT);
 DROP FUNCTION IF EXISTS zonaverdevalida;
+DROP FUNCTION IF EXISTS checkcords;
+
 
 ---------------PROCEDURES---------------
 DROP PROCEDURE IF EXISTS createVehicle;

@@ -1,7 +1,7 @@
 BEGIN transaction;
 	--Cliente(NIF, nome, morada, telefone, ref cliente)
 	create table IF NOT EXISTS Cliente(
-		NIF int primary key,
+		NIF int primary key check(NIF between 100000000 and 999999999),
 		nome varchar(25) not null,
 		morada varchar(150) not null,
 		telefone varchar(10) not null,
@@ -10,7 +10,7 @@ BEGIN transaction;
 	);
 	--Cliente_Particular(CC, cliente)
 	create table IF NOT EXISTS Cliente_Particular(
-		CC int primary key,
+		CC int primary key check(CC between 100000000 and 999999999),
 		cliente int not null,
 		FOREIGN KEY (cliente)
      		REFERENCES Cliente (NIF) ON DELETE CASCADE ON UPDATE cascade
