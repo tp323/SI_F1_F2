@@ -2,22 +2,20 @@
 --------------- PONTO D ---------------
 
 CREATE OR REPLACE PROCEDURE insert_cliente_particular(
-	IN nif int,
-	IN nome varchar,
-	IN morada varchar,
-	IN telefone varchar,
-	IN ref_cliente int,
-	IN cc int)
+	IN newNif int,
+	IN newNome varchar,
+	IN newMorada varchar,
+	IN newTelefone varchar,
+	IN newRef_cliente int,
+	IN newCC int)
 LANGUAGE 'plpgsql'
 AS $$
     BEGIN
-        --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
-
-        INSERT INTO cliente VALUES (nif,nome,morada,telefone,ref_cliente);
-		if(nif not in (SELECT cliente.nif FROM cliente)) then
+        INSERT INTO cliente VALUES (newNif,newNome,newMorada,newTelefone,newRef_cliente);
+		if(newNif not in (SELECT cliente.nif FROM cliente)) then
         	RAISE NOTICE 'Cliente nao inserido';
         END IF;
-        INSERT INTO cliente_particular VALUES (cc,nif);
+        INSERT INTO cliente_particular VALUES (newCC,newNif);
 		--check if cliente was correctly added to the DB
     END;
 $$;
@@ -31,8 +29,6 @@ CREATE OR REPLACE PROCEDURE update_cliente_particular(
 LANGUAGE plpgsql AS
 $$
     begin
-        --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
-
 		--check if nif is valid
 		--not sure if this exception should exist
 		IF (nif_to_update NOT IN (SELECT nif FROM cliente)) then
@@ -51,8 +47,6 @@ CREATE OR REPLACE PROCEDURE remove_cliente_particular(
 LANGUAGE 'plpgsql'
 AS $$
     BEGIN
-        --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
-
 		DELETE FROM Cliente WHERE nif = nif_to_delete;
 		UPDATE Cliente set ref_cliente = null WHERE ref_cliente = cc_to_delete;
         DELETE FROM Cliente_Particular WHERE cc = cc_to_delete;
@@ -66,8 +60,6 @@ CREATE OR REPLACE FUNCTION alarm_number(registration varchar(6), year numeric) R
         number int := null;
         target varchar(6) := '*';
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
-
         if (year is null)then
             RAISE EXCEPTION 'Year cannot be null!';
         end if;
@@ -107,7 +99,6 @@ AS
         equip int := null;
         cords int := null;
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
     SELECT id INTO equip
     FROM bip_equipamento_eletronico
@@ -145,7 +136,6 @@ AS
 		latitude numeric(3,1);
 		longitude numeric(3,1);
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
         OPEN ITERATOR;
         FETCH NEXT FROM ITERATOR INTO id, equipamento, marca_temporal, latitude, longitude;
@@ -168,7 +158,6 @@ CREATE OR REPLACE FUNCTION zonaVerdeValida(beepCoordenates int, gzCoordenates in
         beepLat numeric(3,1);
         beepLong numeric(3,1);
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
         SELECT latitude, longitude INTO beepLat, beepLong
         FROM coordenadas
@@ -198,7 +187,6 @@ CREATE OR REPLACE FUNCTION checkAlarm() RETURNS TRIGGER AS
             INNER JOIN equipamento_eletronico ee on ee.id = v2.equipamento
             WHERE ee.id = NEW.equipamento;
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
         SELECT estado INTO status
         FROM equipamento_eletronico
@@ -255,7 +243,6 @@ AS
         clientCheck int;
         cords int;
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
         SELECT matricula INTO registrationCheck
         FROM veiculo
@@ -321,7 +308,6 @@ RETURNS trigger AS $$
 	coord_id int:= null;
 	bip_id int:= null;
     BEGIN
-	    --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 		select COUNT(*) into eq_count from veiculo v
 		inner join condutor cond on v.condutor = cond.cc
 		where matricula = new.matricula and nome = new.nome;
@@ -359,7 +345,6 @@ CREATE OR REPLACE PROCEDURE deleteInvalids()
             SELECT id, marca_temporal::date
             FROM invalid_requests;
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
         OPEN ITERATOR;
         FETCH NEXT FROM ITERATOR INTO targetID, targetDate;
@@ -383,7 +368,6 @@ RETURNS trigger AS $$
 	DECLARE
 	nif_to_delete int:= old.nif;
     BEGIN
-	    --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
        	UPDATE cliente SET ativo = FALSE WHERE nif = nif_to_delete;
 		return new;
@@ -402,7 +386,6 @@ CREATE OR REPLACE FUNCTION incrementAlarm()RETURNS TRIGGER AS
     $$DECLARE
         target varchar(6);
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL repeatable read;
 
         SELECT matricula INTO target
         FROM equipamento_eletronico
@@ -422,7 +405,6 @@ CREATE TRIGGER alarmAdded AFTER INSERT ON alarmes
 
 CREATE OR REPLACE FUNCTION createAlarmCounter() RETURNS TRIGGER AS
     $$BEGIN
-        SET TRANSACTION ISOLATION LEVEL read committed;
 
         INSERT INTO n_alarms VALUES (NEW.matricula, 0);
         RETURN NEW;
@@ -436,7 +418,6 @@ CREATE OR REPLACE FUNCTION checkCords(lat numeric, long numeric) RETURNS INT AS
     $$DECLARE
         target int = null;
     BEGIN
-        SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
         SELECT id INTO target
         FROM coordenadas

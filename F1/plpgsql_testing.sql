@@ -9,6 +9,8 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
         part_client INT;
         active BOOLEAN;
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
         CALL insert_cliente_particular(1334545634, CAST ('Ernesto Ferrero-Roche' AS VARCHAR), CAST ('Albal' AS VARCHAR), '926021405', NULL, 395478546);
 
         SELECT nif INTO client
@@ -64,6 +66,8 @@ CREATE OR REPLACE PROCEDURE alarm_number_testing() LANGUAGE plpgsql
     DECLARE
         num INT;
     BEGIN
+        --SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
         num = alarm_number(NULL, 2015);
         IF num = 4 THEN
             RAISE NOTICE 'Registration NULL test OK';
@@ -106,6 +110,8 @@ CREATE OR REPLACE PROCEDURE processRequests_testing() LANGUAGE plpgsql
         request INT;
         coordinates INT;
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
         INSERT INTO requests VALUES(DEFAULT, NULL, '2029-05-02 03:04:05', NULL, NULL);
         INSERT INTO requests VALUES(DEFAULT, 2, '2024-12-06 03:11:43', 45, 43);
         CALL processrequests();
@@ -164,6 +170,7 @@ CREATE OR REPLACE PROCEDURE newBIP_testing() LANGUAGE plpgsql
     DECLARE
         valid BOOLEAN;
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
         valid = zonaVerdeValida(1, 4);
 
         IF valid = TRUE THEN
@@ -193,6 +200,8 @@ CREATE OR REPLACE PROCEDURE createVehicle_testing() LANGUAGE plpgsql
         registration VARCHAR(6);
         green_zone INT;
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
         CALL createVehicle('FF40AS', 111111113, 1, 111222333);
 
         SELECT matricula INTO registration
@@ -241,6 +250,8 @@ CREATE OR REPLACE PROCEDURE todos_alarmes_testing() LANGUAGE plpgsql
     DECLARE
         registration VARCHAR(6);
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
         INSERT INTO equipamento_eletronico VALUES(135464, 'Activo');
         INSERT INTO veiculo VALUES('FJ45LF', 111111116, 135464, 121222333);
         INSERT INTO bip_equipamento_eletronico VALUES(3774375, 135464, '2034-03-04 10:43:35', 1);
@@ -269,6 +280,8 @@ CREATE OR REPLACE PROCEDURE insert_view_alarme_testing() LANGUAGE plpgsql
     DECLARE
         added_date TIMESTAMP;
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
         INSERT INTO todos_alarmes VALUES('RB16RB', 'Max Verstappen', 45, 32, '2022-11-03 04:43:12');
 
         SELECT marca_temporal INTO added_date
@@ -302,6 +315,8 @@ CREATE OR REPLACE PROCEDURE deleteInvalids_testing() LANGUAGE plpgsql
         invalid_request INT;
         time TIMESTAMP = CURRENT_TIMESTAMP;
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
         INSERT INTO invalid_requests VALUES(DEFAULT, 43, '1243-12-21 03:45:14', 43, 56);
         CALL deleteInvalids();
 
@@ -342,6 +357,8 @@ CREATE OR REPLACE PROCEDURE delete_clientes_testing() LANGUAGE plpgsql
         client INT;
         active BOOLEAN;
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
         CALL insert_cliente_particular(345321334, 'Joao Gabarola', 'Lisboa', '962345321', NULL, 345641345);
         DELETE FROM cliente WHERE nif = 345321334;
 
@@ -372,6 +389,8 @@ CREATE OR REPLACE PROCEDURE alarmCounter_testing() LANGUAGE plpgsql
     DECLARE
         alarm_count INT;
     BEGIN
+        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
         INSERT INTO equipamento_eletronico VALUES(234543, 'Activo');
         INSERT INTO bip_equipamento_eletronico VALUES(454643, 234543, '2022-03-30 10:34:35', 1);
         INSERT INTO veiculo VALUES('AS45FR', 111111116, 234543, 111222333);
