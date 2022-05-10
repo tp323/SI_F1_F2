@@ -8,7 +8,10 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
         client INT;
         part_client INT;
         active BOOLEAN;
+		status varchar;
     BEGIN
+		SELECT current_setting('transaction_isolation') INTO status;
+        RAISE NOTICE '%', status;
         CALL insert_cliente_particular(1334545634, CAST ('Ernesto Ferrero-Roche' AS VARCHAR), CAST ('Albal' AS VARCHAR), '926021405', NULL, 395478546);
         SELECT nif INTO client
         FROM cliente
@@ -49,6 +52,7 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
         ELSE
             RAISE WARNING 'Deleting Ernesto NOT OK';
         END IF;
+        --ROLLBACK;
     END;
     $$;
 
@@ -60,9 +64,12 @@ CREATE OR REPLACE PROCEDURE alarm_number_testing() LANGUAGE plpgsql
     DECLARE
         num INT;
     BEGIN
-
-        num = alarm_number(NULL, 2015);
-        IF num = 4 THEN
+	    
+		INSERT INTO equipamento_eletronico VALUES(234540, 'Activo');
+		INSERT INTO bip_equipamento_eletronico VALUES(454645, 234540, '2000-03-30 10:31:35', 1);
+        num = alarm_number(NULL, 2000);
+		
+        IF num = 1 THEN
             RAISE NOTICE 'Registration NULL test OK';
         ELSE
             RAISE WARNING 'Registration NULL test NOT OK';
@@ -88,6 +95,7 @@ CREATE OR REPLACE PROCEDURE alarm_number_testing() LANGUAGE plpgsql
         EXCEPTION
             WHEN RAISE_EXCEPTION THEN
                 RAISE NOTICE 'Year NULL test OK';
+                --ROLLBACK;
     END;
     $$;
 
@@ -129,6 +137,7 @@ CREATE OR REPLACE PROCEDURE processRequests_testing() LANGUAGE plpgsql
         ELSE
             RAISE WARNING 'Request validation NOT OK';
         END IF;
+        --ROLLBACK;
     END;
     $$;
 
@@ -217,9 +226,11 @@ CREATE OR REPLACE PROCEDURE createVehicle_testing() LANGUAGE plpgsql
 
         CALL createVehicle('FF17FF', NULL, NULL, NULL);
         RAISE WARNING 'Adding a vehicle with an already existing registration NOT OK';
+        --ROLLBACK;
         EXCEPTION
             WHEN RAISE_EXCEPTION THEN
                 RAISE NOTICE 'Adding a vehicle with an already existing registration OK';
+                --ROLLBACK;
     END;
     $$;
 
@@ -234,9 +245,14 @@ CREATE OR REPLACE PROCEDURE todos_alarmes_testing() LANGUAGE plpgsql
     BEGIN
 
         INSERT INTO equipamento_eletronico VALUES(135464, 'Activo');
-        INSERT INTO veiculo VALUES('FJ45LF', 111111116, 135464, 121222333);
-        INSERT INTO bip_equipamento_eletronico VALUES(3774375, 135464, '2034-03-04 10:43:35', 1);
-        INSERT INTO alarmes VALUES(764645, 3774375);
+		INSERT INTO cliente VALUES(123452333, 'test', 'Vila', 911222411);
+		INSERT INTO cliente_particular VALUES(123456733, 123452333);
+
+		INSERT INTO condutor VALUES(123411113,'Charles Leclerc',922555888);
+        INSERT INTO veiculo VALUES('FJ45LF', 123411113, 135464, 123452333);
+		INSERT INTO coordenadas VALUES(1500, 0, 0);
+
+        INSERT INTO bip_equipamento_eletronico VALUES(3774375, 135464, '2034-03-04 10:43:35', 1500, TRUE);
 
         SELECT matricula INTO registration
         FROM todos_alarmes
@@ -247,6 +263,7 @@ CREATE OR REPLACE PROCEDURE todos_alarmes_testing() LANGUAGE plpgsql
         ELSE
             RAISE WARNING 'Added values that affected the view NOT OK';
         END IF;
+        --ROLLBACK;
     END;
     $$;
 
@@ -273,9 +290,11 @@ CREATE OR REPLACE PROCEDURE insert_view_alarme_testing() LANGUAGE plpgsql
 
         INSERT INTO todos_alarmes VALUES('HF45KS', 'Joao Sapato', 45, 32, '2022-11-03 04:43:12');
         RAISE WARNING 'Cannot add to view if vehicle or driver do not exist NOT OK';
+        --ROLLBACK;
         EXCEPTION
             WHEN RAISE_EXCEPTION THEN
                RAISE NOTICE 'Cannot add to view if vehicle or driver do not exist OK';
+               --ROLLBACK;
     END;
     $$;
 
@@ -314,6 +333,7 @@ CREATE OR REPLACE PROCEDURE deleteInvalids_testing() LANGUAGE plpgsql
         ELSE
             RAISE WARNING 'Not deleting invalid request older than 15 days NOT OK';
         END IF;
+        --ROLLBACK;
     END;
     $$;
 
@@ -344,6 +364,7 @@ CREATE OR REPLACE PROCEDURE delete_clientes_testing() LANGUAGE plpgsql
         ELSE
             RAISE WARNING 'Deleting clients NOT OK';
         END IF;
+        --ROLLBACK;
     END;
     $$;
 
@@ -357,7 +378,8 @@ CREATE OR REPLACE PROCEDURE alarmCounter_testing() LANGUAGE plpgsql
     BEGIN
 
         INSERT INTO equipamento_eletronico VALUES(234543, 'Activo');
-        INSERT INTO bip_equipamento_eletronico VALUES(454643, 234543, '2022-03-30 10:34:35', 1);
+        INSERT INTO bip_equipamento_eletronico VALUES(454643, 234543, '2022-03-30 10:31:35', 1);
+		
         INSERT INTO veiculo VALUES('AS45FR', 111111116, 234543, 111222333);
 
         SELECT alarms INTO alarm_count
@@ -370,7 +392,8 @@ CREATE OR REPLACE PROCEDURE alarmCounter_testing() LANGUAGE plpgsql
             RAISE WARNING 'Adding alarm to a newly added vehicle NOT OK';
         END IF;
 
-        INSERT INTO alarmes VALUES(23445, 454643);
+		INSERT INTO bip_equipamento_eletronico VALUES(454620, 234543, '2021-01-19 20:34:25', 1, TRUE);
+        INSERT INTO bip_equipamento_eletronico VALUES(454621, 234543, '2020-01-23 10:24:31', 1, TRUE);
 
         SELECT alarms INTO alarm_count
         FROM veiculo
@@ -381,6 +404,7 @@ CREATE OR REPLACE PROCEDURE alarmCounter_testing() LANGUAGE plpgsql
         ELSE
             RAISE WARNING 'Incrementing alarm number on vehicle NOT OK';
         END IF;
+        --ROLLBACK;
     END;
     $$;
 
