@@ -17,10 +17,10 @@ BEGIN transaction;
 	);
 
 
-ALTER table if EXISTS Cliente DROP constraint if EXISTS ref_cliente_part;
+ALTER table if EXISTS Cliente_Particular DROP constraint if EXISTS ref_cliente_part;
 
-ALTER table if EXISTS Cliente
-ADD constraint ref_cliente_part foreign KEY (ref_cliente) references Cliente_Particular(CC) DEFERRABLE INITIALLY DEFERRED;
+ALTER table if EXISTS Cliente_Particular
+ADD constraint ref_cliente_part foreign KEY (cliente) references Cliente(NIF) DEFERRABLE INITIALLY DEFERRED;
 
 
 	--Cliente_Institucional(nome de contacto, cliente)
