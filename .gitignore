@@ -2,6 +2,7 @@
 .idea/dataSources.xml
 *.xml
 *.iml
-!SI_F2_JPA/src/main/java/resources/META-INF/persistence.xml # Apagar quando tiverem feito pull
+# Apagar quando tiverem feito pull
+!SI_F2_JPA/src/main/java/resources/META-INF/persistence.xml
 !SI_F2_JPA/pom.xml
 SI_F2_JPA/.idea
