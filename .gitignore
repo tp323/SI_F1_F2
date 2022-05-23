@@ -2,3 +2,4 @@
 .idea/dataSources.xml
 *.xml
 *.iml
+!SI_F2_JPA/*.xml # Apagar quando tiverem feito pull
