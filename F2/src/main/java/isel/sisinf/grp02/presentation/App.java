@@ -20,8 +20,7 @@ public class App {
     private static void test() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("postgres");
         EntityManager em = emf.createEntityManager();
-        try
-        {
+        try {
             //CREATE
             System.out.println("--# CREATE equipamento_eletronico");
             em.getTransaction().begin();
@@ -40,8 +39,7 @@ public class App {
             Query query = em.createQuery(sql);
             List<equipamento_eletronico> equipamento_eletronico = query.getResultList();
 
-            for (equipamento_eletronico c : equipamento_eletronico)
-            {
+            for (equipamento_eletronico c : equipamento_eletronico) {
                 System.out.printf("%d ", c.getId());
                 System.out.printf("%s \n", c.getEstado());
 
@@ -71,13 +69,11 @@ public class App {
             }
 
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
             System.out.println(e.getMessage());
             throw e;
         }
-        finally
-        {
+        finally {
             em.close();
             emf.close();
         }
