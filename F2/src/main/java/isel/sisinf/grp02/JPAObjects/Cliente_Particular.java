@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "cliente_particular")
-public class ClienteParticular {
+public class Cliente_Particular {
     @Id
     @Column(name = "cc", nullable = false)
     private Integer id;
@@ -19,6 +19,4 @@ public class ClienteParticular {
     public void setId(Integer id) {
         this.id = id;
     }
-
-    //TODO Reverse Engineering! Migrate other columns to the entity
 }
