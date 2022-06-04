@@ -1,5 +1,6 @@
 package isel.sisinf.grp02.JPAObjects;
 
+
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
