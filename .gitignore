@@ -2,5 +2,5 @@
 *.xml
 *.iml
 *.idea
-F2/SI_F2_JPA/.idea
-!F2/SI_F2_JPA/pom.xml
+F2/.idea
+!F2/pom.xml
