@@ -4,3 +4,4 @@
 *.idea
 F2/.idea
 !F2/pom.xml
+F2/target
