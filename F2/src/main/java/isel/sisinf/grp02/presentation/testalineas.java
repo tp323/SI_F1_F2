@@ -1,6 +1,6 @@
 package isel.sisinf.grp02.presentation;
 
-import isel.sisinf.grp02.repo.JPAContext;
+import isel.sisinf.grp02.repositories.JPAContext;
 
 public class testalineas {
     public static void test() throws Exception {

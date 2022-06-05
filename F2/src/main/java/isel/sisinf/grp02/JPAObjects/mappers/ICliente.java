@@ -1,4 +1,7 @@
-package isel.sisinf.grp02.JPAObjects;
+package isel.sisinf.grp02.JPAObjects.mappers;
+
+import isel.sisinf.grp02.JPAObjects.Cliente_Particular;
+import isel.sisinf.grp02.JPAObjects.Veiculo;
 
 import java.util.Set;
 
@@ -17,4 +20,5 @@ public interface ICliente {
     void setTelefone(String telefone);
     void setRefCliente(Cliente_Particular refCliente);
     void setAtivo(Boolean ativo);
+    void setVeiculos(Set<Veiculo> veiculos);
 }

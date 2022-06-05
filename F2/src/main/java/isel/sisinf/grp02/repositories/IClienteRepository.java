@@ -1,4 +1,4 @@
-package isel.sisinf.grp02.repo;
+package isel.sisinf.grp02.repositories;
 
 import isel.sisinf.grp02.JPAObjects.Cliente;
 
