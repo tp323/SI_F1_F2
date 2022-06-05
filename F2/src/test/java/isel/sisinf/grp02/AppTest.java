@@ -28,7 +28,7 @@ public class AppTest {
 
     @Test
     public void testConnection() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("sijpa");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("postgres");
         EntityManager em = emf.createEntityManager();
 
         try {
@@ -75,7 +75,7 @@ public class AppTest {
                 System.out.printf("%d ", c.getNif());
                 System.out.printf("%s ", c.getMorada());
                 Set<Veiculo> Veiculo = c.getVeiculos();
-                for (Veiculo v: Veiculo) System.out.printf("%s ", v.getId());
+                for (Veiculo v: Veiculo) System.out.printf("%s ", v.getMatricula());
                 System.out.println();
             }
 

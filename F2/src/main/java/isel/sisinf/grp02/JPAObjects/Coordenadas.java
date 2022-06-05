@@ -41,25 +41,16 @@ public class Coordenadas implements ICoordenadas {
     @OneToOne(mappedBy = "coordenadas")
     private Bip bip;
 
-    @Override
-    public Long getID() { return id; }
-    @Override
+    public Long getId() { return id; }
     public Float getLatitude() { return latitude; }
-    @Override
     public Float getLongitude() { return longitude; }
-    @Override
     public Bip getBip() { return bip; }
-    @Override
     public ZonaVerde getZonaVerde() { return zona; }
 
-    @Override
-    public void setID(Long id) { this.id = id; }
-    @Override
+
+    public void setId(Long id) { this.id = id; }
     public void setLatitude(Float latitude) { this.latitude = latitude; }
-    @Override
     public void setLongitude(Float longitude) { this.longitude = longitude; }
-    @Override
     public void setBip(Bip bip) { this.bip = bip; }
-    @Override
     public void setZonaVerde(ZonaVerde zona) { this.zona = zona; }
 }
