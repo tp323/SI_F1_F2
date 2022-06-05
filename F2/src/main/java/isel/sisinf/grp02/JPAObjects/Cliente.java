@@ -8,9 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@NamedQuery(name="Cliente.findByKey",
-        query="SELECT c FROM Cliente c WHERE c.nif =:key")
-
+@NamedQuery(name="Cliente.findByKey", query="SELECT c FROM Cliente c WHERE c.nif =:key")
 
 
 @Table(name = "cliente")
@@ -58,4 +56,5 @@ public class Cliente implements ICliente {
     public void setTelefone(String telefone) {this.telefone = telefone;}
     public void setRefCliente(Cliente_Particular refCliente) {this.refCliente = refCliente;}
     public void setAtivo(Boolean ativo) {this.ativo = ativo;}
+    public void setVeiculos(Set<Veiculo> veiculos) {this.veiculos = veiculos;}
 }

@@ -1,8 +1,8 @@
 package isel.sisinf.grp02.presentation;
 
 import isel.sisinf.grp02.JPAObjects.Cliente;
+import isel.sisinf.grp02.JPAObjects.Equipamento_Eletronico;
 import isel.sisinf.grp02.JPAObjects.Veiculo;
-import isel.sisinf.grp02.JPAObjects.equipamento_eletronico;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -13,8 +13,9 @@ import java.util.Set;
 
 
 public class App {
-    public static void main( String[] args ) {
-        test();
+    public static void main( String[] args ) throws Exception {
+
+        testalineas.test();
     }
 
     private static void test() {
@@ -25,7 +26,7 @@ public class App {
             System.out.println("--# CREATE equipamento_eletronico");
             em.getTransaction().begin();
 
-            equipamento_eletronico cn = new equipamento_eletronico();
+            Equipamento_Eletronico cn = new Equipamento_Eletronico();
             cn.setEstado("Inactivo");
             em.persist(cn);
             em.getTransaction().commit();
@@ -33,13 +34,13 @@ public class App {
             System.out.println("ID Generated:" + cn.getId());
 
             //READ
-            System.out.println("\n--# READ equipamento_eletronico");
+            System.out.println("\n--# READ Equipamento_Eletronico");
 
-            String sql = "SELECT c FROM equipamento_eletronico c";
+            String sql = "SELECT c FROM Equipamento_Eletronico c";
             Query query = em.createQuery(sql);
-            List<equipamento_eletronico> equipamento_eletronico = query.getResultList();
+            List<Equipamento_Eletronico> equipamento_eletronico = query.getResultList();
 
-            for (equipamento_eletronico c : equipamento_eletronico) {
+            for (Equipamento_Eletronico c : equipamento_eletronico) {
                 System.out.printf("%d ", c.getId());
                 System.out.printf("%s \n", c.getEstado());
 
@@ -47,7 +48,7 @@ public class App {
 
             //DELETE
             em.getTransaction().begin();
-            em.remove(em.find(equipamento_eletronico.class,cn.getId()));
+            em.remove(em.find(Equipamento_Eletronico.class,cn.getId()));
             em.flush(); //Send changes to database
             em.getTransaction().commit();
             em.clear();
@@ -61,10 +62,10 @@ public class App {
             List<Cliente> Cliente = queryt.getResultList();
 
             for (Cliente c : Cliente) {
-                System.out.printf("%d ", c.getId());
+                System.out.printf("%d ", c.getNif());
                 System.out.printf("%s ", c.getMorada());
                 Set<Veiculo> Veiculo = c.getVeiculos();
-                for (Veiculo v: Veiculo) System.out.printf("%s ", v.getId());
+                for (Veiculo v: Veiculo) System.out.printf("%s ", v.getMatricula());
                 System.out.println();
             }
 

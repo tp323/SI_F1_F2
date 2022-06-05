@@ -1,5 +1,7 @@
 package isel.sisinf.grp02.repositories;
 
+import isel.sisinf.grp02.JPAObjects.ICondutor;
+
 public interface IContext extends AutoCloseable {
 
     void beginTransaction();
@@ -7,7 +9,7 @@ public interface IContext extends AutoCloseable {
     void flush();
 
     IClienteRepository getClientes();
-    //IStudentRepository getStudents();
-    //ICourseRepository getCourses();
+    IVeiculoRepository getVeiculos();
+    ICondutorRepository getCondutores();
 
 }
