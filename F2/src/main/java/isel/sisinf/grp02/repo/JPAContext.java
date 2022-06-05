@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 
-import isel.sisinf.grp02.JPAObjects.Cliente;
+import isel.sisinf.grp02.JPAObjects.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
@@ -25,7 +25,8 @@ public class JPAContext implements IContext{
     private int _txcount;
 
     private IClienteRepository _clienteRepository;
-    //private IStudentRepository _studentRepository;
+    private IVeiculoRepository _veiculoRepository;
+    private ICondutorRepository _condutorRepository;
 
 
     protected List helperQueryImpl(String jpql, Object... params) {
@@ -54,34 +55,45 @@ public class JPAContext implements IContext{
 
     }
 
-    /*protected class StudentRepository implements IStudentRepository {
+    protected class VeiculoRepository implements IVeiculoRepository {
 
         @Override
-        public Student findByKey(Integer key) {
-            return _em.createNamedQuery("Student.findByKey",Student.class)
+        public Veiculo findByKey(String key) {
+            return _em.createNamedQuery("Veiculo.findByKey",Veiculo.class)
                     .setParameter("key", key)
                     .getSingleResult();
         }
 
         @SuppressWarnings("unchecked")
         @Override
-        public Collection<Student> find(String jpql, Object... params) {
+        public Collection<Veiculo> find(String jpql, Object... params) {
 
             return helperQueryImpl( jpql, params);
         }
+    }
+
+    protected class CondutorRepository implements ICondutorRepository {
 
         @Override
-        public Collection<Student> getEntolledStudents(Course c){
-            return _em.createNamedQuery("Student.EnrolledInCourse",Student.class)
-                    .setParameter("key", c.getCourseId())
-                    .getResultList();
+        public Condutor findByKey(Integer key) {
+            return _em.createNamedQuery("Condutor.findByKey",Condutor.class)
+                    .setParameter("key", key)
+                    .getSingleResult();
         }
-    }*/
+
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Collection<Condutor> find(String jpql, Object... params) {
+
+            return helperQueryImpl( jpql, params);
+        }
+    }
+
 
     @Override
     public void beginTransaction() {
-        if(_tx == null)
-        {
+        if(_tx == null) {
             _tx = _em.getTransaction();
             _tx.begin();
             _txcount=0;
@@ -109,7 +121,8 @@ public class JPAContext implements IContext{
         this._emf = Persistence.createEntityManagerFactory(persistentCtx);
         this._em = _emf.createEntityManager();
         this._clienteRepository = new ClienteRepository();
-        //this._studentRepository = new StudentRepository();
+        this._veiculoRepository = new VeiculoRepository();
+        this._condutorRepository = new CondutorRepository();
     }
 
 
@@ -126,8 +139,13 @@ public class JPAContext implements IContext{
         return _clienteRepository;
     }
 
-    /*@Override
-    public IStudentRepository getStudents() {return _studentRepository;}*/
+    @Override
+    public IVeiculoRepository getVeiculos() {
+        return _veiculoRepository;
+    }
+
+    @Override
+    public ICondutorRepository getCondutores() {return _condutorRepository;}
 
 
     //Example using a table function

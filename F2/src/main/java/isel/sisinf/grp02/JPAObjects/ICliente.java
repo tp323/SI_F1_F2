@@ -17,4 +17,5 @@ public interface ICliente {
     void setTelefone(String telefone);
     void setRefCliente(Cliente_Particular refCliente);
     void setAtivo(Boolean ativo);
+    void setVeiculos(Set<Veiculo> veiculos);
 }
