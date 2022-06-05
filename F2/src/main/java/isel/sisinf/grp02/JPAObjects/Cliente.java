@@ -1,6 +1,7 @@
 package isel.sisinf.grp02.JPAObjects;
 
 
+import isel.sisinf.grp02.JPAObjects.mappers.ICliente;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 
 @Table(name = "cliente")
-public class Cliente implements ICliente{
+public class Cliente implements ICliente {
     @Override
     public String toString() {
         return "Cliente [nif=" + nif + ", nome=" + nome + ", morada=" + morada + ", telefone=" + telefone +

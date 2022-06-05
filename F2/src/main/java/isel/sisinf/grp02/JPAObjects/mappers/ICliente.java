@@ -1,4 +1,7 @@
-package isel.sisinf.grp02.JPAObjects;
+package isel.sisinf.grp02.JPAObjects.mappers;
+
+import isel.sisinf.grp02.JPAObjects.Cliente_Particular;
+import isel.sisinf.grp02.JPAObjects.Veiculo;
 
 import java.util.Set;
 

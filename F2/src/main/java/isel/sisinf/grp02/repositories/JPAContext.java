@@ -1,9 +1,7 @@
-package isel.sisinf.grp02.repo;
+package isel.sisinf.grp02.repositories;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 
 import isel.sisinf.grp02.JPAObjects.Cliente;
@@ -12,7 +10,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
-import jakarta.persistence.StoredProcedureQuery;
 
 
 public class JPAContext implements IContext{
