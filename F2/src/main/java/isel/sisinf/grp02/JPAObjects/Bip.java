@@ -41,25 +41,17 @@ public class Bip implements IBip {
     @JoinColumn(name = "coordenadas", referencedColumnName = "id")
     private Coordenadas coordenadas;
 
-    @Override
+
     public Long getID() { return id; }
-    @Override
     public Equipamento_Eletronico getEquipamento() { return equipamento; }
-    @Override
     public Timestamp getMarcaTemporal() { return marca_temporal; }
-    @Override
     public Coordenadas getCoordenadas() { return coordenadas; }
-    @Override
     public Boolean getAlarme() { return alarme; }
 
-    @Override
+
     public void setID(Long id) { this.id = id; }
-    @Override
     public void setEquipamento(Equipamento_Eletronico equipamento) { this.equipamento = equipamento; }
-    @Override
     public void setMarcaTemporal(Timestamp marcaTemporal) { this.marca_temporal = marcaTemporal; }
-    @Override
     public void setCoordenadas(Coordenadas coordenadas) { this.coordenadas = coordenadas; }
-    @Override
     public void setAlarme(Boolean alarme) { this.alarme = alarme; }
 }

@@ -32,17 +32,13 @@ public class Cliente_Particular implements ICliente_Particular {
     @OneToMany(mappedBy = "refCliente")
     private Set<Cliente> referred;
 
-    @Override
+
     public int getCC() { return cc; }
-    @Override
     public Cliente getClient() {return cliente; }
-    @Override
     public Set<Cliente> getReferred() {return referred; }
 
-    @Override
+
     public void setCC(int cc) { this.cc = cc;}
-    @Override
     public void setClient(Cliente client) { this.cliente = client; }
-    @Override
     public void setReferred(Set<Cliente> referred) { this.referred = referred; }
 }

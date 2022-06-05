@@ -19,13 +19,9 @@ public class Cliente_Institucional implements ICliente_Institucional {
     private String nomeContacto;
 
 
-    @Override
     public String getNomeContacto() { return nomeContacto; }
-    @Override
     public Cliente getDadosCliente() { return dadosCliente; }
 
-    @Override
     public void setNomeContacto(String nomeContacto) { this.nomeContacto = nomeContacto; }
-    @Override
     public void setDadosCliente(Cliente cliente) { this.dadosCliente = cliente; }
 }

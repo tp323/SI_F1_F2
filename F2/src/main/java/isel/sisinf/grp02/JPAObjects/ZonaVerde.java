@@ -35,21 +35,15 @@ public class ZonaVerde implements IZonaVerde {
     @JoinColumn(name = "veiculo", referencedColumnName = "matricula")
     private Veiculo veiculo;
 
-    @Override
+
     public Long getID() {return id;}
-    @Override
     public Coordenadas getCoodenadas() {return coordenadas;}
-    @Override
     public Veiculo getVeiculo() {return veiculo;}
-    @Override
     public int getRaio() {return raio;}
 
-    @Override
+
     public void setID(Long id) { this.id = id; }
-    @Override
     public void setCoordenadas(Coordenadas coordenadas) { this.coordenadas = coordenadas; }
-    @Override
     public void setVeiculo(Veiculo veiculo) { this.veiculo = veiculo; }
-    @Override
     public void getRaio(int raio) { this.raio = raio; }
 }

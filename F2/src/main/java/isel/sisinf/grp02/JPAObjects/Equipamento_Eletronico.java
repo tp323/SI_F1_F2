@@ -41,11 +41,8 @@ public class Equipamento_Eletronico implements IEquipamento {
     private Set<Bip> bips = new LinkedHashSet<>();
 
     public Long getId() { return id; }
-    @Override
     public String getEstado() { return estado; }
-    @Override
     public Veiculo getVeiculo() { return veiculo; }
-    @Override
     public Set<Bip> getBips() { return bips; }
 
     public void setID(Long id) { this.id = id; }
