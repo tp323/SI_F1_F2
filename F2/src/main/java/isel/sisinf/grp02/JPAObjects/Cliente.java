@@ -13,11 +13,22 @@ import java.util.Set;
 
 @Table(name = "cliente")
 public class Cliente implements ICliente {
+
     @Override
     public String toString() {
-        return "Cliente [nif=" + nif + ", nome=" + nome + ", morada=" + morada + ", telefone=" + telefone +
-                ", refCliente=" + refCliente + ", ativo=" + ativo + "]";
+        return "Cliente{" +
+                "nif=" + nif +
+                ", nome='" + nome + '\'' +
+                ", morada='" + morada + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", ativo=" + ativo +
+                ", refCliente=" + refCliente +
+                ", cliente_particular=" + cliente_particular +
+                ", cliente_institucional=" + cliente_institucional +
+                ", veiculos=" + veiculos +
+                '}';
     }
+
     @Id
     @Column(name = "nif", nullable = false)
     private int nif;
@@ -31,12 +42,18 @@ public class Cliente implements ICliente {
     @Column(name = "telefone", nullable = false, length = 10)
     private String telefone;
 
+    @Column(name = "ativo", nullable = false)
+    private Boolean ativo = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ref_cliente")
     private Cliente_Particular refCliente;
 
-    @Column(name = "ativo", nullable = false)
-    private Boolean ativo = false;
+    @OneToOne(mappedBy = "cliente")
+    private Cliente_Particular cliente_particular;
+
+    @OneToOne(mappedBy = "cliente")
+    private Cliente_Institucional cliente_institucional;
 
     @OneToMany(mappedBy = "cliente")
     private Set<Veiculo> veiculos = new LinkedHashSet<>();
@@ -47,6 +64,8 @@ public class Cliente implements ICliente {
     public String getTelefone() {return telefone;}
     public Boolean getAtivo() {return ativo;}
     public Cliente_Particular getRefCliente() {return refCliente;}
+    public Cliente_Particular getClienteParticular() { return cliente_particular; }
+    public Cliente_Institucional getClienteInstitucional() { return cliente_institucional; }
     public Set<Veiculo> getVeiculos() {return veiculos;}
 
 
@@ -55,6 +74,8 @@ public class Cliente implements ICliente {
     public void setMorada(String morada) {this.morada = morada;}
     public void setTelefone(String telefone) {this.telefone = telefone;}
     public void setRefCliente(Cliente_Particular refCliente) {this.refCliente = refCliente;}
+    public void setClienteParticular(Cliente_Particular cliente_particular) { this.cliente_particular = cliente_particular; }
+    public void setClienteInstitucional(Cliente_Institucional cliente_institucional) { this.cliente_institucional = cliente_institucional; }
     public void setAtivo(Boolean ativo) {this.ativo = ativo;}
     public void setVeiculos(Set<Veiculo> veiculos) {this.veiculos = veiculos;}
 }
