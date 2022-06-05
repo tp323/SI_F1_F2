@@ -22,6 +22,9 @@ public class JPAContext implements IContext{
     private int _txcount;
 
     private IClienteRepository _clienteRepository;
+    private ICliente_ParticularRepository _clienteParticularRepository;
+    private ICliente_InstitucionalRepository _clienteInstitucionalRepository;
+
     private IVeiculoRepository _veiculoRepository;
     private ICondutorRepository _condutorRepository;
 
@@ -51,7 +54,37 @@ public class JPAContext implements IContext{
         }
 
     }
+    protected class ClienteParticularRepository implements ICliente_ParticularRepository {
 
+        @Override
+        public Cliente_Particular findByKey(Integer key) {
+            return _em.createNamedQuery("Cliente_Particular.findByKey",Cliente_Particular.class)
+                    .setParameter("key", key)
+                    .getSingleResult();
+        }
+
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Collection<Cliente_Particular> find(String jpql, Object... params) {return helperQueryImpl( jpql, params);}
+
+    }
+
+    protected class ClienteInstitucionalRepository implements ICliente_InstitucionalRepository {
+
+        @Override
+        public Cliente_Institucional findByKey(Integer key) {
+            return _em.createNamedQuery("Cliente_Institucional.findByKey",Cliente_Institucional.class)
+                    .setParameter("key", key)
+                    .getSingleResult();
+        }
+
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Collection<Cliente_Institucional> find(String jpql, Object... params) {return helperQueryImpl( jpql, params);}
+
+    }
     protected class VeiculoRepository implements IVeiculoRepository {
 
         @Override
@@ -118,6 +151,9 @@ public class JPAContext implements IContext{
         this._emf = Persistence.createEntityManagerFactory(persistentCtx);
         this._em = _emf.createEntityManager();
         this._clienteRepository = new ClienteRepository();
+        this._clienteParticularRepository = new ClienteParticularRepository();
+        this._clienteInstitucionalRepository = new ClienteInstitucionalRepository();
+
         this._veiculoRepository = new VeiculoRepository();
         this._condutorRepository = new CondutorRepository();
     }
@@ -132,9 +168,14 @@ public class JPAContext implements IContext{
     }
 
     @Override
-    public IClienteRepository getClientes() {
-        return _clienteRepository;
-    }
+    public IClienteRepository getClientes() {return _clienteRepository;}
+
+    @Override
+    public ICliente_ParticularRepository getClientesParticulares(){return _clienteParticularRepository;}
+
+    @Override
+    public ICliente_InstitucionalRepository getClientesInstitucionais(){return _clienteInstitucionalRepository;}
+
 
     @Override
     public IVeiculoRepository getVeiculos() {
@@ -156,9 +197,4 @@ public class JPAContext implements IContext{
         List<Object[]> tmp = (List<Object[]>) q.getResultList();*/
         return getClientes().findByKey(nif);
     }
-/*
-    public List<Student> fromCountry2(int country) {
-        return _em.createNamedStoredProcedureQuery("altnamedfromCountry").setParameter(1, country).getResultList();
-    }*/
-
 }
