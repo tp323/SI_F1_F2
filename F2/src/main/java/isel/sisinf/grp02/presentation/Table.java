@@ -8,6 +8,8 @@ public class Table {
         System.out.println();
         if(array.length == 0) {
             System.out.println("(empty)");
+            System.out.print("Press enter to continue...");
+            in.nextLine();
             return;
         }
         for(int i = 0; i < array.length; i++) {
@@ -29,15 +31,16 @@ public class Table {
             }
             System.out.println(" |\n");
         }
-        in.next();
+        System.out.print("Press enter to continue...");
+        in.nextLine();
     }
 
     private static int[] columnSizesCalculation(String[][] table, int n_columns) {
         int[] columnSizes = new int[n_columns];
 
         for(int i = 0; i < n_columns; i++) {
-            for(int j = 0; j < table.length; j++) {
-                if(columnSizes[i] < table[j][i].length()) columnSizes[i] = table[j][i].length();
+            for (String[] strings : table) {
+                if (columnSizes[i] < strings[i].length()) columnSizes[i] = strings[i].length();
             }
         }
 

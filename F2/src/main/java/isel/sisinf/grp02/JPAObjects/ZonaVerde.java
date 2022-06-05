@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @NamedQuery(name = "ZonaVerde.findByKey",
-        query = "SELECT c FROM ZonaVerde c WHERE c.id =: key")
+        query = "SELECT c FROM ZonaVerde c WHERE c.id =:key")
 
 @Table(name = "coordenadas")
 public class ZonaVerde implements IZonaVerde {

@@ -10,6 +10,10 @@ interface DbOperation {
     void dbWork();
 }
 
+interface ParameterFunction<T> {
+    T doSomething();
+}
+
 public class App {
     private JPAContext context = null;
     private final HashMap<InterfaceOptions, DbOperation> DB_METHODS = new HashMap<>();
@@ -29,7 +33,7 @@ public class App {
         });*/
         DB_METHODS.put(InterfaceOptions.INSERT_VIEW, () -> Table.createTable(insertView(), 1, in));
         //DB_METHODS.put(InterfaceOptions.DELETE_INVALID_RES, () -> Table.createTable(context.deleteInvalidRequests(), 1, in));
-        DB_METHODS.put(InterfaceOptions.DELETE_CLIENT, () -> Table.createTable(clientInfo(), 1, in));
+        DB_METHODS.put(InterfaceOptions.DEACTIVATE_CLIENT, () -> Table.createTable(deactivateClient(), 1, in));
     }
 
     private enum InterfaceOptions {
@@ -45,166 +49,137 @@ public class App {
         SHOW_VIEW,
         INSERT_VIEW,
         DELETE_INVALID_RES,
-        DELETE_CLIENT
+        DEACTIVATE_CLIENT
     }
 
     private String[][] clientInfo() {
         clearConsole();
         System.out.print("Please introduce the client's NIF: ");
-        int nif = checkIntegerInput();
-        absorbLines();
+        int nif = checkUserInput(in::nextInt);
+        in.nextLine();
         System.out.println();
         System.out.print("Please introduce the client's name: ");
         String name = in.nextLine();
-        absorbLines();
         System.out.println();
         System.out.print("Please introduce the client's local of residence: ");
         String residence = in.nextLine();
-        absorbLines();
         System.out.println();
         System.out.print("Please introduce the client's phone number: ");
-        String phone = in.next();
-        absorbLines();
+        String phone = in.nextLine();
         System.out.println();
         System.out.print("Please introduce the client's referred client: ");
         //TODO: refClient = func(checkNumberInput());
-        absorbLines();
+        //in.nextLine();
         System.out.println();
         System.out.print("Please introduce the client's CC: ");
-        int cc = checkIntegerInput();
-        absorbLines();
+        int cc = checkUserInput(in::nextInt);
+        in.nextLine();
         System.out.println();
-        return new String[0][0];
+        return new String[0][];
     }
 
     private String[][] removeClient() {
         clearConsole();
         System.out.print("Please introduce the client's NIF: ");
-        int nif = checkIntegerInput();
-        absorbLines();
+        int nif = checkUserInput(in::nextInt);
+        in.nextLine();
         System.out.println();
         System.out.print("Please introduce the client's CC: ");
-        int cc = checkIntegerInput();
-        absorbLines();
+        int cc = checkUserInput(in::nextInt);
+        in.nextLine();
         System.out.println();
-        return new String[0][0];
+        return new String[0][];
     }
 
     private String[][] addBip() {
         clearConsole();
         System.out.print("Please introduce the equipment's ID: ");
-        int equipment = checkIntegerInput();
-        absorbLines();
+        int equipment = checkUserInput(in::nextInt);
+        in.nextLine();
         System.out.println();
         System.out.print("Please introduce the time and date: ");
         String date = in.nextLine();
-        absorbLines();
         System.out.println();
-        System.out.print("Please introduce the coordinates's ID: ");
-        String coordinates = in.nextLine();
-        absorbLines();
+        System.out.print("Please introduce the coordinates ID: ");
+        int coordinates = checkUserInput(in::nextInt);
         System.out.println();
         System.out.print("Is the alarm triggered?: ");
-        boolean alarm = checkBooleanInput();
-        absorbLines();
+        boolean alarm = checkUserInput(in::nextBoolean);
+        in.nextLine();
         System.out.println();
-        return new String[0][0];
+        return new String[0][];
     }
 
     private String[][] createVehicle() {
         clearConsole();
         System.out.print("Please introduce the Vehicle's registration: ");
-        String registration = in.next();
-        absorbLines();
+        String registration = in.nextLine();
         System.out.println();
         System.out.print("Please introduce the driver's ID: ");
-        int driver = checkIntegerInput();
-        absorbLines();
+        int driver = checkUserInput(in::nextInt);
+        in.nextLine();
         System.out.println();
         System.out.print("Please introduce the equipment's ID: ");
-        int equipment = checkIntegerInput();
-        absorbLines();
+        int equipment = checkUserInput(in::nextInt);
+        in.nextLine();
         System.out.println();
         System.out.print("Please introduce the client the car belongs to: ");
-        int client = checkIntegerInput();
-        absorbLines();
+        int client = checkUserInput(in::nextInt);
+        in.nextLine();
         System.out.println();
         System.out.print("Please introduce the radius: ");
-        int radius = checkIntegerInput();
-        absorbLines();
+        int radius = checkUserInput(in::nextInt);
+        in.nextLine();
         System.out.println();
         System.out.print("Please introduce the latitude: ");
-        float latitude = checkFloatInput();
-        absorbLines();
+        float latitude = checkUserInput(in::nextFloat);
+        in.nextLine();
         System.out.println();
         System.out.print("Please introduce the longitude: ");
-        float longitude = checkFloatInput();
-        absorbLines();
+        float longitude = checkUserInput(in::nextFloat);
+        in.nextLine();
         System.out.println();
-        return new String[0][0];
+        return new String[0][];
     }
 
     private String[][] insertView() {
         clearConsole();
         System.out.print("Please introduce the Vehicle's registration: ");
-        String registration = in.next();
-        absorbLines();
+        String registration = in.nextLine();
         System.out.println();
         System.out.print("Please introduce the driver's name: ");
         String driverName = in.nextLine();
-        absorbLines();
         System.out.println();
         System.out.print("Please introduce the latitude: ");
-        float latitude = checkFloatInput();
-        absorbLines();
+        float latitude = checkUserInput(in::nextFloat);
+        in.nextLine();
         System.out.println();
         System.out.print("Please introduce the longitude: ");
-        float longitude = checkFloatInput();
-        absorbLines();
+        float longitude = checkUserInput(in::nextFloat);
+        in.nextLine();
         System.out.println();
         System.out.print("Please introduce the date and time: ");
         String date = in.nextLine();
-        absorbLines();
         System.out.println();
-        return new String[0][0];
+        return new String[0][];
     }
 
-    private int checkIntegerInput() {
+    private String[][] deactivateClient() {
+        clearConsole();
+        System.out.print("Please introduce the Client's NIF: ");
+        int nif = checkUserInput(in::nextInt);
+        System.out.println();
+        return new String[0][];
+    }
+
+    private <T> T checkUserInput(ParameterFunction<T> func) {
         while(true) {
             try {
-                return in.nextInt();
+                return func.doSomething();
             } catch(InputMismatchException e) {
-                System.out.println("The input requested should be a number!");
-                absorbLines();
+                System.out.println("The input requested should be a " + func.getClass().getSimpleName() + "!");
+                in.nextLine();
             }
-        }
-    }
-
-    private float checkFloatInput() {
-        while(true) {
-            try {
-                return in.nextFloat();
-            } catch(InputMismatchException e) {
-                System.out.println("The input requested should be a number!");
-                absorbLines();
-            }
-        }
-    }
-
-    private boolean checkBooleanInput() {
-        while(true) {
-            try {
-                return in.nextBoolean();
-            } catch(InputMismatchException e) {
-                System.out.println("The input requested should be a boolean!");
-                absorbLines();
-            }
-        }
-    }
-
-    private void absorbLines() {
-        while(in.hasNext()) {
-            in.next();
         }
     }
 
@@ -238,7 +213,7 @@ public class App {
                 break;
             } catch (InputMismatchException inputMismatch) {
                 System.out.println("Sorry could not understand the input.");
-                absorbLines();
+                in.nextLine();
                 try {
                     Thread.sleep(1000);
                 } catch(InterruptedException interrupted) {
@@ -248,6 +223,7 @@ public class App {
                 displayMenu();
             }
         }
+        in.nextLine();
         if(InterfaceOptions.values().length <= chosenOption) return InterfaceOptions.NONE;
         return InterfaceOptions.values()[chosenOption];
     }
@@ -263,8 +239,7 @@ public class App {
 
     private void getPersistenceName() {
         System.out.print("Please introduce the persistence name: ");
-        this.context = new JPAContext(in.next());
-        absorbLines();
+        this.context = new JPAContext(in.nextLine());
     }
 
     public void runApp() {

@@ -4,8 +4,8 @@ import isel.sisinf.grp02.JPAObjects.mappers.ICoordenadas;
 import jakarta.persistence.*;
 
 @Entity
-@NamedQuery(name = "Equipamento_Eletronico.findByKey",
-        query = "SELECT c FROM Coordenadas c WHERE c.id =: key")
+@NamedQuery(name = "Coordenadas.findByKey",
+        query = "SELECT c FROM Coordenadas c WHERE c.id =:key")
 
 @Table(name = "coordenadas")
 public class Coordenadas implements ICoordenadas {

@@ -4,10 +4,10 @@ import isel.sisinf.grp02.JPAObjects.Cliente;
 
 public interface ICliente_Institucional {
 
-    Cliente getDadosCliente();
+    Cliente getCliente();
     String getNomeContacto();
 
 
-    void setDadosCliente(Cliente cliente);
+    void setCliente(Cliente cliente);
     void setNomeContacto(String nomeContacto);
 }
