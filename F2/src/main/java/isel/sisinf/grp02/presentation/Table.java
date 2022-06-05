@@ -1,0 +1,46 @@
+package isel.sisinf.grp02.presentation;
+
+import java.util.Collections;
+import java.util.Scanner;
+
+public class Table {
+    static void createTable(String[][] array, int n_columns, Scanner in) {
+        System.out.println();
+        if(array.length == 0) {
+            System.out.println("(empty)");
+            return;
+        }
+        for(int i = 0; i < array.length; i++) {
+            int[] columnSizes = columnSizesCalculation(array, n_columns);
+
+            for(int j = 0; j < array[i].length; j++) {
+                String fittingString;
+                if(array[i][j].length() < columnSizes[j] && (i == 0 || i == 2 || i == array.length - 1)) {
+                    fittingString = array[i][j] + String.join("",
+                            Collections.nCopies(columnSizes[j] - array[i][j].length(), "-"));
+                }
+                else if(array[i][j].length() < columnSizes[j]) {
+                    fittingString = array[i][j] + String.join("",
+                            Collections.nCopies(columnSizes[j] - array[i][j].length(), " "));
+                }
+                else fittingString = array[i][j];
+                if(j == 0) System.out.print("| " + fittingString);
+                else System.out.print(" | " + fittingString);
+            }
+            System.out.println(" |\n");
+        }
+        in.next();
+    }
+
+    private static int[] columnSizesCalculation(String[][] table, int n_columns) {
+        int[] columnSizes = new int[n_columns];
+
+        for(int i = 0; i < n_columns; i++) {
+            for(int j = 0; j < table.length; j++) {
+                if(columnSizes[i] < table[j][i].length()) columnSizes[i] = table[j][i].length();
+            }
+        }
+
+        return columnSizes;
+    }
+}
