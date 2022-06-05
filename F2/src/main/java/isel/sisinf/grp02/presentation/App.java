@@ -177,7 +177,7 @@ public class App {
             try {
                 return func.doSomething();
             } catch(InputMismatchException e) {
-                System.out.println("The input requested should be a " + func.getClass().getSimpleName() + "!");
+                System.out.println("The input requested is not correct!");
                 in.nextLine();
             }
         }
