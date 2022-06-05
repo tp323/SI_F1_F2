@@ -1,5 +1,6 @@
 package isel.sisinf.grp02.JPAObjects;
 
+import isel.sisinf.grp02.JPAObjects.mappers.ICoordenadas;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
@@ -8,7 +9,7 @@ import java.util.Set;
 @Entity
 @NamedQuery(name="Condutor.findByKey", query="SELECT v FROM Condutor v WHERE v.cc =:key")
 @Table(name = "condutor")
-public class Condutor implements ICondutor{
+public class Condutor implements ICoordenadas.ICondutor {
     @Id
     @Column(name = "cc", nullable = false)
     private Integer cc;

@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 @NamedQuery(name="Cliente_Institucional.findByKey", query="SELECT c FROM Cliente_Institucional c WHERE c.cliente =:key")
 
 
-@Table(name = "cliente")
+@Table(name = "cliente_institucional")
 public class Cliente_Institucional implements ICliente_Institucional {
 
     @Id
@@ -15,7 +15,7 @@ public class Cliente_Institucional implements ICliente_Institucional {
     @JoinColumn(name = "cliente", referencedColumnName = "nif")
     private Cliente cliente;
 
-    @Column(name = "nomeContacto")
+    @Column(name = "nome_contacto")
     private String nomeContacto;
 
 

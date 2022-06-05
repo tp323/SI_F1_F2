@@ -8,25 +8,21 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@NamedQuery(name="Cliente.findByKey", query="SELECT c FROM Cliente c WHERE c.nif =:key")
-
+@NamedQuery(name="Cliente.findByKey",
+        query="SELECT c FROM Cliente c WHERE c.nif =:key")
 
 @Table(name = "cliente")
 public class Cliente implements ICliente {
-
     @Override
     public String toString() {
-        return "Cliente{" +
+        return "Cliente[" +
                 "nif=" + nif +
                 ", nome='" + nome + '\'' +
                 ", morada='" + morada + '\'' +
                 ", telefone='" + telefone + '\'' +
                 ", ativo=" + ativo +
                 ", refCliente=" + refCliente +
-                ", cliente_particular=" + cliente_particular +
-                ", cliente_institucional=" + cliente_institucional +
-                ", veiculos=" + veiculos +
-                '}';
+                ']';
     }
 
     @Id

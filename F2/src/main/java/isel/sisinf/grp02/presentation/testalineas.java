@@ -27,5 +27,7 @@ public class testalineas {
         }
 
     }
-
+    public static void main(String[] args) throws Exception {
+        test();
+    }
 }

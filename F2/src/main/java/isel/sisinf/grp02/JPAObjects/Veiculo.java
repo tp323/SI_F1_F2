@@ -1,5 +1,6 @@
 package isel.sisinf.grp02.JPAObjects;
 
+import isel.sisinf.grp02.JPAObjects.mappers.IEquipamento;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -8,7 +9,7 @@ import java.util.Set;
 @Entity
 @NamedQuery(name="Veiculo.findByKey", query="SELECT v FROM Veiculo v WHERE v.matricula =:key")
 @Table(name = "veiculo")
-public class Veiculo implements IVeiculo{
+public class Veiculo implements IEquipamento.IVeiculo {
 
     @Override
     public String toString() {

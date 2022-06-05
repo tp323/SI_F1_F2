@@ -17,7 +17,6 @@ public class Cliente_Particular implements ICliente_Particular {
         return "Cliente_Particular{" +
                 "cc=" + cc +
                 ", cliente=" + cliente +
-                ", referred=" + referred +
                 '}';
     }
 
