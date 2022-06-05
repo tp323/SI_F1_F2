@@ -7,13 +7,13 @@ import java.util.Set;
 
 public interface IEquipamento {
 
-    Long getID();
-    String getStatus();
+    Long getId();
+    String getEstado();
     Veiculo getVeiculo();
     Set<Bip> getBips();
 
     void setID(Long id);
-    void setStatus(String status);
+    void setEstado(String status);
     void setVeiculo(Veiculo veiculo);
     void setBips(Set<Bip> bips);
 }

@@ -40,21 +40,16 @@ public class Equipamento_Eletronico implements IEquipamento {
     @OneToMany(mappedBy = "equipamento")
     private Set<Bip> bips = new LinkedHashSet<>();
 
+    public Long getId() { return id; }
     @Override
-    public Long getID() { return id; }
-    @Override
-    public String getStatus() { return estado; }
+    public String getEstado() { return estado; }
     @Override
     public Veiculo getVeiculo() { return veiculo; }
     @Override
     public Set<Bip> getBips() { return bips; }
 
-    @Override
     public void setID(Long id) { this.id = id; }
-    @Override
-    public void setStatus(String status) { this.estado = status; }
-    @Override
+    public void setEstado(String status) { this.estado = status; }
     public void setVeiculo(Veiculo veiculo) { this.veiculo = veiculo; }
-    @Override
     public void setBips(Set<Bip> bips) { this.bips = bips; }
 }
