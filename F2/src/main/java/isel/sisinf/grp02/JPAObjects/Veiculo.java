@@ -2,6 +2,7 @@ package isel.sisinf.grp02.JPAObjects;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
 
 
 @Entity
@@ -24,36 +25,30 @@ public class Veiculo implements IVeiculo{
     private String matricula;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "condutor", nullable = false)
+    @JoinColumn(name = "condutor", referencedColumnName = "cc",nullable = false)
     private Condutor condutor;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "equipamento", nullable = false)
+    @JoinColumn(name = "equipamento", referencedColumnName = "id", nullable = false)
     private Equipamento_Eletronico equipamento;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "cliente", nullable = false)
+    @JoinColumn(name = "cliente", referencedColumnName = "nif", nullable = false)
     private Cliente cliente;
+
+    @OneToMany(mappedBy = "veiculo")
+    private Set<ZonaVerde> zonasVerdes;
 
     @Column(name = "alarms", nullable = false)
     private Integer alarms;
 
-    public String getMatricula() {
-        return matricula;
-    }
-    public Condutor getCondutor() {
-        return condutor;
-    }
-    public Equipamento_Eletronico getEquipamento() {
-        return equipamento;
-    }
-    public Cliente getCliente() {
-        return cliente;
-    }
-    public Integer getAlarms() {
-        return alarms;
-    }
+    public String getMatricula() { return matricula; }
+    public Condutor getCondutor() { return condutor; }
+    public Equipamento_Eletronico getEquipamento() { return equipamento; }
+    public Cliente getCliente() { return cliente; }
+    public Integer getAlarms() { return alarms; }
 
+    public Set<ZonaVerde> getZonasVerdes() { return zonasVerdes; }
     public void setMatricula(String matricula) {this.matricula = matricula;}
     public void setCondutor(Condutor condutor) {
         this.condutor = condutor;
@@ -67,5 +62,6 @@ public class Veiculo implements IVeiculo{
     public void setAlarms(Integer alarms) {
         this.alarms = alarms;
     }
+    public void setZonasVerdes(Set<ZonaVerde> zonasVerdes) { this.zonasVerdes = zonasVerdes; }
 
 }
