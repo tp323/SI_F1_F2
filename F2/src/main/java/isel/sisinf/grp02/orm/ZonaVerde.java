@@ -1,6 +1,6 @@
-package isel.sisinf.grp02.JPAObjects;
+package isel.sisinf.grp02.orm;
 
-import isel.sisinf.grp02.JPAObjects.mappers.IZonaVerde;
+import isel.sisinf.grp02.orm.interfaces.IZonaVerde;
 import jakarta.persistence.*;
 
 @Entity

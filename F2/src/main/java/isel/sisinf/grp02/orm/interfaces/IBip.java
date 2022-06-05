@@ -1,7 +1,7 @@
-package isel.sisinf.grp02.JPAObjects.mappers;
+package isel.sisinf.grp02.orm.interfaces;
 
-import isel.sisinf.grp02.JPAObjects.Coordenadas;
-import isel.sisinf.grp02.JPAObjects.Equipamento_Eletronico;
+import isel.sisinf.grp02.orm.Coordenadas;
+import isel.sisinf.grp02.orm.Equipamento_Eletronico;
 
 import java.sql.Timestamp;
 

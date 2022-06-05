@@ -1,7 +1,7 @@
-package isel.sisinf.grp02.JPAObjects;
+package isel.sisinf.grp02.orm;
 
 
-import isel.sisinf.grp02.JPAObjects.mappers.ICliente;
+import isel.sisinf.grp02.orm.interfaces.ICliente;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;

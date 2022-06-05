@@ -1,6 +1,6 @@
-package isel.sisinf.grp02.JPAObjects;
+package isel.sisinf.grp02.orm;
 
-import isel.sisinf.grp02.JPAObjects.mappers.ICliente_Institucional;
+import isel.sisinf.grp02.orm.interfaces.ICliente_Institucional;
 import jakarta.persistence.*;
 
 @Entity

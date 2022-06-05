@@ -1,6 +1,6 @@
 package isel.sisinf.grp02.repositories;
 
-import isel.sisinf.grp02.JPAObjects.Veiculo;
+import isel.sisinf.grp02.orm.Veiculo;
 
 import java.util.Collection;
 

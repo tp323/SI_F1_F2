@@ -1,8 +1,8 @@
 package isel.sisinf.grp02;
 
-import isel.sisinf.grp02.JPAObjects.Cliente;
-import isel.sisinf.grp02.JPAObjects.Equipamento_Eletronico;
-import isel.sisinf.grp02.JPAObjects.Veiculo;
+import isel.sisinf.grp02.orm.Cliente;
+import isel.sisinf.grp02.orm.Equipamento_Eletronico;
+import isel.sisinf.grp02.orm.Veiculo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -12,15 +12,13 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  * Unit test for simple App.
  */
 public class AppTest {
     @Test
     public void testConnection() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("postgres");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("sijpa");
         EntityManager em = emf.createEntityManager();
 
         try {

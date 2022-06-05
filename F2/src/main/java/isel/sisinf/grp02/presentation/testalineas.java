@@ -1,6 +1,7 @@
 package isel.sisinf.grp02.presentation;
 
-import isel.sisinf.grp02.repositories.JPAContext;
+import isel.sisinf.grp02.data_acess.JPAContext;
+import isel.sisinf.grp02.orm.Cliente;
 
 public class testalineas {
     public static void test() throws Exception {
@@ -13,6 +14,12 @@ public class testalineas {
 
 
             System.out.println(ctx.fromCliente(111222333));
+            Cliente c = new Cliente();
+            c.setNif(254256431);
+            c.setMorada("Aldeia");
+            c.setNome("Rapaz da Aldeia");
+            c.setTelefone("923453432");
+            System.out.println(ctx.createCliente(c));
 
 
             ctx.commit();

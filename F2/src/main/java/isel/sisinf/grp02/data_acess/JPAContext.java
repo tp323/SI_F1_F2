@@ -1,18 +1,16 @@
-package isel.sisinf.grp02.repositories;
+package isel.sisinf.grp02.data_acess;
 
 import java.util.Collection;
 import java.util.List;
 
 
-import isel.sisinf.grp02.JPAObjects.*;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.Query;
+import isel.sisinf.grp02.data_mappers.*;
+import isel.sisinf.grp02.orm.*;
+import isel.sisinf.grp02.repositories.*;
+import jakarta.persistence.*;
 
 
-public class JPAContext implements IContext{
+public class JPAContext implements IContext {
 
 
     private EntityManagerFactory _emf;
@@ -27,6 +25,13 @@ public class JPAContext implements IContext{
 
     private IVeiculoRepository _veiculoRepository;
     private ICondutorRepository _condutorRepository;
+
+    private IClienteMapper _clienteMapper;
+    private ICliente_ParticularMapper _clienteParticularMapper;
+    private ICliente_InstitucionalMapper _clienteInstitucionalMapper;
+
+    private IVeiculoMapper _veiculoMapper;
+    private ICondutorMapper _condutorMapper;
 
 
     protected List helperQueryImpl(String jpql, Object... params) {
@@ -120,6 +125,136 @@ public class JPAContext implements IContext{
         }
     }
 
+    protected class ClienteMapper implements IClienteMapper {
+
+        @Override
+        public Integer create(Cliente entity) {
+            beginTransaction();
+            _em.persist(entity);
+            commit();
+            return entity.getNif();
+        }
+
+        @Override
+        public Cliente read(Cliente id) {
+            return _em.find(Cliente.class, id);
+        }
+
+        @Override
+        public Integer update(Cliente entity) {
+            beginTransaction();
+            Cliente c = _em.find(Cliente.class, entity.getNif(), LockModeType.PESSIMISTIC_WRITE);
+            if(c == null) {
+                System.out.println("Cliente not found.");
+                return null;
+            }
+            c.setMorada(entity.getMorada());
+            commit();
+            return entity.getNif();
+        }
+
+        @Override
+        public Integer delete(Cliente entity) {
+            beginTransaction();
+            Cliente c = _em.find(Cliente.class, entity.getNif(), LockModeType.PESSIMISTIC_WRITE);
+            if(c == null) {
+                System.out.println("Cliente not found.");
+                return null;
+            }
+            _em.remove(c);
+            commit();
+            return c.getNif();
+        }
+    }
+    protected class ClienteParticularMapper implements ICliente_ParticularMapper {
+
+        @Override
+        public Long create(Cliente_Particular entity) {
+            return null;
+        }
+
+        @Override
+        public Cliente_Particular read(Cliente_Particular id) {
+            return null;
+        }
+
+        @Override
+        public Long update(Cliente_Particular entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Cliente_Particular entity) {
+            return null;
+        }
+    }
+
+    protected class ClienteInstitucionalMapper implements ICliente_InstitucionalMapper {
+
+        @Override
+        public Long create(Cliente_Institucional entity) {
+            return null;
+        }
+
+        @Override
+        public Cliente_Institucional read(Cliente_Institucional id) {
+            return null;
+        }
+
+        @Override
+        public Long update(Cliente_Institucional entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Cliente_Institucional entity) {
+            return null;
+        }
+    }
+    protected class VeiculoMapper implements IVeiculoMapper {
+        @Override
+        public Long create(Veiculo entity) {
+            return null;
+        }
+
+        @Override
+        public Veiculo read(Veiculo id) {
+            return null;
+        }
+
+        @Override
+        public Long update(Veiculo entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Veiculo entity) {
+            return null;
+        }
+    }
+
+    protected class CondutorMapper implements ICondutorMapper {
+        @Override
+        public Long create(Condutor entity) {
+            return null;
+        }
+
+        @Override
+        public Condutor read(Condutor id) {
+            return null;
+        }
+
+        @Override
+        public Long update(Condutor entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Condutor entity) {
+            return null;
+        }
+    }
+
 
     @Override
     public void beginTransaction() {
@@ -143,7 +278,7 @@ public class JPAContext implements IContext{
     @Override
     public void flush() {_em.flush();}
 
-    public JPAContext() {this("postgres");}
+    public JPAContext() {this("sijpa");}
 
     public JPAContext(String persistentCtx) {
         super();
@@ -156,6 +291,13 @@ public class JPAContext implements IContext{
 
         this._veiculoRepository = new VeiculoRepository();
         this._condutorRepository = new CondutorRepository();
+
+        this._clienteMapper = new ClienteMapper();
+        this._clienteParticularMapper = new ClienteParticularMapper();
+        this._clienteInstitucionalMapper = new ClienteInstitucionalMapper();
+
+        this._veiculoMapper = new VeiculoMapper();
+        this._condutorMapper = new CondutorMapper();
     }
 
 
@@ -185,6 +327,8 @@ public class JPAContext implements IContext{
     @Override
     public ICondutorRepository getCondutores() {return _condutorRepository;}
 
+    public IClienteMapper getCliente() {return _clienteMapper;}
+
 
     //Example using a table function
     //Do note that, in this case, the implementation is eager, thus less efficient and error prone.
@@ -196,5 +340,14 @@ public class JPAContext implements IContext{
         q.execute();
         List<Object[]> tmp = (List<Object[]>) q.getResultList();*/
         return getClientes().findByKey(nif);
+    }
+
+    //Just an example of what getting a single object with mapper could be
+    public int createCliente(Cliente cliente) {
+        return getCliente().create(cliente);
+    }
+
+    public int deleteCliente(Cliente cliente) {
+        return getCliente().delete(cliente);
     }
 }

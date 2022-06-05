@@ -1,8 +1,8 @@
-package isel.sisinf.grp02.JPAObjects.mappers;
+package isel.sisinf.grp02.orm.interfaces;
 
-import isel.sisinf.grp02.JPAObjects.Bip;
-import isel.sisinf.grp02.JPAObjects.Veiculo;
-import isel.sisinf.grp02.JPAObjects.ZonaVerde;
+import isel.sisinf.grp02.orm.Bip;
+import isel.sisinf.grp02.orm.Veiculo;
+import isel.sisinf.grp02.orm.ZonaVerde;
 
 import java.util.Set;
 

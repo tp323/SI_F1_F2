@@ -1,6 +1,6 @@
 package isel.sisinf.grp02.repositories;
 
-import isel.sisinf.grp02.JPAObjects.Cliente_Particular;
+import isel.sisinf.grp02.orm.Cliente_Particular;
 
 import java.util.Collection;
 

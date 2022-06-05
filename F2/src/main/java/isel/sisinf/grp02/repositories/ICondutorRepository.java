@@ -1,6 +1,6 @@
 package isel.sisinf.grp02.repositories;
 
-import isel.sisinf.grp02.JPAObjects.Condutor;
+import isel.sisinf.grp02.orm.Condutor;
 
 import java.util.Collection;
 

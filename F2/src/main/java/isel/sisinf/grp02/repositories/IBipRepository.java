@@ -1,6 +1,6 @@
 package isel.sisinf.grp02.repositories;
 
-import isel.sisinf.grp02.JPAObjects.Bip;
+import isel.sisinf.grp02.orm.Bip;
 
 import java.util.Collection;
 
