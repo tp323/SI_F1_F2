@@ -9,13 +9,15 @@ import java.util.Set;
 @NamedQuery(name="Veiculo.findByKey", query="SELECT v FROM Veiculo v WHERE v.matricula =:key")
 @Table(name = "veiculo")
 public class Veiculo implements IVeiculo{
+
     @Override
     public String toString() {
         return "Veiculo{" +
-                "matricula='" + matricula +
+                "matricula='" + matricula + '\'' +
                 ", condutor=" + condutor +
                 ", equipamento=" + equipamento +
                 ", cliente=" + cliente +
+                ", zonasVerdes=" + zonasVerdes +
                 ", alarms=" + alarms +
                 '}';
     }
