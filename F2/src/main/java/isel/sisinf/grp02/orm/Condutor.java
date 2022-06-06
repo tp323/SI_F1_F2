@@ -8,6 +8,8 @@ import java.util.Set;
 
 @Entity
 @NamedQuery(name="Condutor.findByKey", query="SELECT v FROM Condutor v WHERE v.cc =:key")
+@NamedQuery(name="Condutor.findAll",
+        query="SELECT c FROM Condutor c")
 @Table(name = "condutor")
 public class Condutor implements ICoordenadas.ICondutor {
     @Id

@@ -49,6 +49,11 @@ public class JPAContext implements IContext {
                     .setParameter("key", key)
                     .getSingleResult();
         }
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Cliente.findAll",Cliente.class)
+                    .getResultList();
+        }
 
 
         @SuppressWarnings("unchecked")
@@ -72,6 +77,11 @@ public class JPAContext implements IContext {
         @Override
         public Collection<Cliente_Particular> find(String jpql, Object... params) {return helperQueryImpl( jpql, params);}
 
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Cliente.findAll", Cliente.class)
+                    .getResultList();
+        }
     }
 
     protected class ClienteInstitucionalRepository implements ICliente_InstitucionalRepository {
@@ -88,6 +98,11 @@ public class JPAContext implements IContext {
         @Override
         public Collection<Cliente_Institucional> find(String jpql, Object... params) {return helperQueryImpl( jpql, params);}
 
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Cliente.findAll", Cliente.class)
+                    .getResultList();
+        }
     }
     protected class VeiculoRepository implements IVeiculoRepository {
 
@@ -101,8 +116,13 @@ public class JPAContext implements IContext {
         @SuppressWarnings("unchecked")
         @Override
         public Collection<Veiculo> find(String jpql, Object... params) {
-
             return helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Cliente.findAll",Cliente.class)
+                    .getResultList();
         }
     }
 
@@ -119,8 +139,12 @@ public class JPAContext implements IContext {
         @SuppressWarnings("unchecked")
         @Override
         public Collection<Condutor> find(String jpql, Object... params) {
-
             return helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List findAll() {
+            return null;
         }
     }
 

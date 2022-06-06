@@ -11,18 +11,18 @@ public class ReposTest {
     private final JPAContext ctx = new JPAContext();
 
     @Test
-    public void ClientFindbyKey() {
-        assertNotNull(ctx.getClientes().findByKey(111222333));
+    public void ClientRepoExistsWithData() {
+        assertNotNull(ctx.getClientes().findAll());
     }
 
     @Test
-    public void ClienteParticularFindbyKey() {
-        assertNotNull(ctx.getClientesParticulares().findByKey(121222333));
+    public void ClienteParticularRepoExistsWithData() {
+        assertNotNull(ctx.getClientesParticulares().findAll());
     }
 
     @Test
-    public void VeiculoFindbyKey() {
-        assertNotNull(ctx.getVeiculos().findByKey("FF17FF"));
+    public void VeiculoRepoExistsWithData() {
+        assertNotNull(ctx.getVeiculos().findAll());
     }
 
 

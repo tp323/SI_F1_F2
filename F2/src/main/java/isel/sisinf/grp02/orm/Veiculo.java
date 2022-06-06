@@ -8,6 +8,9 @@ import java.util.Set;
 
 @Entity
 @NamedQuery(name="Veiculo.findByKey", query="SELECT v FROM Veiculo v WHERE v.matricula =:key")
+@NamedQuery(name="Veiculo.findAll",
+        query="SELECT v FROM Veiculo v")
+
 @Table(name = "veiculo")
 public class Veiculo implements IEquipamento.IVeiculo {
 
