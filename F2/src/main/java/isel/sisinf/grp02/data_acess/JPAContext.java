@@ -12,7 +12,6 @@ import jakarta.persistence.*;
 
 public class JPAContext implements IContext {
 
-
     private EntityManagerFactory _emf;
     private EntityManager _em;
 
@@ -148,7 +147,11 @@ public class JPAContext implements IContext {
                 System.out.println("Cliente not found.");
                 return null;
             }
+            c.setNome(entity.getNome());
             c.setMorada(entity.getMorada());
+            c.setTelefone(entity.getTelefone());
+            c.setClienteParticular(entity.getClienteParticular());
+            c.setRefCliente(entity.getRefCliente());
             commit();
             return entity.getNif();
         }
@@ -169,8 +172,11 @@ public class JPAContext implements IContext {
     protected class ClienteParticularMapper implements ICliente_ParticularMapper {
 
         @Override
-        public Long create(Cliente_Particular entity) {
-            return null;
+        public Integer create(Cliente_Particular entity) {
+            beginTransaction();
+            _em.persist(entity);
+            commit();
+            return entity.getCC();
         }
 
         @Override
@@ -179,13 +185,30 @@ public class JPAContext implements IContext {
         }
 
         @Override
-        public Long update(Cliente_Particular entity) {
-            return null;
+        public Integer update(Cliente_Particular entity) {
+            beginTransaction();
+            Cliente_Particular cp = _em.find(Cliente_Particular.class, entity.getCC(), LockModeType.PESSIMISTIC_WRITE);
+            if(cp == null) {
+                System.out.println("Cliente Particular not found.");
+                return null;
+            }
+            cp.setCliente(entity.getCliente());
+            cp.setReferred(entity.getReferred());
+            commit();
+            return entity.getCC();
         }
 
         @Override
-        public Long delete(Cliente_Particular entity) {
-            return null;
+        public Integer delete(Cliente_Particular entity) {
+            beginTransaction();
+            Cliente_Particular c = _em.find(Cliente_Particular.class, entity.getCC(), LockModeType.PESSIMISTIC_WRITE);
+            if(c == null) {
+                System.out.println("Cliente Particular not found.");
+                return null;
+            }
+            _em.remove(c);
+            commit();
+            return c.getCC();
         }
     }
 
@@ -278,7 +301,11 @@ public class JPAContext implements IContext {
     @Override
     public void flush() {_em.flush();}
 
-    public JPAContext() {this("postgres");}
+    public JPAContext() {
+        /*public String DB_NAME = "MONGO_CONNECTION";
+        this(DB_NAME);*/
+        this("postgres");
+    }
 
     public JPAContext(String persistentCtx) {
         super();
@@ -302,7 +329,8 @@ public class JPAContext implements IContext {
 
     @Override
     public void rollback(){
-        _tx.rollback();
+        if(_tx != null)
+            _tx.rollback();
     }
 
 
@@ -334,25 +362,26 @@ public class JPAContext implements IContext {
 
     public IClienteMapper getCliente() {return _clienteMapper;}
 
+    public ICliente_ParticularMapper getClienteParticular() {return _clienteParticularMapper;}
 
-    //Example using a table function
-    //Do note that, in this case, the implementation is eager, thus less efficient and error prone.
-    //In such cases, we should use proxies, by implementing the virtual proxy pattern.
-    //With simply queries, like thi one, it is better to use  NamedQueries.
-    public Cliente fromCliente(int nif) {
-        /*StoredProcedureQuery q = _em.createNamedStoredProcedureQuery("namedfromCountry");
-        q.setParameter(1, country);
-        q.execute();
-        List<Object[]> tmp = (List<Object[]>) q.getResultList();*/
-        return getClientes().findByKey(nif);
-    }
 
-    //Just an example of what getting a single object with mapper could be
     public int createCliente(Cliente cliente) {
         return getCliente().create(cliente);
     }
 
+    public int createClienteParticular(Cliente_Particular cliente_particular) {
+        return getClienteParticular().create(cliente_particular);
+    }
+
+    public int updateCliente(Cliente cliente) {
+        return getCliente().update(cliente);
+    }
+
     public int deleteCliente(Cliente cliente) {
         return getCliente().delete(cliente);
+    }
+
+    public int deleteClienteParticular(Cliente_Particular cliente_particular) {
+        return getClienteParticular().delete(cliente_particular);
     }
 }
