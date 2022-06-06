@@ -12,19 +12,16 @@ public class testalineas {
 
             ctx.beginTransaction();
 
-
             System.out.println(ctx.fromCliente(111222333));
             Cliente c = new Cliente();
             c.setNif(254256431);
             c.setMorada("Aldeia");
             c.setNome("Rapaz da Aldeia");
-            c.setTelefone("923453432");
+            c.setTelefone(923453432);
             System.out.println(ctx.createCliente(c));
 
 
             ctx.commit();
-
-
 
         }
         catch(Exception e)

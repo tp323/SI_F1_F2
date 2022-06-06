@@ -10,7 +10,7 @@ public interface ICliente {
     int getNif();
     String getNome();
     String getMorada();
-    String getTelefone();
+    int getTelefone();
     Boolean getAtivo();
     Cliente_Particular getRefCliente();
     Cliente_Particular getClienteParticular();
@@ -20,7 +20,7 @@ public interface ICliente {
     void setNif(Integer nif);
     void setNome(String nome);
     void setMorada(String morada);
-    void setTelefone(String telefone);
+    void setTelefone(int telefone);
     void setRefCliente(Cliente_Particular refCliente);
     void setClienteParticular(Cliente_Particular cliente_particular);
     void setClienteInstitucional(Cliente_Institucional cliente_institucional);

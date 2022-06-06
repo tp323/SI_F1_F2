@@ -278,7 +278,7 @@ public class JPAContext implements IContext {
     @Override
     public void flush() {_em.flush();}
 
-    public JPAContext() {this("sijpa");}
+    public JPAContext() {this("postgres");}
 
     public JPAContext(String persistentCtx) {
         super();
@@ -298,6 +298,11 @@ public class JPAContext implements IContext {
 
         this._veiculoMapper = new VeiculoMapper();
         this._condutorMapper = new CondutorMapper();
+    }
+
+    @Override
+    public void rollback(){
+        _tx.rollback();
     }
 
 

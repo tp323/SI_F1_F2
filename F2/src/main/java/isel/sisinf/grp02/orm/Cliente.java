@@ -13,6 +13,23 @@ import java.util.Set;
 
 @Table(name = "cliente")
 public class Cliente implements ICliente {
+    public Cliente() {}
+
+    public Cliente(int nif, String nome, String morada, int telefone, Boolean ativo) {
+        this.nif = nif;
+        this.nome = nome;
+        this.morada = morada;
+        this.telefone = telefone;
+        this.ativo = ativo;
+    }
+
+    public Cliente(int nif, String nome, String morada, int telefone) {
+        this.nif = nif;
+        this.nome = nome;
+        this.morada = morada;
+        this.telefone = telefone;
+    }
+
     @Override
     public String toString() {
         return "Cliente[" +
@@ -25,18 +42,20 @@ public class Cliente implements ICliente {
                 ']';
     }
 
+
+
     @Id
     @Column(name = "nif", nullable = false)
     private int nif;
 
-    @Column(name = "nome", nullable = false, length = 25)
+    @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "morada", nullable = false, length = 150)
+    @Column(name = "morada", nullable = false)
     private String morada;
 
     @Column(name = "telefone", nullable = false, length = 10)
-    private String telefone;
+    private int telefone;
 
     @Column(name = "ativo", nullable = false)
     private Boolean ativo = false;
@@ -57,7 +76,7 @@ public class Cliente implements ICliente {
     public int getNif() {return nif;}
     public String getNome() {return nome;}
     public String getMorada() {return morada;}
-    public String getTelefone() {return telefone;}
+    public int getTelefone() {return telefone;}
     public Boolean getAtivo() {return ativo;}
     public Cliente_Particular getRefCliente() {return refCliente;}
     public Cliente_Particular getClienteParticular() { return cliente_particular; }
@@ -68,7 +87,7 @@ public class Cliente implements ICliente {
     public void setNif(Integer nif) {this.nif = nif;}
     public void setNome(String nome) {this.nome = nome;}
     public void setMorada(String morada) {this.morada = morada;}
-    public void setTelefone(String telefone) {this.telefone = telefone;}
+    public void setTelefone(int telefone) {this.telefone = telefone;}
     public void setRefCliente(Cliente_Particular refCliente) {this.refCliente = refCliente;}
     public void setClienteParticular(Cliente_Particular cliente_particular) { this.cliente_particular = cliente_particular; }
     public void setClienteInstitucional(Cliente_Institucional cliente_institucional) { this.cliente_institucional = cliente_institucional; }
