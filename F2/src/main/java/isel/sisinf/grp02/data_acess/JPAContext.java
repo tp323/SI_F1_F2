@@ -353,8 +353,11 @@ public class JPAContext implements IContext {
 
     @Override
     public void rollback(){
-        if(_tx != null)
+        if(_txcount==0 && _tx != null) {
             _tx.rollback();
+            _tx = null;
+        }
+
     }
 
 

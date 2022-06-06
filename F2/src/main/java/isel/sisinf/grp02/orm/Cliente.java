@@ -57,7 +57,7 @@ public class Cliente implements ICliente {
     @Column(name = "morada", nullable = false)
     private String morada;
 
-    @Column(name = "telefone", nullable = false, length = 10)/*** passar para 13 ***/
+    @Column(name = "telefone", nullable = false, length = 10) /*** passar para length 13 na DB ***/
     private int telefone;
 
     @Column(name = "ativo", nullable = false)
