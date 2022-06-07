@@ -81,13 +81,13 @@ public class Cliente implements ICliente {
     @JoinColumn(name = "ref_cliente")
     private Cliente_Particular refCliente;
 
-    @OneToOne(mappedBy = "cliente", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "cliente")
     private Cliente_Particular cliente_particular;
 
-    @OneToOne(mappedBy = "cliente", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "cliente")
     private Cliente_Institucional cliente_institucional;
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "cliente")
     private Set<Veiculo> veiculos = new LinkedHashSet<>();
 
     public int getNif() {return nif;}
