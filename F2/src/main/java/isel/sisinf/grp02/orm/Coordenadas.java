@@ -36,7 +36,7 @@ public class Coordenadas implements ICoordenadas {
     private int raio;
 
     @OneToOne(mappedBy = "coordenadas")
-    private ZonaVerde zona;
+    private Zona_Verde zona;
 
     @OneToOne(mappedBy = "coordenadas")
     private Bip bip;
@@ -45,12 +45,12 @@ public class Coordenadas implements ICoordenadas {
     public Float getLatitude() { return latitude; }
     public Float getLongitude() { return longitude; }
     public Bip getBip() { return bip; }
-    public ZonaVerde getZonaVerde() { return zona; }
+    public Zona_Verde getZonaVerde() { return zona; }
 
 
     public void setId(Long id) { this.id = id; }
     public void setLatitude(Float latitude) { this.latitude = latitude; }
     public void setLongitude(Float longitude) { this.longitude = longitude; }
     public void setBip(Bip bip) { this.bip = bip; }
-    public void setZonaVerde(ZonaVerde zona) { this.zona = zona; }
+    public void setZonaVerde(Zona_Verde zona) { this.zona = zona; }
 }

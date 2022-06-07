@@ -4,11 +4,13 @@ import isel.sisinf.grp02.orm.interfaces.IZonaVerde;
 import jakarta.persistence.*;
 
 @Entity
-@NamedQuery(name = "ZonaVerde.findByKey",
-        query = "SELECT c FROM ZonaVerde c WHERE c.id =:key")
+@NamedQuery(name = "Zona_Verde.findByKey",
+        query = "SELECT c FROM Zona_Verde c WHERE c.id =:key")
+@NamedQuery(name="Zona_Verde.findAll",
+        query="SELECT v FROM Zona_Verde v")
 
 @Table(name = "coordenadas")
-public class ZonaVerde implements IZonaVerde {
+public class Zona_Verde implements IZonaVerde {
 
     @Override
     public String toString() {

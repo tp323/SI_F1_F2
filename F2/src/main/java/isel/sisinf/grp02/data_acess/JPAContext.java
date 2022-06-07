@@ -21,16 +21,19 @@ public class JPAContext implements IContext {
     private IClienteRepository _clienteRepository;
     private ICliente_ParticularRepository _clienteParticularRepository;
     private ICliente_InstitucionalRepository _clienteInstitucionalRepository;
-
+    private IEquipamentoRepository _equipamentoRepository;
     private IVeiculoRepository _veiculoRepository;
     private ICondutorRepository _condutorRepository;
+    private IZonaVerdeRepository _zonaVerdeRepository;
 
     private IClienteMapper _clienteMapper;
     private ICliente_ParticularMapper _clienteParticularMapper;
     private ICliente_InstitucionalMapper _clienteInstitucionalMapper;
-
+    private IEquipamentoMapper _equipamentoMapper;
     private IVeiculoMapper _veiculoMapper;
     private ICondutorMapper _condutorMapper;
+    private IZonaVerdeMapper _zonaVerdeMapper;
+
 
 
     protected List helperQueryImpl(String jpql, Object... params) {
@@ -104,6 +107,28 @@ public class JPAContext implements IContext {
                     .getResultList();
         }
     }
+    protected class EquipamentoRepository implements IEquipamentoRepository {
+
+        @Override
+        public Equipamento_Eletronico findByKey(Long key) {
+            return _em.createNamedQuery("Equipamento_Eletronico.findByKey",Equipamento_Eletronico.class)
+                    .setParameter("key", key)
+                    .getSingleResult();
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Collection<Equipamento_Eletronico> find(String jpql, Object... params) {
+            return helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Equipamento_Eletronico.findAll",Cliente.class)
+                    .getResultList();
+        }
+    }
+
     protected class VeiculoRepository implements IVeiculoRepository {
 
         @Override
@@ -144,7 +169,30 @@ public class JPAContext implements IContext {
 
         @Override
         public List findAll() {
-            return null;
+            return _em.createNamedQuery("Condutor.findAll",Condutor.class)
+                    .getResultList();
+        }
+    }
+    protected class ZonaVerdeRepository implements IZonaVerdeRepository {
+
+        @Override
+        public Zona_Verde findByKey(Long key) {
+            return _em.createNamedQuery("Zona_Verde.findByKey",Zona_Verde.class)
+                    .setParameter("key", key)
+                    .getSingleResult();
+        }
+
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Collection<Zona_Verde> find(String jpql, Object... params) {
+            return helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Zona_Verde.findAll",Condutor.class)
+                    .getResultList();
         }
     }
 
@@ -258,6 +306,27 @@ public class JPAContext implements IContext {
             return null;
         }
     }
+    protected class EquipamentoMapper implements IEquipamentoMapper {
+        @Override
+        public Long create(Equipamento_Eletronico entity) {
+            return null;
+        }
+
+        @Override
+        public Equipamento_Eletronico read(Equipamento_Eletronico id) {
+            return null;
+        }
+
+        @Override
+        public Long update(Equipamento_Eletronico entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Equipamento_Eletronico entity) {
+            return null;
+        }
+    }
     protected class VeiculoMapper implements IVeiculoMapper {
         @Override
         public Long create(Veiculo entity) {
@@ -302,6 +371,28 @@ public class JPAContext implements IContext {
         }
     }
 
+    protected class ZonaVerdeMapper implements IZonaVerdeMapper {
+        @Override
+        public Long create(Zona_Verde entity) {
+            return null;
+        }
+
+        @Override
+        public Zona_Verde read(Zona_Verde id) {
+            return null;
+        }
+
+        @Override
+        public Long update(Zona_Verde entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Zona_Verde entity) {
+            return null;
+        }
+    }
+
 
     @Override
     public void beginTransaction() {
@@ -339,16 +430,18 @@ public class JPAContext implements IContext {
         this._clienteRepository = new ClienteRepository();
         this._clienteParticularRepository = new ClienteParticularRepository();
         this._clienteInstitucionalRepository = new ClienteInstitucionalRepository();
-
+        this._equipamentoRepository = new EquipamentoRepository();
         this._veiculoRepository = new VeiculoRepository();
         this._condutorRepository = new CondutorRepository();
+        this._zonaVerdeRepository = new ZonaVerdeRepository();
 
         this._clienteMapper = new ClienteMapper();
         this._clienteParticularMapper = new ClienteParticularMapper();
         this._clienteInstitucionalMapper = new ClienteInstitucionalMapper();
-
+        this._equipamentoMapper = new EquipamentoMapper();
         this._veiculoMapper = new VeiculoMapper();
         this._condutorMapper = new CondutorMapper();
+        this._zonaVerdeMapper = new ZonaVerdeMapper();
     }
 
     @Override
@@ -357,7 +450,6 @@ public class JPAContext implements IContext {
             _tx.rollback();
             _tx = null;
         }
-
     }
 
 
@@ -378,14 +470,18 @@ public class JPAContext implements IContext {
     @Override
     public ICliente_InstitucionalRepository getClientesInstitucionais(){return _clienteInstitucionalRepository;}
 
+    @Override
+    public IEquipamentoRepository getEquipamentos() {return _equipamentoRepository;}
 
     @Override
-    public IVeiculoRepository getVeiculos() {
-        return _veiculoRepository;
-    }
+    public IVeiculoRepository getVeiculos() {return _veiculoRepository;}
 
     @Override
     public ICondutorRepository getCondutores() {return _condutorRepository;}
+
+    @Override
+    public IZonaVerdeRepository getZonasVerdes() {return _zonaVerdeRepository;}
+
 
     public IClienteMapper getCliente() {return _clienteMapper;}
 

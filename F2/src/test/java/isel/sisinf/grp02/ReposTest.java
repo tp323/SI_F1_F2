@@ -11,9 +11,7 @@ public class ReposTest {
     private final JPAContext ctx = new JPAContext();
 
     @Test
-    public void ClientRepoExistsWithData() {
-        assertNotNull(ctx.getClientes().findAll());
-    }
+    public void ClientRepoExistsWithData() {assertNotNull(ctx.getClientes().findAll());}
 
     @Test
     public void ClienteParticularRepoExistsWithData() {
@@ -21,9 +19,23 @@ public class ReposTest {
     }
 
     @Test
+    public void ClienteInstitucionalRepoExistsWithData() {
+        assertNotNull(ctx.getClientesInstitucionais().findAll());
+    }
+
+    @Test
     public void VeiculoRepoExistsWithData() {
         assertNotNull(ctx.getVeiculos().findAll());
     }
 
+    @Test
+    public void EquipamentosRepoExistsWithData() {
+        assertNotNull(ctx.getEquipamentos().findAll());
+    }
 
+    @Test
+    public void CondutoresRepoExistsWithData() {assertNotNull(ctx.getCondutores().findAll());}
+
+    @Test
+    public void ZonasVerdesRepoExistsWithData() {assertNotNull(ctx.getZonasVerdes().findAll());}
 }
