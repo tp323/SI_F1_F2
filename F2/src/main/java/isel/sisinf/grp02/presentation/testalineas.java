@@ -13,7 +13,8 @@ public class testalineas {
             ctx.beginTransaction();
             //dCreate(ctx);
             //dDelete(ctx);
-            dUpdate(ctx);
+            //dUpdate(ctx);
+            ctx.procedure_createVehicle("123456", 111111115, 3, 100000000, 01, 01 ,01);
             ctx.commit();
         }
         catch(Exception e) {
