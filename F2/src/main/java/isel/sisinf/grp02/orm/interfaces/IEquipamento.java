@@ -15,4 +15,20 @@ public interface IEquipamento {
     void setEstado(String status);
     void setVeiculo(Veiculo veiculo);
     void setBips(Set<Bip> bips);
+
+    interface IVeiculo {
+        String getMatricula();
+        Condutor getCondutor();
+        Equipamento_Eletronico getEquipamento();
+        Cliente getCliente();
+        Integer getAlarms();
+        Set<Zona_Verde> getZonasVerdes();
+
+        void setMatricula(String matricula);
+        void setCondutor(Condutor condutor);
+        void setEquipamento(Equipamento_Eletronico equipamento);
+        void setCliente(Cliente cliente);
+        void setAlarms(Integer alarms);
+        void setZonasVerdes(Set<Zona_Verde> zonasVerdes);
+    }
 }

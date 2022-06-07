@@ -5,6 +5,7 @@ import isel.sisinf.grp02.data_acess.JPAContext;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ReposTest {
     private final JPAContext ctx = new JPAContext();

@@ -88,7 +88,7 @@ public class JPAContext implements IContext {
 
         @Override
         public List findAll() {
-            return _em.createNamedQuery("Cliente_Particular.findAll", Cliente_Particular.class)
+            return _em.createNamedQuery("Cliente.findAll", Cliente.class)
                     .getResultList();
         }
     }
@@ -109,7 +109,7 @@ public class JPAContext implements IContext {
 
         @Override
         public List findAll() {
-            return _em.createNamedQuery("Cliente_Institucional.findAll", Cliente_Institucional.class)
+            return _em.createNamedQuery("Cliente.findAll", Cliente.class)
                     .getResultList();
         }
     }
@@ -131,7 +131,7 @@ public class JPAContext implements IContext {
 
         @Override
         public List findAll() {
-            return _em.createNamedQuery("Equipamento_Eletronico.findAll",Equipamento_Eletronico.class)
+            return _em.createNamedQuery("Equipamento_Eletronico.findAll",Cliente.class)
                     .getResultList();
         }
     }
@@ -153,7 +153,7 @@ public class JPAContext implements IContext {
 
         @Override
         public List findAll() {
-            return _em.createNamedQuery("Veiculo.findAll",Veiculo.class)
+            return _em.createNamedQuery("Cliente.findAll",Cliente.class)
                     .getResultList();
         }
     }
@@ -364,7 +364,7 @@ public class JPAContext implements IContext {
 
     protected class EquipamentoMapper implements IEquipamentoMapper {
         @Override
-        public Equipamento_Eletronico create(Equipamento_Eletronico entity) {
+        public Long create(Equipamento_Eletronico entity) {
             return null;
         }
 
@@ -430,7 +430,7 @@ public class JPAContext implements IContext {
 
     protected class ZonaVerdeMapper implements IZonaVerdeMapper {
         @Override
-        public Zona_Verde create(Zona_Verde entity) {
+        public Long create(Zona_Verde entity) {
             return null;
         }
 
@@ -452,7 +452,7 @@ public class JPAContext implements IContext {
 
     protected class CoordenadasMapper implements ICoordenadasMapper {
         @Override
-        public Coordenadas create(Coordenadas entity) {
+        public Long create(Coordenadas entity) {
             return null;
         }
 
@@ -474,7 +474,7 @@ public class JPAContext implements IContext {
 
     protected class BipMapper implements IBipMapper {
         @Override
-        public Bip create(Bip entity) {
+        public Long create(Bip entity) {
             return null;
         }
 
@@ -517,6 +517,33 @@ public class JPAContext implements IContext {
     @Override
     public void flush() {_em.flush();}
 
+    public JPAContext() {
+        /*public String DB_NAME = "MONGO_CONNECTION";
+        this(DB_NAME);*/
+        //TODO: NOTICE ME
+        this("postgres");
+    }
+
+    public JPAContext(String persistentCtx) {
+        super();
+
+        this._emf = Persistence.createEntityManagerFactory(persistentCtx);
+        this._em = _emf.createEntityManager();
+        this._clienteRepository = new ClienteRepository();
+        this._clienteParticularRepository = new ClienteParticularRepository();
+        this._clienteInstitucionalRepository = new ClienteInstitucionalRepository();
+
+        this._veiculoRepository = new VeiculoRepository();
+        this._condutorRepository = new CondutorRepository();
+
+        this._clienteMapper = new ClienteMapper();
+        this._clienteParticularMapper = new ClienteParticularMapper();
+        this._clienteInstitucionalMapper = new ClienteInstitucionalMapper();
+
+        this._veiculoMapper = new VeiculoMapper();
+        this._condutorMapper = new CondutorMapper();
+    }
+
     @Override
     public void rollback(){
         if(_txcount==0 && _tx != null) {
@@ -524,6 +551,7 @@ public class JPAContext implements IContext {
             _tx = null;
         }
     }
+
 
     @Override
     public void close() throws Exception {
@@ -533,7 +561,9 @@ public class JPAContext implements IContext {
         _emf.close();
     }
 
-    public JPAContext() {/** to make env var **/
+    public JPAContext() {
+        /*public String DB_NAME = "MONGO_CONNECTION";
+        this(DB_NAME);*/
         this("postgres");
     }
 
@@ -602,6 +632,14 @@ public class JPAContext implements IContext {
 
     public Cliente_Particular createClienteParticular(Cliente_Particular cliente_particular, Cliente client) {
         createCliente(client);
+        return getClienteParticular().create(cliente_particular);
+    }
+
+    public int updateCliente(Cliente cliente) {
+        return getCliente().update(cliente);
+    }
+
+    public int createClienteParticular(Cliente_Particular cliente_particular) {
         return getClienteParticular().create(cliente_particular);
     }
 

@@ -5,7 +5,7 @@ import isel.sisinf.grp02.orm.Veiculo;
 
 public interface IZonaVerde {
     Long getID();
-    Coordenadas getCoordenadas();
+    Coordenadas getCoodenadas();
     Veiculo getVeiculo();
     int getRaio();
 
