@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 @NamedQuery(name="Zona_Verde.findAll",
         query="SELECT v FROM Zona_Verde v")
 
-@Table(name = "coordenadas")
+@Table(name = "Zona_Verde")
 public class Zona_Verde implements IZonaVerde {
 
     @Override

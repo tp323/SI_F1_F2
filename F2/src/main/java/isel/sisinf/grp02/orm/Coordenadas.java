@@ -16,7 +16,6 @@ public class Coordenadas implements ICoordenadas {
                 "id=" + id +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
-                ", raio=" + raio +
                 ", zona=" + zona +
                 ", bip=" + bip +
                 '}';
@@ -31,9 +30,6 @@ public class Coordenadas implements ICoordenadas {
 
     @Column(name = "longitude", nullable = false)
     private Float longitude;
-
-    @Column(name = "raio", nullable = false)
-    private int raio;
 
     @OneToOne(mappedBy = "coordenadas")
     private Zona_Verde zona;

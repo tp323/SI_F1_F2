@@ -18,16 +18,4 @@ public interface ICoordenadas {
     void setLongitude(Float longitude);
     void setBip(Bip bip);
     void setZonaVerde(Zona_Verde zona);
-
-    interface ICondutor {
-        Integer getCC();
-        String getNome();
-        String getContacto();
-        Set<Veiculo> getVeiculos();
-
-        void setCC(Integer cc);
-        void setNome(String nome);
-        void setContacto(String contacto);
-        void setVeiculos(Set<Veiculo> veiculos);
-    }
 }
