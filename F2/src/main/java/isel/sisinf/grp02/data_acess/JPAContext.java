@@ -25,6 +25,9 @@ public class JPAContext implements IContext {
     private IVeiculoRepository _veiculoRepository;
     private ICondutorRepository _condutorRepository;
     private IZonaVerdeRepository _zonaVerdeRepository;
+    private ICoordenadasRepository _coordenadasRepository;
+    private IBipRepository _bipRepository;
+
 
     private IClienteMapper _clienteMapper;
     private ICliente_ParticularMapper _clienteParticularMapper;
@@ -33,6 +36,9 @@ public class JPAContext implements IContext {
     private IVeiculoMapper _veiculoMapper;
     private ICondutorMapper _condutorMapper;
     private IZonaVerdeMapper _zonaVerdeMapper;
+    private ICoordenadasMapper _coordenadasMapper;
+    private IBipMapper _bipMapper;
+
 
 
 
@@ -66,6 +72,7 @@ public class JPAContext implements IContext {
         }
 
     }
+
     protected class ClienteParticularRepository implements ICliente_ParticularRepository {
 
         @Override
@@ -107,6 +114,7 @@ public class JPAContext implements IContext {
                     .getResultList();
         }
     }
+
     protected class EquipamentoRepository implements IEquipamentoRepository {
 
         @Override
@@ -173,6 +181,7 @@ public class JPAContext implements IContext {
                     .getResultList();
         }
     }
+
     protected class ZonaVerdeRepository implements IZonaVerdeRepository {
 
         @Override
@@ -191,7 +200,53 @@ public class JPAContext implements IContext {
 
         @Override
         public List findAll() {
-            return _em.createNamedQuery("Zona_Verde.findAll",Condutor.class)
+            return _em.createNamedQuery("Zona_Verde.findAll",Zona_Verde.class)
+                    .getResultList();
+        }
+    }
+
+    protected class CoordenadasRepository implements ICoordenadasRepository {
+
+        @Override
+        public Coordenadas findByKey(Long key) {
+            return _em.createNamedQuery("Coordenadas.findByKey",Coordenadas.class)
+                    .setParameter("key", key)
+                    .getSingleResult();
+        }
+
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Collection<Coordenadas> find(String jpql, Object... params) {
+            return helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Coordenadas.findAll",Coordenadas.class)
+                    .getResultList();
+        }
+    }
+
+    protected class BipRepository implements IBipRepository {
+
+        @Override
+        public Bip findByKey(Long key) {
+            return _em.createNamedQuery("Bip.findByKey",Bip.class)
+                    .setParameter("key", key)
+                    .getSingleResult();
+        }
+
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Collection<Bip> find(String jpql, Object... params) {
+            return helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Bip.findAll",Bip.class)
                     .getResultList();
         }
     }
@@ -241,6 +296,7 @@ public class JPAContext implements IContext {
             return c.getNif();
         }
     }
+
     protected class ClienteParticularMapper implements ICliente_ParticularMapper {
 
         @Override
@@ -306,6 +362,7 @@ public class JPAContext implements IContext {
             return null;
         }
     }
+
     protected class EquipamentoMapper implements IEquipamentoMapper {
         @Override
         public Long create(Equipamento_Eletronico entity) {
@@ -327,6 +384,7 @@ public class JPAContext implements IContext {
             return null;
         }
     }
+
     protected class VeiculoMapper implements IVeiculoMapper {
         @Override
         public Long create(Veiculo entity) {
@@ -393,6 +451,50 @@ public class JPAContext implements IContext {
         }
     }
 
+    protected class CoordenadasMapper implements ICoordenadasMapper {
+        @Override
+        public Long create(Coordenadas entity) {
+            return null;
+        }
+
+        @Override
+        public Coordenadas read(Coordenadas id) {
+            return null;
+        }
+
+        @Override
+        public Long update(Coordenadas entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Coordenadas entity) {
+            return null;
+        }
+    }
+
+    protected class BipMapper implements IBipMapper {
+        @Override
+        public Long create(Bip entity) {
+            return null;
+        }
+
+        @Override
+        public Bip read(Bip id) {
+            return null;
+        }
+
+        @Override
+        public Long update(Bip entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Bip entity) {
+            return null;
+        }
+    }
+
 
     @Override
     public void beginTransaction() {
@@ -414,7 +516,26 @@ public class JPAContext implements IContext {
     }
 
     @Override
-    public void flush() {_em.flush();}
+    public void flush() {
+        _em.flush();
+    }
+
+    @Override
+    public void rollback(){
+        if(_txcount==0 && _tx != null) {
+            _tx.rollback();
+            _tx = null;
+        }
+    }
+
+
+    @Override
+    public void close() throws Exception {
+        if(_tx != null)
+            _tx.rollback();
+        _em.close();
+        _emf.close();
+    }
 
     public JPAContext() {
         /*public String DB_NAME = "MONGO_CONNECTION";
@@ -434,6 +555,8 @@ public class JPAContext implements IContext {
         this._veiculoRepository = new VeiculoRepository();
         this._condutorRepository = new CondutorRepository();
         this._zonaVerdeRepository = new ZonaVerdeRepository();
+        this._coordenadasRepository = new CoordenadasRepository();
+        this._bipRepository = new BipRepository();
 
         this._clienteMapper = new ClienteMapper();
         this._clienteParticularMapper = new ClienteParticularMapper();
@@ -442,23 +565,9 @@ public class JPAContext implements IContext {
         this._veiculoMapper = new VeiculoMapper();
         this._condutorMapper = new CondutorMapper();
         this._zonaVerdeMapper = new ZonaVerdeMapper();
-    }
+        this._coordenadasMapper = new CoordenadasMapper();
+        this._bipMapper = new BipMapper();
 
-    @Override
-    public void rollback(){
-        if(_txcount==0 && _tx != null) {
-            _tx.rollback();
-            _tx = null;
-        }
-    }
-
-
-    @Override
-    public void close() throws Exception {
-        if(_tx != null)
-            _tx.rollback();
-        _em.close();
-        _emf.close();
     }
 
     @Override
@@ -482,6 +591,11 @@ public class JPAContext implements IContext {
     @Override
     public IZonaVerdeRepository getZonasVerdes() {return _zonaVerdeRepository;}
 
+    @Override
+    public ICoordenadasRepository getCoordenadas() {return _coordenadasRepository;}
+
+    @Override
+    public IBipRepository getBips() {return _bipRepository;}
 
     public IClienteMapper getCliente() {return _clienteMapper;}
 

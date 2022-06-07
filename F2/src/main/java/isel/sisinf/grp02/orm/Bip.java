@@ -7,7 +7,9 @@ import java.sql.Timestamp;
 
 @Entity
 @NamedQuery(name = "Bip.findByKey",
-        query = "SELECT c FROM Bip c WHERE c.id =:key")
+        query = "SELECT b FROM Bip b WHERE b.id =:key")
+@NamedQuery(name="Bip.findAll",
+        query="SELECT b FROM Bip b")
 
 @Table(name = "bip_equipamento_eletronico")
 public class Bip implements IBip {

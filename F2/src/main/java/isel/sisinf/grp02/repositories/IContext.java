@@ -16,5 +16,7 @@ public interface IContext extends AutoCloseable {
     IVeiculoRepository getVeiculos();
     ICondutorRepository getCondutores();
     IZonaVerdeRepository getZonasVerdes();
+    ICoordenadasRepository getCoordenadas();
+    IBipRepository getBips();
 
 }

@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 @Entity
 @NamedQuery(name = "Coordenadas.findByKey",
         query = "SELECT c FROM Coordenadas c WHERE c.id =:key")
+@NamedQuery(name="Coordenadas.findAll",
+        query="SELECT v FROM Coordenadas v")
 
 @Table(name = "coordenadas")
 public class Coordenadas implements ICoordenadas {

@@ -1,7 +1,6 @@
 package isel.sisinf.grp02.orm.interfaces;
 
 import isel.sisinf.grp02.orm.Bip;
-import isel.sisinf.grp02.orm.Veiculo;
 import isel.sisinf.grp02.orm.Zona_Verde;
 
 import java.util.Set;
