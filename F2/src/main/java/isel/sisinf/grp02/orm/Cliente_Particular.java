@@ -21,6 +21,13 @@ public class Cliente_Particular implements ICliente_Particular {
                 '}';
     }
 
+    public String[] toArray() {
+        return new String[]{
+                Integer.toString(cc),
+                Integer.toString(cliente.getNif())
+        };
+    }
+    
     @Id
     @Column(name = "cc")
     private int cc;
