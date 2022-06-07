@@ -52,6 +52,7 @@ public class JPAContext implements IContext {
 
 
     /***                REPOSITORIES                ***/
+
     protected class ClienteRepository implements IClienteRepository {
 
         @Override
@@ -91,7 +92,7 @@ public class JPAContext implements IContext {
 
         @Override
         public List findAll() {
-            return _em.createNamedQuery("Cliente.findAll", Cliente.class)
+            return _em.createNamedQuery("Cliente_Particular.findAll", Cliente_Particular.class)
                     .getResultList();
         }
     }
@@ -112,7 +113,7 @@ public class JPAContext implements IContext {
 
         @Override
         public List findAll() {
-            return _em.createNamedQuery("Cliente.findAll", Cliente.class)
+            return _em.createNamedQuery("Cliente_Institucional.findAll", Cliente_Institucional.class)
                     .getResultList();
         }
     }
@@ -134,7 +135,7 @@ public class JPAContext implements IContext {
 
         @Override
         public List findAll() {
-            return _em.createNamedQuery("Equipamento_Eletronico.findAll",Cliente.class)
+            return _em.createNamedQuery("Equipamento_Eletronico.findAll",Equipamento_Eletronico.class)
                     .getResultList();
         }
     }
@@ -156,7 +157,7 @@ public class JPAContext implements IContext {
 
         @Override
         public List findAll() {
-            return _em.createNamedQuery("Cliente.findAll",Cliente.class)
+            return _em.createNamedQuery("Veiculo.findAll",Veiculo.class)
                     .getResultList();
         }
     }
@@ -252,6 +253,10 @@ public class JPAContext implements IContext {
                     .getResultList();
         }
     }
+
+
+
+    /***                MAPPERS                ***/
 
     protected class ClienteMapper implements IClienteMapper {
 
@@ -573,6 +578,8 @@ public class JPAContext implements IContext {
 
     }
 
+
+    /***                REPOSITORIES                ***/
 
     @Override
     public IClienteRepository getClientes() {return _clienteRepository;}
