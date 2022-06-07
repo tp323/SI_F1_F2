@@ -66,13 +66,8 @@ public class Cliente implements ICliente {
     @Column(name = "morada", nullable = false)
     private String morada;
 
-<<<<<<< HEAD
-    @Column(name = "telefone", nullable = false, length = 10)
-    private String telefone;
-=======
     @Column(name = "telefone", nullable = false, length = 10) /*** passar para length 13 na DB ***/
-    private int telefone;
->>>>>>> 239ac0a9633e82d929d70666e78e37fd1b6aadee
+    private String telefone;
 
     @Column(name = "ativo", nullable = false)
     private boolean ativo = false;
