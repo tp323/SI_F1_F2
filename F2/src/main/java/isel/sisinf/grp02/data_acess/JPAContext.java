@@ -12,7 +12,6 @@ import jakarta.persistence.*;
 
 public class JPAContext implements IContext {
 
-
     private EntityManagerFactory _emf;
     private EntityManager _em;
 
@@ -22,16 +21,24 @@ public class JPAContext implements IContext {
     private IClienteRepository _clienteRepository;
     private ICliente_ParticularRepository _clienteParticularRepository;
     private ICliente_InstitucionalRepository _clienteInstitucionalRepository;
-
+    private IEquipamentoRepository _equipamentoRepository;
     private IVeiculoRepository _veiculoRepository;
     private ICondutorRepository _condutorRepository;
+    private IZonaVerdeRepository _zonaVerdeRepository;
+    private ICoordenadasRepository _coordenadasRepository;
+    private IBipRepository _bipRepository;
+
 
     private IClienteMapper _clienteMapper;
     private ICliente_ParticularMapper _clienteParticularMapper;
     private ICliente_InstitucionalMapper _clienteInstitucionalMapper;
-
+    private IEquipamentoMapper _equipamentoMapper;
     private IVeiculoMapper _veiculoMapper;
     private ICondutorMapper _condutorMapper;
+    private IZonaVerdeMapper _zonaVerdeMapper;
+    private ICoordenadasMapper _coordenadasMapper;
+    private IBipMapper _bipMapper;
+
 
 
     protected List helperQueryImpl(String jpql, Object... params) {
@@ -42,6 +49,9 @@ public class JPAContext implements IContext {
 
         return q.getResultList();
     }
+
+
+    /***                REPOSITORIES                ***/
     protected class ClienteRepository implements IClienteRepository {
 
         @Override
@@ -49,6 +59,11 @@ public class JPAContext implements IContext {
             return _em.createNamedQuery("Cliente.findByKey",Cliente.class)
                     .setParameter("key", key)
                     .getSingleResult();
+        }
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Cliente.findAll",Cliente.class)
+                    .getResultList();
         }
 
 
@@ -59,6 +74,7 @@ public class JPAContext implements IContext {
         }
 
     }
+
     protected class ClienteParticularRepository implements ICliente_ParticularRepository {
 
         @Override
@@ -73,6 +89,11 @@ public class JPAContext implements IContext {
         @Override
         public Collection<Cliente_Particular> find(String jpql, Object... params) {return helperQueryImpl( jpql, params);}
 
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Cliente.findAll", Cliente.class)
+                    .getResultList();
+        }
     }
 
     protected class ClienteInstitucionalRepository implements ICliente_InstitucionalRepository {
@@ -89,7 +110,35 @@ public class JPAContext implements IContext {
         @Override
         public Collection<Cliente_Institucional> find(String jpql, Object... params) {return helperQueryImpl( jpql, params);}
 
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Cliente.findAll", Cliente.class)
+                    .getResultList();
+        }
     }
+
+    protected class EquipamentoRepository implements IEquipamentoRepository {
+
+        @Override
+        public Equipamento_Eletronico findByKey(Long key) {
+            return _em.createNamedQuery("Equipamento_Eletronico.findByKey",Equipamento_Eletronico.class)
+                    .setParameter("key", key)
+                    .getSingleResult();
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Collection<Equipamento_Eletronico> find(String jpql, Object... params) {
+            return helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Equipamento_Eletronico.findAll",Cliente.class)
+                    .getResultList();
+        }
+    }
+
     protected class VeiculoRepository implements IVeiculoRepository {
 
         @Override
@@ -102,8 +151,13 @@ public class JPAContext implements IContext {
         @SuppressWarnings("unchecked")
         @Override
         public Collection<Veiculo> find(String jpql, Object... params) {
-
             return helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Cliente.findAll",Cliente.class)
+                    .getResultList();
         }
     }
 
@@ -120,8 +174,82 @@ public class JPAContext implements IContext {
         @SuppressWarnings("unchecked")
         @Override
         public Collection<Condutor> find(String jpql, Object... params) {
-
             return helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Condutor.findAll",Condutor.class)
+                    .getResultList();
+        }
+    }
+
+    protected class ZonaVerdeRepository implements IZonaVerdeRepository {
+
+        @Override
+        public Zona_Verde findByKey(Long key) {
+            return _em.createNamedQuery("Zona_Verde.findByKey",Zona_Verde.class)
+                    .setParameter("key", key)
+                    .getSingleResult();
+        }
+
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Collection<Zona_Verde> find(String jpql, Object... params) {
+            return helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Zona_Verde.findAll",Zona_Verde.class)
+                    .getResultList();
+        }
+    }
+
+    protected class CoordenadasRepository implements ICoordenadasRepository {
+
+        @Override
+        public Coordenadas findByKey(Long key) {
+            return _em.createNamedQuery("Coordenadas.findByKey",Coordenadas.class)
+                    .setParameter("key", key)
+                    .getSingleResult();
+        }
+
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Collection<Coordenadas> find(String jpql, Object... params) {
+            return helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Coordenadas.findAll",Coordenadas.class)
+                    .getResultList();
+        }
+    }
+
+    protected class BipRepository implements IBipRepository {
+
+        @Override
+        public Bip findByKey(Long key) {
+            return _em.createNamedQuery("Bip.findByKey",Bip.class)
+                    .setParameter("key", key)
+                    .getSingleResult();
+        }
+
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Collection<Bip> find(String jpql, Object... params) {
+            return helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List findAll() {
+            return _em.createNamedQuery("Bip.findAll",Bip.class)
+                    .getResultList();
         }
     }
 
@@ -148,7 +276,11 @@ public class JPAContext implements IContext {
                 System.out.println("Cliente not found.");
                 return null;
             }
+            c.setNome(entity.getNome());
             c.setMorada(entity.getMorada());
+            c.setTelefone(entity.getTelefone());
+            c.setClienteParticular(entity.getClienteParticular());
+            c.setRefCliente(entity.getRefCliente());
             commit();
             return entity.getNif();
         }
@@ -166,11 +298,15 @@ public class JPAContext implements IContext {
             return c.getNif();
         }
     }
+
     protected class ClienteParticularMapper implements ICliente_ParticularMapper {
 
         @Override
-        public Long create(Cliente_Particular entity) {
-            return null;
+        public Integer create(Cliente_Particular entity) {
+            beginTransaction();
+            _em.persist(entity);
+            commit();
+            return entity.getCC();
         }
 
         @Override
@@ -179,20 +315,37 @@ public class JPAContext implements IContext {
         }
 
         @Override
-        public Long update(Cliente_Particular entity) {
-            return null;
+        public Integer update(Cliente_Particular entity) {
+            beginTransaction();
+            Cliente_Particular cp = _em.find(Cliente_Particular.class, entity.getCC(), LockModeType.PESSIMISTIC_WRITE);
+            if(cp == null) {
+                System.out.println("Cliente Particular not found.");
+                return null;
+            }
+            cp.setCliente(entity.getCliente());
+            cp.setReferred(entity.getReferred());
+            commit();
+            return entity.getCC();
         }
 
         @Override
-        public Long delete(Cliente_Particular entity) {
-            return null;
+        public Integer delete(Cliente_Particular entity) {
+            beginTransaction();
+            Cliente_Particular c = _em.find(Cliente_Particular.class, entity.getCC(), LockModeType.PESSIMISTIC_WRITE);
+            if(c == null) {
+                System.out.println("Cliente Particular not found.");
+                return null;
+            }
+            _em.remove(c);
+            commit();
+            return c.getCC();
         }
     }
 
     protected class ClienteInstitucionalMapper implements ICliente_InstitucionalMapper {
 
         @Override
-        public Long create(Cliente_Institucional entity) {
+        public Integer create(Cliente_Institucional entity) {
             return null;
         }
 
@@ -202,15 +355,38 @@ public class JPAContext implements IContext {
         }
 
         @Override
-        public Long update(Cliente_Institucional entity) {
+        public Integer update(Cliente_Institucional entity) {
             return null;
         }
 
         @Override
-        public Long delete(Cliente_Institucional entity) {
+        public Integer delete(Cliente_Institucional entity) {
             return null;
         }
     }
+
+    protected class EquipamentoMapper implements IEquipamentoMapper {
+        @Override
+        public Long create(Equipamento_Eletronico entity) {
+            return null;
+        }
+
+        @Override
+        public Equipamento_Eletronico read(Equipamento_Eletronico id) {
+            return null;
+        }
+
+        @Override
+        public Long update(Equipamento_Eletronico entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Equipamento_Eletronico entity) {
+            return null;
+        }
+    }
+
     protected class VeiculoMapper implements IVeiculoMapper {
         @Override
         public Long create(Veiculo entity) {
@@ -255,6 +431,73 @@ public class JPAContext implements IContext {
         }
     }
 
+    protected class ZonaVerdeMapper implements IZonaVerdeMapper {
+        @Override
+        public Long create(Zona_Verde entity) {
+            return null;
+        }
+
+        @Override
+        public Zona_Verde read(Zona_Verde id) {
+            return null;
+        }
+
+        @Override
+        public Long update(Zona_Verde entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Zona_Verde entity) {
+            return null;
+        }
+    }
+
+    protected class CoordenadasMapper implements ICoordenadasMapper {
+        @Override
+        public Long create(Coordenadas entity) {
+            return null;
+        }
+
+        @Override
+        public Coordenadas read(Coordenadas id) {
+            return null;
+        }
+
+        @Override
+        public Long update(Coordenadas entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Coordenadas entity) {
+            return null;
+        }
+    }
+
+    protected class BipMapper implements IBipMapper {
+        @Override
+        public Long create(Bip entity) {
+            return null;
+        }
+
+        @Override
+        public Bip read(Bip id) {
+            return null;
+        }
+
+        @Override
+        public Long update(Bip entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Bip entity) {
+            return null;
+        }
+    }
+
+
 
     @Override
     public void beginTransaction() {
@@ -276,9 +519,32 @@ public class JPAContext implements IContext {
     }
 
     @Override
-    public void flush() {_em.flush();}
+    public void flush() {
+        _em.flush();
+    }
 
-    public JPAContext() {this("postgres");}
+    @Override
+    public void rollback(){
+        if(_txcount==0 && _tx != null) {
+            _tx.rollback();
+            _tx = null;
+        }
+    }
+
+    @Override
+    public void close() throws Exception {
+        if(_tx != null)
+            _tx.rollback();
+        _em.close();
+        _emf.close();
+    }
+
+
+
+    public JPAContext() {
+        /***try to make env var***/
+        this("postgres");
+    }
 
     public JPAContext(String persistentCtx) {
         super();
@@ -288,31 +554,25 @@ public class JPAContext implements IContext {
         this._clienteRepository = new ClienteRepository();
         this._clienteParticularRepository = new ClienteParticularRepository();
         this._clienteInstitucionalRepository = new ClienteInstitucionalRepository();
-
+        this._equipamentoRepository = new EquipamentoRepository();
         this._veiculoRepository = new VeiculoRepository();
         this._condutorRepository = new CondutorRepository();
+        this._zonaVerdeRepository = new ZonaVerdeRepository();
+        this._coordenadasRepository = new CoordenadasRepository();
+        this._bipRepository = new BipRepository();
 
         this._clienteMapper = new ClienteMapper();
         this._clienteParticularMapper = new ClienteParticularMapper();
         this._clienteInstitucionalMapper = new ClienteInstitucionalMapper();
-
+        this._equipamentoMapper = new EquipamentoMapper();
         this._veiculoMapper = new VeiculoMapper();
         this._condutorMapper = new CondutorMapper();
+        this._zonaVerdeMapper = new ZonaVerdeMapper();
+        this._coordenadasMapper = new CoordenadasMapper();
+        this._bipMapper = new BipMapper();
+
     }
 
-    @Override
-    public void rollback(){
-        _tx.rollback();
-    }
-
-
-    @Override
-    public void close() throws Exception {
-        if(_tx != null)
-            _tx.rollback();
-        _em.close();
-        _emf.close();
-    }
 
     @Override
     public IClienteRepository getClientes() {return _clienteRepository;}
@@ -323,36 +583,49 @@ public class JPAContext implements IContext {
     @Override
     public ICliente_InstitucionalRepository getClientesInstitucionais(){return _clienteInstitucionalRepository;}
 
+    @Override
+    public IEquipamentoRepository getEquipamentos() {return _equipamentoRepository;}
 
     @Override
-    public IVeiculoRepository getVeiculos() {
-        return _veiculoRepository;
-    }
+    public IVeiculoRepository getVeiculos() {return _veiculoRepository;}
 
     @Override
     public ICondutorRepository getCondutores() {return _condutorRepository;}
 
+    @Override
+    public IZonaVerdeRepository getZonasVerdes() {return _zonaVerdeRepository;}
+
+    @Override
+    public ICoordenadasRepository getCoordenadas() {return _coordenadasRepository;}
+
+    @Override
+    public IBipRepository getBips() {return _bipRepository;}
+
+
+    /***                MAPPERS                ***/
+
     public IClienteMapper getCliente() {return _clienteMapper;}
 
+    public ICliente_ParticularMapper getClienteParticular() {return _clienteParticularMapper;}
 
-    //Example using a table function
-    //Do note that, in this case, the implementation is eager, thus less efficient and error prone.
-    //In such cases, we should use proxies, by implementing the virtual proxy pattern.
-    //With simply queries, like thi one, it is better to use  NamedQueries.
-    public Cliente fromCliente(int nif) {
-        /*StoredProcedureQuery q = _em.createNamedStoredProcedureQuery("namedfromCountry");
-        q.setParameter(1, country);
-        q.execute();
-        List<Object[]> tmp = (List<Object[]>) q.getResultList();*/
-        return getClientes().findByKey(nif);
-    }
 
-    //Just an example of what getting a single object with mapper could be
     public int createCliente(Cliente cliente) {
         return getCliente().create(cliente);
     }
 
+    public int createClienteParticular(Cliente_Particular cliente_particular) {
+        return getClienteParticular().create(cliente_particular);
+    }
+
+    public int updateCliente(Cliente cliente) {
+        return getCliente().update(cliente);
+    }
+
     public int deleteCliente(Cliente cliente) {
         return getCliente().delete(cliente);
+    }
+
+    public int deleteClienteParticular(Cliente_Particular cliente_particular) {
+        return getClienteParticular().delete(cliente_particular);
     }
 }

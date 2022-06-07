@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 
 @Entity
 @NamedQuery(name="Cliente_Institucional.findByKey", query="SELECT c FROM Cliente_Institucional c WHERE c.cliente =:key")
-
+@NamedQuery(name="Cliente_Institucional.findAll",
+        query="SELECT ci FROM Cliente_Institucional ci")
 
 @Table(name = "cliente_institucional")
 public class Cliente_Institucional implements ICliente_Institucional {

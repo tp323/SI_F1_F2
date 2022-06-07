@@ -4,9 +4,6 @@ import isel.sisinf.grp02.data_acess.JPAContext;
 import isel.sisinf.grp02.orm.Cliente;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.Set;
-
 import static org.junit.Assert.*;
 
 /*** tests based on initial data from db set by initial insert ***/
@@ -25,9 +22,8 @@ public class AppTest {
 
     @Test
     public void ClienteCreate() throws Exception{
-        ctx.beginTransaction();
         try(JPAContext ctx = new JPAContext()) {
-
+            ctx.beginTransaction();
             Cliente c = new Cliente(254256431, "Rapaz da Aldeia", "Aldeia", 923453432);
             ctx.createCliente(c);
             assertNotNull(ctx.getClientes().findByKey(254256431));
@@ -36,14 +32,12 @@ public class AppTest {
             assertEquals( ctx.getClientes().findByKey(254256431).getMorada(),"Aldeia");
             assertEquals( ctx.getClientes().findByKey(254256431).getTelefone(),923453432);
             assertNull( ctx.getClientes().findByKey(254256431).getRefCliente());
-            ctx.deleteCliente(c);
-            //if (this.ctx!=null) ctx.rollback();    //executes rollback
+            ctx.rollback();
         }catch(Exception e) {
             System.out.println(e.getMessage());
             throw e;
         }finally {
             ctx.close();
         }
-
     }
 }

@@ -11,6 +11,9 @@ import java.util.Set;
 @NamedQuery(name="Cliente.findByKey",
         query="SELECT c FROM Cliente c WHERE c.nif =:key")
 
+@NamedQuery(name="Cliente.findAll",
+        query="SELECT c FROM Cliente c")
+
 @Table(name = "cliente")
 public class Cliente implements ICliente {
     public Cliente() {}
@@ -54,7 +57,7 @@ public class Cliente implements ICliente {
     @Column(name = "morada", nullable = false)
     private String morada;
 
-    @Column(name = "telefone", nullable = false, length = 10)
+    @Column(name = "telefone", nullable = false, length = 10) /*** passar para length 13 na DB ***/
     private int telefone;
 
     @Column(name = "ativo", nullable = false)

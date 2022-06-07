@@ -5,25 +5,52 @@ import isel.sisinf.grp02.data_acess.JPAContext;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class ReposTest {
     private final JPAContext ctx = new JPAContext();
 
     @Test
-    public void ClientFindbyKey() {
-        assertNotNull(ctx.getClientes().findByKey(111222333));
+    public void ClientRepoExistsWithData() {
+        assertNotNull(ctx.getClientes().findAll());
     }
 
     @Test
-    public void ClienteParticularFindbyKey() {
-        assertNotNull(ctx.getClientesParticulares().findByKey(121222333));
+    public void ClienteParticularRepoExistsWithData() {
+        assertNotNull(ctx.getClientesParticulares().findAll());
     }
 
     @Test
-    public void VeiculoFindbyKey() {
-        assertNotNull(ctx.getVeiculos().findByKey("FF17FF"));
+    public void ClienteInstitucionalRepoExistsWithData() {
+        assertNotNull(ctx.getClientesInstitucionais().findAll());
     }
 
+    @Test
+    public void EquipamentosRepoExistsWithData() {
+        assertNotNull(ctx.getEquipamentos().findAll());
+    }
 
+    @Test
+    public void VeiculoRepoExistsWithData() {
+        assertNotNull(ctx.getVeiculos().findAll());
+    }
+
+    @Test
+    public void CondutoresRepoExistsWithData() {
+        assertNotNull(ctx.getCondutores().findAll());
+    }
+
+    @Test
+    public void ZonasVerdesRepoExistsWithData() {
+        assertNotNull(ctx.getZonasVerdes().findAll());
+    }
+
+    @Test
+    public void CoordenadasRepoExistsWithData() {
+        assertNotNull(ctx.getCoordenadas().findAll());
+    }
+
+    @Test
+    public void BipRepoExistsWithData() {
+        assertNotNull(ctx.getBips().findAll());
+    }
 }
