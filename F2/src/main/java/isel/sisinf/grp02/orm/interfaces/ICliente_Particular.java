@@ -7,10 +7,10 @@ import java.util.Set;
 public interface ICliente_Particular {
 
     int getCC();
-    Cliente getClient();
+    Cliente getCliente();
     Set<Cliente> getReferred();
 
     void setCC(int cc);
-    void setClient(Cliente client);
+    void setCliente(Cliente client);
     void setReferred(Set<Cliente> referred);
 }
