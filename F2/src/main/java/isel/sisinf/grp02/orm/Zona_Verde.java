@@ -14,7 +14,7 @@ public class Zona_Verde implements IZonaVerde {
 
     @Override
     public String toString() {
-        return "ZonaVerde{" +
+        return "Zona_Verde{" +
                 "id=" + id +
                 ", raio=" + raio +
                 ", coordenadas=" + coordenadas +

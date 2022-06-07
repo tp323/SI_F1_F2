@@ -18,7 +18,7 @@ import java.util.Set;
 public class Cliente implements ICliente {
     public Cliente() {}
 
-    public Cliente(int nif, String nome, String morada, int telefone, Boolean ativo) {
+    public Cliente(int nif, String nome, String morada, String telefone, boolean ativo) {
         this.nif = nif;
         this.nome = nome;
         this.morada = morada;
@@ -26,7 +26,7 @@ public class Cliente implements ICliente {
         this.ativo = ativo;
     }
 
-    public Cliente(int nif, String nome, String morada, int telefone) {
+    public Cliente(int nif, String nome, String morada, String telefone) {
         this.nif = nif;
         this.nome = nome;
         this.morada = morada;
@@ -45,7 +45,16 @@ public class Cliente implements ICliente {
                 ']';
     }
 
-
+    public String[] toArray() {
+        return new String[]{
+                Integer.toString(nif),
+                this.nome,
+                this.morada,
+                this.telefone,
+                Boolean.toString(this.ativo),
+                refCliente == null ? "null" : Integer.toString(refCliente.getCC())
+        };
+    }
 
     @Id
     @Column(name = "nif", nullable = false)
@@ -58,29 +67,29 @@ public class Cliente implements ICliente {
     private String morada;
 
     @Column(name = "telefone", nullable = false, length = 10) /*** passar para length 13 na DB ***/
-    private int telefone;
+    private String telefone;
 
     @Column(name = "ativo", nullable = false)
-    private Boolean ativo = false;
+    private boolean ativo = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ref_cliente")
     private Cliente_Particular refCliente;
 
-    @OneToOne(mappedBy = "cliente")
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.PERSIST)
     private Cliente_Particular cliente_particular;
 
-    @OneToOne(mappedBy = "cliente")
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.PERSIST)
     private Cliente_Institucional cliente_institucional;
 
-    @OneToMany(mappedBy = "cliente")
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.PERSIST)
     private Set<Veiculo> veiculos = new LinkedHashSet<>();
 
     public int getNif() {return nif;}
     public String getNome() {return nome;}
     public String getMorada() {return morada;}
-    public int getTelefone() {return telefone;}
-    public Boolean getAtivo() {return ativo;}
+    public String getTelefone() {return telefone;}
+    public boolean getAtivo() {return ativo;}
     public Cliente_Particular getRefCliente() {return refCliente;}
     public Cliente_Particular getClienteParticular() { return cliente_particular; }
     public Cliente_Institucional getClienteInstitucional() { return cliente_institucional; }
@@ -90,10 +99,10 @@ public class Cliente implements ICliente {
     public void setNif(Integer nif) {this.nif = nif;}
     public void setNome(String nome) {this.nome = nome;}
     public void setMorada(String morada) {this.morada = morada;}
-    public void setTelefone(int telefone) {this.telefone = telefone;}
+    public void setTelefone(String telefone) {this.telefone = telefone;}
     public void setRefCliente(Cliente_Particular refCliente) {this.refCliente = refCliente;}
     public void setClienteParticular(Cliente_Particular cliente_particular) { this.cliente_particular = cliente_particular; }
     public void setClienteInstitucional(Cliente_Institucional cliente_institucional) { this.cliente_institucional = cliente_institucional; }
-    public void setAtivo(Boolean ativo) {this.ativo = ativo;}
+    public void setAtivo(boolean ativo) {this.ativo = ativo;}
     public void setVeiculos(Set<Veiculo> veiculos) {this.veiculos = veiculos;}
 }

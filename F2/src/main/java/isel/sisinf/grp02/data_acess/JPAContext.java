@@ -261,11 +261,11 @@ public class JPAContext implements IContext {
     protected class ClienteMapper implements IClienteMapper {
 
         @Override
-        public Integer create(Cliente entity) {
+        public Cliente create(Cliente entity) {
             beginTransaction();
             _em.persist(entity);
             commit();
-            return entity.getNif();
+            return entity;
         }
 
         @Override
@@ -307,11 +307,11 @@ public class JPAContext implements IContext {
     protected class ClienteParticularMapper implements ICliente_ParticularMapper {
 
         @Override
-        public Integer create(Cliente_Particular entity) {
+        public Cliente_Particular create(Cliente_Particular entity) {
             beginTransaction();
             _em.persist(entity);
             commit();
-            return entity.getCC();
+            return entity;
         }
 
         @Override
@@ -350,7 +350,7 @@ public class JPAContext implements IContext {
     protected class ClienteInstitucionalMapper implements ICliente_InstitucionalMapper {
 
         @Override
-        public Integer create(Cliente_Institucional entity) {
+        public Cliente_Institucional create(Cliente_Institucional entity) {
             return null;
         }
 
@@ -372,7 +372,7 @@ public class JPAContext implements IContext {
 
     protected class EquipamentoMapper implements IEquipamentoMapper {
         @Override
-        public Long create(Equipamento_Eletronico entity) {
+        public Equipamento_Eletronico create(Equipamento_Eletronico entity) {
             return null;
         }
 
@@ -394,7 +394,7 @@ public class JPAContext implements IContext {
 
     protected class VeiculoMapper implements IVeiculoMapper {
         @Override
-        public Long create(Veiculo entity) {
+        public Veiculo create(Veiculo entity) {
             return null;
         }
 
@@ -416,7 +416,7 @@ public class JPAContext implements IContext {
 
     protected class CondutorMapper implements ICondutorMapper {
         @Override
-        public Long create(Condutor entity) {
+        public Condutor create(Condutor entity) {
             return null;
         }
 
@@ -438,7 +438,7 @@ public class JPAContext implements IContext {
 
     protected class ZonaVerdeMapper implements IZonaVerdeMapper {
         @Override
-        public Long create(Zona_Verde entity) {
+        public Zona_Verde create(Zona_Verde entity) {
             return null;
         }
 
@@ -460,7 +460,7 @@ public class JPAContext implements IContext {
 
     protected class CoordenadasMapper implements ICoordenadasMapper {
         @Override
-        public Long create(Coordenadas entity) {
+        public Coordenadas create(Coordenadas entity) {
             return null;
         }
 
@@ -482,7 +482,7 @@ public class JPAContext implements IContext {
 
     protected class BipMapper implements IBipMapper {
         @Override
-        public Long create(Bip entity) {
+        public Bip create(Bip entity) {
             return null;
         }
 
@@ -547,8 +547,7 @@ public class JPAContext implements IContext {
 
 
     public JPAContext() {
-        /***try to make env var***/
-        this("postgres");
+        this(System.getenv("POSTGRES_PERSISTENCE_NAME"));
     }
 
     public JPAContext(String persistentCtx) {
@@ -616,11 +615,12 @@ public class JPAContext implements IContext {
     public ICliente_ParticularMapper getClienteParticular() {return _clienteParticularMapper;}
 
 
-    public int createCliente(Cliente cliente) {
+    public Cliente createCliente(Cliente cliente) {
         return getCliente().create(cliente);
     }
 
-    public int createClienteParticular(Cliente_Particular cliente_particular) {
+    public Cliente_Particular createClienteParticular(Cliente_Particular cliente_particular, Cliente client) {
+        createCliente(client);
         return getClienteParticular().create(cliente_particular);
     }
 
