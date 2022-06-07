@@ -33,10 +33,13 @@ public class Coordenadas implements ICoordenadas {
     @Column(name = "longitude", nullable = false)
     private Float longitude;
 
+<<<<<<< HEAD
     @Column(name = "raio", nullable = false)
     private int raio;
 
     /**TODO: Multiple Zonas Verdes can have the same Coordenada**/
+=======
+>>>>>>> 239ac0a9633e82d929d70666e78e37fd1b6aadee
     @OneToOne(mappedBy = "coordenadas")
     private Zona_Verde zona;
 
