@@ -1,4 +1,4 @@
-package isel.sisinf.grp02.repositories;
+package isel.sisinf.grp02.repo;
 
 public interface IRepository<T,TCol,TK> {
     T findByKey(TK key);

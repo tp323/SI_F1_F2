@@ -12,8 +12,6 @@ import java.util.Set;
 @Entity
 @NamedQuery(name = "Equipamento_Eletronico.findByKey",
         query = "SELECT c FROM Equipamento_Eletronico c WHERE c.id =:key")
-@NamedQuery(name="Equipamento_Eletronico.findAll",
-        query="SELECT c FROM Equipamento_Eletronico c")
 
 @Table(name = "equipamento_eletronico")
 public class Equipamento_Eletronico implements IEquipamento {

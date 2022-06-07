@@ -7,8 +7,7 @@ import java.util.Set;
 
 @Entity
 @NamedQuery(name="Cliente_Particular.findByKey", query="SELECT c FROM Cliente_Particular c WHERE c.cc =:key")
-@NamedQuery(name="Cliente_Particular.findAll",
-        query="SELECT cp FROM Cliente_Particular cp")
+
 
 @Table(name = "cliente_particular")
 public class Cliente_Particular implements ICliente_Particular {

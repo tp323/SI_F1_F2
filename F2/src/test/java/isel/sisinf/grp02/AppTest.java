@@ -27,7 +27,7 @@ public class AppTest {
     public void ClienteCreate() throws Exception{
         ctx.beginTransaction();
         try(JPAContext ctx = new JPAContext()) {
-            ctx.beginTransaction();
+
             Cliente c = new Cliente(254256431, "Rapaz da Aldeia", "Aldeia", 923453432);
             ctx.createCliente(c);
             assertNotNull(ctx.getClientes().findByKey(254256431));
@@ -36,12 +36,14 @@ public class AppTest {
             assertEquals( ctx.getClientes().findByKey(254256431).getMorada(),"Aldeia");
             assertEquals( ctx.getClientes().findByKey(254256431).getTelefone(),923453432);
             assertNull( ctx.getClientes().findByKey(254256431).getRefCliente());
-            ctx.rollback();
+            ctx.deleteCliente(c);
+            //if (this.ctx!=null) ctx.rollback();    //executes rollback
         }catch(Exception e) {
             System.out.println(e.getMessage());
             throw e;
         }finally {
             ctx.close();
         }
+
     }
 }

@@ -22,13 +22,13 @@ public interface IEquipamento {
         Equipamento_Eletronico getEquipamento();
         Cliente getCliente();
         Integer getAlarms();
-        Set<Zona_Verde> getZonasVerdes();
+        Set<ZonaVerde> getZonasVerdes();
 
         void setMatricula(String matricula);
         void setCondutor(Condutor condutor);
         void setEquipamento(Equipamento_Eletronico equipamento);
         void setCliente(Cliente cliente);
         void setAlarms(Integer alarms);
-        void setZonasVerdes(Set<Zona_Verde> zonasVerdes);
+        void setZonasVerdes(Set<ZonaVerde> zonasVerdes);
     }
 }
