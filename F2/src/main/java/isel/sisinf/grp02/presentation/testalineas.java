@@ -62,9 +62,7 @@ public class testalineas {
         Table.createTable(clientList, new Scanner(System.in));
         return clientList;
 
-        /*
-
-        return new String[0][];*/
+        /*return new String[0][];*/
     }
 
     public static void dDelete(JPAContext ctx){

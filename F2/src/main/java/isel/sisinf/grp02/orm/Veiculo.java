@@ -1,6 +1,6 @@
 package isel.sisinf.grp02.orm;
 
-import isel.sisinf.grp02.orm.interfaces.IEquipamento;
+import isel.sisinf.grp02.orm.interfaces.IVeiculo;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -12,7 +12,7 @@ import java.util.Set;
         query="SELECT v FROM Veiculo v")
 
 @Table(name = "veiculo")
-public class Veiculo implements IEquipamento.IVeiculo {
+public class Veiculo implements IVeiculo {
 
     @Override
     public String toString() {

@@ -39,7 +39,7 @@ public class Zona_Verde implements IZonaVerde {
 
 
     public Long getID() {return id;}
-    public Coordenadas getCoodenadas() {return coordenadas;}
+    public Coordenadas getCoordenadas() {return coordenadas;}
     public Veiculo getVeiculo() {return veiculo;}
     public int getRaio() {return raio;}
 
