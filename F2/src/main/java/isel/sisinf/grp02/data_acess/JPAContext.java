@@ -1,17 +1,15 @@
 package isel.sisinf.grp02.data_acess;
 
-import java.util.Collection;
-import java.util.List;
-
-
 import isel.sisinf.grp02.data_mappers.*;
 import isel.sisinf.grp02.orm.*;
 import isel.sisinf.grp02.repositories.*;
 import jakarta.persistence.*;
 
+import java.util.Collection;
+import java.util.List;
+
 
 public class JPAContext implements IContext {
-
 
     private EntityManagerFactory _emf;
     private EntityManager _em;
@@ -128,11 +126,11 @@ public class JPAContext implements IContext {
     protected class ClienteMapper implements IClienteMapper {
 
         @Override
-        public Integer create(Cliente entity) {
+        public Cliente create(Cliente entity) {
             beginTransaction();
             _em.persist(entity);
             commit();
-            return entity.getNif();
+            return entity;
         }
 
         @Override
@@ -148,7 +146,11 @@ public class JPAContext implements IContext {
                 System.out.println("Cliente not found.");
                 return null;
             }
+            c.setNome(entity.getNome());
             c.setMorada(entity.getMorada());
+            c.setTelefone(entity.getTelefone());
+            c.setClienteParticular(entity.getClienteParticular());
+            c.setRefCliente(entity.getRefCliente());
             commit();
             return entity.getNif();
         }
@@ -169,8 +171,11 @@ public class JPAContext implements IContext {
     protected class ClienteParticularMapper implements ICliente_ParticularMapper {
 
         @Override
-        public Long create(Cliente_Particular entity) {
-            return null;
+        public Cliente_Particular create(Cliente_Particular entity) {
+            beginTransaction();
+            _em.persist(entity);
+            commit();
+            return entity;
         }
 
         @Override
@@ -179,20 +184,37 @@ public class JPAContext implements IContext {
         }
 
         @Override
-        public Long update(Cliente_Particular entity) {
-            return null;
+        public Integer update(Cliente_Particular entity) {
+            beginTransaction();
+            Cliente_Particular cp = _em.find(Cliente_Particular.class, entity.getCC(), LockModeType.PESSIMISTIC_WRITE);
+            if(cp == null) {
+                System.out.println("Cliente Particular not found.");
+                return null;
+            }
+            cp.setCliente(entity.getCliente());
+            cp.setReferred(entity.getReferred());
+            commit();
+            return entity.getCC();
         }
 
         @Override
-        public Long delete(Cliente_Particular entity) {
-            return null;
+        public Integer delete(Cliente_Particular entity) {
+            beginTransaction();
+            Cliente_Particular c = _em.find(Cliente_Particular.class, entity.getCC(), LockModeType.PESSIMISTIC_WRITE);
+            if(c == null) {
+                System.out.println("Cliente Particular not found.");
+                return null;
+            }
+            _em.remove(c);
+            commit();
+            return c.getCC();
         }
     }
 
     protected class ClienteInstitucionalMapper implements ICliente_InstitucionalMapper {
 
         @Override
-        public Long create(Cliente_Institucional entity) {
+        public Cliente_Institucional create(Cliente_Institucional entity) {
             return null;
         }
 
@@ -213,7 +235,7 @@ public class JPAContext implements IContext {
     }
     protected class VeiculoMapper implements IVeiculoMapper {
         @Override
-        public Long create(Veiculo entity) {
+        public Veiculo create(Veiculo entity) {
             return null;
         }
 
@@ -235,7 +257,7 @@ public class JPAContext implements IContext {
 
     protected class CondutorMapper implements ICondutorMapper {
         @Override
-        public Long create(Condutor entity) {
+        public Condutor create(Condutor entity) {
             return null;
         }
 
@@ -278,7 +300,12 @@ public class JPAContext implements IContext {
     @Override
     public void flush() {_em.flush();}
 
-    public JPAContext() {this("postgres");}
+    public JPAContext() {
+        /*public String DB_NAME = "MONGO_CONNECTION";
+        this(DB_NAME);*/
+        //TODO: NOTICE ME
+        this("sijpa");
+    }
 
     public JPAContext(String persistentCtx) {
         super();
@@ -302,7 +329,8 @@ public class JPAContext implements IContext {
 
     @Override
     public void rollback(){
-        _tx.rollback();
+        if(_tx != null)
+            _tx.rollback();
     }
 
 
@@ -334,25 +362,27 @@ public class JPAContext implements IContext {
 
     public IClienteMapper getCliente() {return _clienteMapper;}
 
+    public ICliente_ParticularMapper getClienteParticular() {return _clienteParticularMapper;}
 
-    //Example using a table function
-    //Do note that, in this case, the implementation is eager, thus less efficient and error prone.
-    //In such cases, we should use proxies, by implementing the virtual proxy pattern.
-    //With simply queries, like thi one, it is better to use  NamedQueries.
-    public Cliente fromCliente(int nif) {
-        /*StoredProcedureQuery q = _em.createNamedStoredProcedureQuery("namedfromCountry");
-        q.setParameter(1, country);
-        q.execute();
-        List<Object[]> tmp = (List<Object[]>) q.getResultList();*/
-        return getClientes().findByKey(nif);
+
+    public Cliente createCliente(Cliente cliente) {
+        return getCliente().create(cliente);
     }
 
-    //Just an example of what getting a single object with mapper could be
-    public int createCliente(Cliente cliente) {
-        return getCliente().create(cliente);
+    public Cliente_Particular createClienteParticular(Cliente_Particular cliente_particular, Cliente client) {
+        createCliente(client);
+        return getClienteParticular().create(cliente_particular);
+    }
+
+    public int updateCliente(Cliente cliente) {
+        return getCliente().update(cliente);
     }
 
     public int deleteCliente(Cliente cliente) {
         return getCliente().delete(cliente);
+    }
+
+    public int deleteClienteParticular(Cliente_Particular cliente_particular) {
+        return getClienteParticular().delete(cliente_particular);
     }
 }

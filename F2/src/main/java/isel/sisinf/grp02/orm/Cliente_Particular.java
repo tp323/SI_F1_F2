@@ -20,6 +20,13 @@ public class Cliente_Particular implements ICliente_Particular {
                 '}';
     }
 
+    public String[] toArray() {
+        return new String[]{
+                Integer.toString(cc),
+                Integer.toString(cliente.getNif())
+        };
+    }
+
     @Id
     @Column(name = "cc")
     private int cc;
@@ -33,11 +40,11 @@ public class Cliente_Particular implements ICliente_Particular {
 
 
     public int getCC() { return cc; }
-    public Cliente getClient() {return cliente; }
+    public Cliente getCliente() {return cliente; }
     public Set<Cliente> getReferred() {return referred; }
 
 
     public void setCC(int cc) { this.cc = cc;}
-    public void setClient(Cliente client) { this.cliente = client; }
+    public void setCliente(Cliente client) { this.cliente = client; }
     public void setReferred(Set<Cliente> referred) { this.referred = referred; }
 }
