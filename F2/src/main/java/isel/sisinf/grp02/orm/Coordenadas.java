@@ -35,7 +35,6 @@ public class Coordenadas implements ICoordenadas {
     @Column(name = "raio", nullable = false)
     private int raio;
 
-    /**TODO: Multiple Zonas Verdes can have the same Coordenada**/
     @OneToOne(mappedBy = "coordenadas")
     private ZonaVerde zona;
 

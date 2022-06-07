@@ -20,20 +20,20 @@ public class App {
     private final Scanner in = new Scanner(System.in);
 
     public App() {
-        DB_METHODS.put(InterfaceOptions.INSERT_CLIENT_PART, () -> Table.createTable(clientInfo(), in));
-        DB_METHODS.put(InterfaceOptions.UPDATE_CLIENT_PART, () -> Table.createTable(clientInfo(), in));
-        DB_METHODS.put(InterfaceOptions.REMOVE_CLIENT_PART, () -> Table.createTable(removeClient(), in));
-        //DB_METHODS.put(InterfaceOptions.TOTAL_ALARMS, () -> Table.createTable(context.getAlarms(), in));
-        //DB_METHODS.put(InterfaceOptions.PROCESS_REQUEST, () -> Table.createTable(context.process(), in));
-        DB_METHODS.put(InterfaceOptions.CREATE_ALARM, () -> Table.createTable(addBip(), in));
-        DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE, () -> Table.createTable(createVehicle(), in));
+        DB_METHODS.put(InterfaceOptions.INSERT_CLIENT_PART, () -> Table.createTable(clientInfo(), 1, in));
+        DB_METHODS.put(InterfaceOptions.UPDATE_CLIENT_PART, () -> Table.createTable(clientInfo(), 1, in));
+        DB_METHODS.put(InterfaceOptions.REMOVE_CLIENT_PART, () -> Table.createTable(removeClient(), 1, in));
+        //DB_METHODS.put(InterfaceOptions.TOTAL_ALARMS, () -> Table.createTable(context.getAlarms(), 1, in));
+        //DB_METHODS.put(InterfaceOptions.PROCESS_REQUEST, () -> Table.createTable(context.process(), 1, in));
+        DB_METHODS.put(InterfaceOptions.CREATE_ALARM, () -> Table.createTable(addBip(), 1, in));
+        DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE, () -> Table.createTable(createVehicle(), 1, in));
         /*DB_METHODS.put(InterfaceOptions.SHOW_VIEW, () -> {
             String[][] viewContents = context.showView();
-            Table.createTable(viewContents, in);
+            Table.createTable(viewContents, viewContents[0].length, in);
         });*/
-        DB_METHODS.put(InterfaceOptions.INSERT_VIEW, () -> Table.createTable(insertView(), in));
-        //DB_METHODS.put(InterfaceOptions.DELETE_INVALID_RES, () -> Table.createTable(context.deleteInvalidRequests(), in));
-        DB_METHODS.put(InterfaceOptions.DEACTIVATE_CLIENT, () -> Table.createTable(deactivateClient(), in));
+        DB_METHODS.put(InterfaceOptions.INSERT_VIEW, () -> Table.createTable(insertView(), 1, in));
+        //DB_METHODS.put(InterfaceOptions.DELETE_INVALID_RES, () -> Table.createTable(context.deleteInvalidRequests(), 1, in));
+        DB_METHODS.put(InterfaceOptions.DEACTIVATE_CLIENT, () -> Table.createTable(deactivateClient(), 1, in));
     }
 
     private enum InterfaceOptions {
@@ -68,15 +68,13 @@ public class App {
         String phone = in.nextLine();
         System.out.println();
         System.out.print("Please introduce the client's referred client: ");
-        int refClient = checkUserInput(in::nextInt);
-        in.nextLine();
+        //TODO: refClient = func(checkNumberInput());
+        //in.nextLine();
         System.out.println();
         System.out.print("Please introduce the client's CC: ");
         int cc = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
-
-        //return dCreate(context, nif, name, residence, phone, refClient, cc);
         return new String[0][];
     }
 
@@ -241,12 +239,7 @@ public class App {
 
     private void getPersistenceName() {
         System.out.print("Please introduce the persistence name: ");
-        try {
-            //this.context = new JPAContext(in.nextLine());
-            this.context = new JPAContext();
-        } catch(Exception e) {
-            System.out.println("The persistent name given does not have a Persistence provider.");
-        }
+        this.context = new JPAContext(in.nextLine());
     }
 
     public void runApp() {

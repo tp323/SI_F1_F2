@@ -4,11 +4,7 @@ import java.util.Collections;
 import java.util.Scanner;
 
 public class Table {
-    static void createTableHead() {
-
-    }
-
-    static void createTable(String[][] array, Scanner in) {
+    static void createTable(String[][] array, int n_columns, Scanner in) {
         System.out.println();
         if(array.length == 0) {
             System.out.println("(empty)");
@@ -16,7 +12,6 @@ public class Table {
             in.nextLine();
             return;
         }
-        int n_columns = array[0].length;
         for(int i = 0; i < array.length; i++) {
             int[] columnSizes = columnSizesCalculation(array, n_columns);
 
