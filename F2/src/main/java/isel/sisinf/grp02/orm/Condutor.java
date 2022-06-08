@@ -22,7 +22,7 @@ public class Condutor implements ICondutor {
     @Column(name = "contacto", length = 10)
     private String contacto;
 
-    @OneToMany(mappedBy = "condutor")
+    @OneToMany(mappedBy = "condutor", cascade = CascadeType.PERSIST)
     private Set<Veiculo> veiculos = new LinkedHashSet<>();
 
 

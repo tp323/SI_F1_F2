@@ -75,14 +75,14 @@ CREATE OR REPLACE FUNCTION alarm_number(registration varchar(6), year numeric) R
             SELECT COUNT(*) INTO number
             FROM bip_equipamento_eletronico b
             INNER JOIN veiculo v on b.equipamento = v.equipamento
-            WHERE extract(YEAR FROM marca_temporal) = year AND matricula = target;
+            WHERE extract(YEAR FROM marca_temporal) = year AND matricula = target AND alarme = true;
             RETURN number;
 
         end if;
 
         SELECT COUNT(*) INTO number
         FROM bip_equipamento_eletronico bee
-        WHERE extract(YEAR FROM marca_temporal) = year;
+        WHERE extract(YEAR FROM marca_temporal) = year AND alarme = true;
 
         RETURN number;
     end;$$LANGUAGE plpgsql;

@@ -36,10 +36,10 @@ public class Equipamento_Eletronico implements IEquipamento {
     @Column(name = "estado", nullable = false)
     private String estado;
 
-    @OneToOne(mappedBy = "equipamento")
+    @OneToOne(mappedBy = "equipamento", cascade = CascadeType.PERSIST)
     private Veiculo veiculo;
 
-    @OneToMany(mappedBy = "equipamento")
+    @OneToMany(mappedBy = "equipamento", cascade = CascadeType.PERSIST)
     private Set<Bip> bips = new LinkedHashSet<>();
 
     public Long getId() { return id; }

@@ -635,4 +635,61 @@ public class JPAContext implements IContext {
     public int deleteClienteParticular(Cliente_Particular cliente_particular) {
         return getClienteParticular().delete(cliente_particular);
     }
+
+    public int procedure_getAlarmNumber(String registration, int year){
+        if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration");
+
+        StoredProcedureQuery procedureQuery =
+                _em.createNamedStoredProcedureQuery(Bip.alarm_number);
+        procedureQuery.setParameter(1, registration);
+        procedureQuery.setParameter(2, year);
+        procedureQuery.execute();
+        return procedureQuery.getFirstResult();
+    }
+
+    public void procedure_fetchRequests(){
+        beginTransaction();
+        Query q = _em.createNativeQuery("call processRequests()");
+        q.executeUpdate();
+        commit();
+    }
+
+    public void procedure_createVehicle(String registration, int driver, int equip, int cliente){
+        beginTransaction();
+        Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4)");
+        q.setParameter(1, registration);
+        q.setParameter(2, driver);
+        q.setParameter(3, equip);
+        q.setParameter(4, cliente);
+
+        q.executeUpdate();
+        commit();
+    }
+
+    public void procedure_createVehicle(String registration, int driver, int equip, int cliente, int raio, int lat, int log){
+        beginTransaction();
+
+        if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration");
+
+        Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
+        q.setParameter(1, registration);
+        q.setParameter(2, driver);
+        q.setParameter(3, equip);
+        q.setParameter(4, cliente);
+        q.setParameter(5, raio);
+        q.setParameter(6, lat);
+        q.setParameter(7, log);
+
+        q.executeUpdate();
+        commit();
+    }
+
+    public void procedure_clearRequests(){
+        beginTransaction();
+
+        Query q = _em.createNativeQuery("call deleteinvalids()");
+
+        q.executeUpdate();
+        commit();
+    }
 }

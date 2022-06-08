@@ -5,6 +5,17 @@ import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 
+
+@NamedStoredProcedureQuery(
+        name = Bip.alarm_number,
+        procedureName = "alarm_number",
+        resultClasses = Integer.class,
+        parameters = {
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class)
+        }
+)
+
 @Entity
 @NamedQuery(name = "Bip.findByKey",
         query = "SELECT b FROM Bip b WHERE b.id =:key")
@@ -13,6 +24,8 @@ import java.sql.Timestamp;
 
 @Table(name = "bip_equipamento_eletronico")
 public class Bip implements IBip {
+
+    public static final String alarm_number = "alarm_number";
 
     @Override
     public String toString() {

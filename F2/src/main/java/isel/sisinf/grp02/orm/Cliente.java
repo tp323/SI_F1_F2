@@ -57,13 +57,13 @@ public class Cliente implements ICliente {
     }
 
     @Id
-    @Column(name = "nif", nullable = false)
+    @Column(name = "nif", nullable = false, length = 9)
     private int nif;
 
-    @Column(name = "nome", nullable = false)
+    @Column(name = "nome", nullable = false, length = 25)
     private String nome;
 
-    @Column(name = "morada", nullable = false)
+    @Column(name = "morada", nullable = false, length = 150)
     private String morada;
 
     @Column(name = "telefone", nullable = false, length = 10) /*** passar para length 13 na DB ***/
@@ -74,7 +74,7 @@ public class Cliente implements ICliente {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ref_cliente")
-    private Cliente_Particular refCliente;
+    private Cliente_Particular refCliente = null;
 
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.PERSIST)
     private Cliente_Particular cliente_particular;

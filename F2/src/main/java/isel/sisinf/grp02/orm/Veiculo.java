@@ -46,7 +46,7 @@ public class Veiculo implements IVeiculo {
     @JoinColumn(name = "cliente", referencedColumnName = "nif", nullable = false)
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "veiculo")
+    @OneToMany(mappedBy = "veiculo", cascade = CascadeType.PERSIST)
     private Set<Zona_Verde> zonasVerdes;
 
     @Column(name = "alarms", nullable = false)
