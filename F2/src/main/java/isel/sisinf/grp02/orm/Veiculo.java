@@ -26,6 +26,10 @@ public class Veiculo implements IVeiculo {
                 '}';
     }
 
+    public String[] toArray() {
+        return new String[0];
+    }
+
     @Id
     @Column(name = "matricula", nullable = false, length = 6)
     private String matricula;

@@ -5,6 +5,8 @@ import isel.sisinf.grp02.orm.Cliente;
 import isel.sisinf.grp02.orm.Cliente_Particular;
 import jakarta.xml.bind.annotation.XmlType;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 public class testalineas {
@@ -28,7 +30,7 @@ public class testalineas {
         test();
     }
 
-    public static String[][] dCreate(
+    public static List<Cliente_Particular> dCreate(
             JPAContext ctx/*,
             int nif,
             String name,
@@ -57,10 +59,9 @@ public class testalineas {
         c.setClienteParticular(cp);
         Cliente_Particular insertedClient = ctx.createClienteParticular(cp, c);
 
-        String[][] clientList = new String[2][];
-        clientList[0] = new String[]{"NIF", "Nome", "Morada", "Telefone", "Referencia Cliente"};
-        clientList[1] = insertedClient.getCliente().toArray();
-        Table.createTable(clientList, new Scanner(System.in));
+        List<Cliente_Particular> clientList = new LinkedList<>();
+        clientList.add(insertedClient);
+        Table.createTable(clientList, new Scanner(System.in), Cliente_Particular::toArray);
         return clientList;
 
         /*

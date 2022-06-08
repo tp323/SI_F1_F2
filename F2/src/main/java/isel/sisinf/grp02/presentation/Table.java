@@ -1,22 +1,77 @@
 package isel.sisinf.grp02.presentation;
 
-import java.util.Collections;
-import java.util.Scanner;
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+
+import java.lang.reflect.Field;
+import java.util.*;
+
+interface ArrayConvertFunction<T> {
+    String[] toArray(T obj);
+}
 
 public class Table {
-    static void createTableHead() {
+    private static <T> String[][] makeInfoArray(int n_columns, List<T> objs, ArrayConvertFunction<T> func, Field[] objFields) {
+        String[][] array = new String[3][];
+        int i = 1;
+        array[i] = new String[n_columns];
+        for(int j = 0; j < n_columns; j++) {
+            array[i][j] = objFields[j].getName();
+        }
+        i += 2;
+        for(int l = 0; l <= 2; l++) {
+            if(l != 1) {
+                array[l] = new String[n_columns];
+                for (int j = 0; j < n_columns; j++) {
+                    array[l][j] = "-";
+                }
+            }
+        }
+        for (T obj : objs) {
+            if (i >= array.length) array = expandArray2D(array);
+            array[i] = new String[n_columns];
+            array[i] = func.toArray(obj);
+            i++;
+        }
 
+        array = expandArray2D(array);
+        array[i] = new String[n_columns];
+        for(int j = 0; j < n_columns; j++) {
+            array[i][j] = "-";
+        }
+        return array;
     }
 
-    static void createTable(String[][] array, Scanner in) {
+    private static String[][] expandArray2D(String[][] array) {
+        String[][] newArray = new String[array.length + 1][];
+
+        for(int i = 0; i < array.length; i++) {
+            newArray[i] = new String[array[i].length];
+            System.arraycopy(array[i], 0, newArray[i], 0, array[i].length);
+        }
+
+        return newArray;
+    }
+
+    private static Field[] expandArray(Field[] array) {
+        Field[] newArray = new Field[array.length + 1];
+
+        System.arraycopy(array, 0, newArray, 0, array.length);
+
+        return newArray;
+    }
+
+    static <T> void createTable(List<T> objs, Scanner in, ArrayConvertFunction<T> func) {
         System.out.println();
-        if(array.length == 0) {
+        if(objs.size() == 0) {
             System.out.println("(empty)");
             System.out.print("Press enter to continue...");
             in.nextLine();
             return;
         }
-        int n_columns = array[0].length;
+        Field[] columnFields = getColumnFields(objs.get(0).getClass().getDeclaredFields());
+        int n_columns = columnFields.length;
+        String[][] array = makeInfoArray(n_columns, objs, func, columnFields);
         for(int i = 0; i < array.length; i++) {
             int[] columnSizes = columnSizesCalculation(array, n_columns);
 
@@ -50,5 +105,18 @@ public class Table {
         }
 
         return columnSizes;
+    }
+
+    private static Field[] getColumnFields(Field[] fields) {
+        Field[] array = new Field[0];
+        int j = 0;
+        for (Field field : fields) {
+            if (field.getAnnotation(Column.class) != null || field.getAnnotation(JoinColumn.class) != null) {
+                if (j >= array.length) array = expandArray(array);
+                array[j] = field;
+                j++;
+            }
+        }
+        return array;
     }
 }

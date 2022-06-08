@@ -1,10 +1,9 @@
 package isel.sisinf.grp02.presentation;
 
 import isel.sisinf.grp02.data_acess.JPAContext;
+import isel.sisinf.grp02.orm.*;
 
-import java.util.HashMap;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 interface DbOperation {
     void dbWork();
@@ -20,20 +19,20 @@ public class App {
     private final Scanner in = new Scanner(System.in);
 
     public App() {
-        DB_METHODS.put(InterfaceOptions.INSERT_CLIENT_PART, () -> Table.createTable(clientInfo(), in));
-        DB_METHODS.put(InterfaceOptions.UPDATE_CLIENT_PART, () -> Table.createTable(clientInfo(), in));
-        DB_METHODS.put(InterfaceOptions.REMOVE_CLIENT_PART, () -> Table.createTable(removeClient(), in));
+        DB_METHODS.put(InterfaceOptions.INSERT_CLIENT_PART, () -> Table.createTable(clientInfo(), in, Cliente_Particular::toArray));
+        DB_METHODS.put(InterfaceOptions.UPDATE_CLIENT_PART, () -> Table.createTable(clientInfo(), in, Cliente_Particular::toArray));
+        DB_METHODS.put(InterfaceOptions.REMOVE_CLIENT_PART, () -> Table.createTable(removeClient(), in, Cliente_Particular::toArray));
         //DB_METHODS.put(InterfaceOptions.TOTAL_ALARMS, () -> Table.createTable(context.getAlarms(), in));
         //DB_METHODS.put(InterfaceOptions.PROCESS_REQUEST, () -> Table.createTable(context.process(), in));
-        DB_METHODS.put(InterfaceOptions.CREATE_ALARM, () -> Table.createTable(addBip(), in));
-        DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE, () -> Table.createTable(createVehicle(), in));
+        DB_METHODS.put(InterfaceOptions.CREATE_ALARM, () -> Table.createTable(addBip(), in, Bip::toArray));
+        DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE, () -> Table.createTable(createVehicle(), in, Veiculo::toArray));
         /*DB_METHODS.put(InterfaceOptions.SHOW_VIEW, () -> {
             String[][] viewContents = context.showView();
             Table.createTable(viewContents, in);
         });*/
-        DB_METHODS.put(InterfaceOptions.INSERT_VIEW, () -> Table.createTable(insertView(), in));
+        //DB_METHODS.put(InterfaceOptions.INSERT_VIEW, () -> Table.createTable(insertView(), in, Cliente_Particular::toArray));
         //DB_METHODS.put(InterfaceOptions.DELETE_INVALID_RES, () -> Table.createTable(context.deleteInvalidRequests(), in));
-        DB_METHODS.put(InterfaceOptions.DEACTIVATE_CLIENT, () -> Table.createTable(deactivateClient(), in));
+        DB_METHODS.put(InterfaceOptions.DEACTIVATE_CLIENT, () -> Table.createTable(deactivateClient(), in, Cliente::toArray));
     }
 
     private enum InterfaceOptions {
@@ -52,7 +51,7 @@ public class App {
         DEACTIVATE_CLIENT
     }
 
-    private String[][] clientInfo() {
+    private List<Cliente_Particular> clientInfo() {
         clearConsole();
         System.out.print("Please introduce the client's NIF: ");
         int nif = checkUserInput(in::nextInt);
@@ -77,10 +76,10 @@ public class App {
         System.out.println();
 
         //return dCreate(context, nif, name, residence, phone, refClient, cc);
-        return new String[0][];
+        return new LinkedList<>();
     }
 
-    private String[][] removeClient() {
+    private List<Cliente_Particular> removeClient() {
         clearConsole();
         System.out.print("Please introduce the client's NIF: ");
         int nif = checkUserInput(in::nextInt);
@@ -90,10 +89,10 @@ public class App {
         int cc = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
-        return new String[0][];
+        return new LinkedList<>();
     }
 
-    private String[][] addBip() {
+    private List<Bip> addBip() {
         clearConsole();
         System.out.print("Please introduce the equipment's ID: ");
         int equipment = checkUserInput(in::nextInt);
@@ -109,10 +108,10 @@ public class App {
         boolean alarm = checkUserInput(in::nextBoolean);
         in.nextLine();
         System.out.println();
-        return new String[0][];
+        return new LinkedList<>();
     }
 
-    private String[][] createVehicle() {
+    private List<Veiculo> createVehicle() {
         clearConsole();
         System.out.print("Please introduce the Vehicle's registration: ");
         String registration = in.nextLine();
@@ -141,10 +140,10 @@ public class App {
         float longitude = checkUserInput(in::nextFloat);
         in.nextLine();
         System.out.println();
-        return new String[0][];
+        return new LinkedList<>();
     }
 
-    private String[][] insertView() {
+    private List<String> insertView() {
         clearConsole();
         System.out.print("Please introduce the Vehicle's registration: ");
         String registration = in.nextLine();
@@ -163,15 +162,15 @@ public class App {
         System.out.print("Please introduce the date and time: ");
         String date = in.nextLine();
         System.out.println();
-        return new String[0][];
+        return new LinkedList<>();
     }
 
-    private String[][] deactivateClient() {
+    private List<Cliente> deactivateClient() {
         clearConsole();
         System.out.print("Please introduce the Client's NIF: ");
         int nif = checkUserInput(in::nextInt);
         System.out.println();
-        return new String[0][];
+        return new LinkedList<>();
     }
 
     private <T> T checkUserInput(ParameterFunction<T> func) {

@@ -25,6 +25,10 @@ public class Bip implements IBip {
                 '}';
     }
 
+    public String[] toArray() {
+        return new String[0];
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
