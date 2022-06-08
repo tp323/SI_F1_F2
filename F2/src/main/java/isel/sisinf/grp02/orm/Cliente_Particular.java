@@ -29,14 +29,14 @@ public class Cliente_Particular implements ICliente_Particular {
     }
     
     @Id
-    @Column(name = "cc")
+    @Column(name = "cc", nullable = false, length = 3)
     private int cc;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cliente", referencedColumnName = "nif")
+    @JoinColumn(name = "cliente", nullable = false, referencedColumnName = "nif")
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "refCliente")
+    @OneToMany(mappedBy = "refCliente", cascade = CascadeType.PERSIST)
     private Set<Cliente> referred;
 
 

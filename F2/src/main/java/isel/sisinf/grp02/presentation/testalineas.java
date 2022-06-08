@@ -15,7 +15,7 @@ public class testalineas {
             ctx.beginTransaction();
             dCreate(ctx);
             //dDelete(ctx);
-            dUpdate(ctx);
+            //dUpdate(ctx);
             ctx.commit();
         }
         catch(Exception e) {
@@ -25,6 +25,11 @@ public class testalineas {
     }
 
     public static void main(String[] args) throws Exception {
+        JPAContext ctx = new JPAContext();
+        ctx.beginTransaction();
+        ctx.flush();
+        ctx.commit();
+
         test();
     }
 
@@ -56,13 +61,13 @@ public class testalineas {
         cp.setCliente(c);
         c.setClienteParticular(cp);
         Cliente_Particular insertedClient = ctx.createClienteParticular(cp, c);
-
+/*
         String[][] clientList = new String[2][];
         clientList[0] = new String[]{"NIF", "Nome", "Morada", "Telefone", "Referencia Cliente"};
         clientList[1] = insertedClient.getCliente().toArray();
         Table.createTable(clientList, new Scanner(System.in));
-        return clientList;
-
+        return clientList;*/
+        return null;
         /*
 
         return new String[0][];*/

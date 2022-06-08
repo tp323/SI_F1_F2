@@ -16,7 +16,7 @@ public class Cliente_Institucional implements ICliente_Institucional {
     @JoinColumn(name = "cliente", referencedColumnName = "nif")
     private Cliente cliente;
 
-    @Column(name = "nome_contacto")
+    @Column(name = "nome_contacto", nullable = false, length = 25)
     private String nomeContacto;
 
 

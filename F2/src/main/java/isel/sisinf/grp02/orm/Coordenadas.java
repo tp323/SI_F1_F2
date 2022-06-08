@@ -34,10 +34,10 @@ public class Coordenadas implements ICoordenadas {
     private Float longitude;
 
     /**TODO: Multiple Zonas Verdes can have the same Coordenada**/
-    @OneToOne(mappedBy = "coordenadas")
+    @OneToOne(mappedBy = "coordenadas", cascade = CascadeType.PERSIST)
     private Zona_Verde zona;
 
-    @OneToOne(mappedBy = "coordenadas")
+    @OneToOne(mappedBy = "coordenadas", cascade = CascadeType.PERSIST)
     private Bip bip;
 
     public Long getId() { return id; }
