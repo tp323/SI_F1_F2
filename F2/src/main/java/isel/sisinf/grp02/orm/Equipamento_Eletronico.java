@@ -34,7 +34,7 @@ public class Equipamento_Eletronico implements IEquipamento {
     @Column(name = "estado", nullable = false, length = 15)
     private String estado;
 
-    public enum estadosValidos{
+    public enum estadosValidos {
         Activo,
         PausaDeAlarmes,
         Inactivo

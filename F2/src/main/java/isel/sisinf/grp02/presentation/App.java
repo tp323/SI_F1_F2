@@ -2,7 +2,6 @@ package isel.sisinf.grp02.presentation;
 
 import isel.sisinf.grp02.data_acess.JPAContext;
 import isel.sisinf.grp02.orm.Bip;
-import isel.sisinf.grp02.orm.Cliente;
 import isel.sisinf.grp02.orm.Cliente_Particular;
 import isel.sisinf.grp02.orm.Veiculo;
 
@@ -21,6 +20,11 @@ interface ClienteFunctionCall<T> {
     T doClienteStuff(int nif, String name, String residence, String phone, int refClient, int cc);
 }
 
+interface VehicleFunctionCall {
+    void createVehicle(String registration, int driver, int equip, int cliente, int raio, int lat, int log);
+    void  createVehicle(String registration, int driver, int equip, int cliente);
+}
+
 public class App {
     private JPAContext context = null;
     private final HashMap<InterfaceOptions, DbOperation> DB_METHODS = new HashMap<>();
@@ -33,8 +37,30 @@ public class App {
         DB_METHODS.put(InterfaceOptions.TOTAL_ALARMS, () -> Table.createTable(new String[]{"alarm_number"}, in, alarmNumber()));
         DB_METHODS.put(InterfaceOptions.PROCESS_REQUEST, () -> context.procedure_fetchRequests());
         DB_METHODS.put(InterfaceOptions.CREATE_ALARM, () -> Table.createTable(addBip(), in, Bip::toArray));
-        DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE, () -> Table.createTable(createVehicle(), in, Veiculo::toArray));
-        //DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE_PROCEDURE, () -> Table.createTable(createVehicleWithProcedure(), in, Veiculo::toArray));
+        DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE, () -> Table.createTable(createVehicle(new VehicleFunctionCall() {
+
+            @Override
+            public void createVehicle(String registration, int driver, int equip, int cliente, int raio, int lat, int log) {
+                context.createVehicle(registration, driver, equip, cliente, raio, lat, log);
+            }
+
+            @Override
+            public void createVehicle(String registration, int driver, int equip, int cliente) {
+                context.createVehicle(registration, driver, equip, cliente);
+            }
+        }), in, Veiculo::toArray));
+        DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE_PROCEDURE, () -> Table.createTable(createVehicle(new VehicleFunctionCall() {
+
+            @Override
+            public void createVehicle(String registration, int driver, int equip, int cliente, int raio, int lat, int log) {
+                context.procedure_createVehicle(registration, driver, equip, cliente, raio, lat, log);
+            }
+
+            @Override
+            public void createVehicle(String registration, int driver, int equip, int cliente) {
+                context.procedure_createVehicle(registration, driver, equip, cliente);
+            }
+        }), in, Veiculo::toArray));
         DB_METHODS.put(InterfaceOptions.CREATE_VIEW, () -> context.createView());
         DB_METHODS.put(InterfaceOptions.INSERT_VIEW, this::insertView);
         DB_METHODS.put(InterfaceOptions.DELETE_INVALID_RES, () -> context.procedure_clearRequests());
@@ -72,10 +98,7 @@ public class App {
         System.out.println();
         System.out.print("Please introduce the client's phone number: ");
         String phone = in.nextLine();
-        System.out.println();
-        System.out.print("Please introduce the client's referred client: ");
-        int refClient = checkUserInput(in::nextInt);
-        in.nextLine();
+        int refClient = CheckRefCliente();
         System.out.println();
         System.out.print("Please introduce the client's CC: ");
         int cc = checkUserInput(in::nextInt);
@@ -132,7 +155,7 @@ public class App {
         return context.buildBipFromInput(equipment, Timestamp.valueOf(date), coordinates, alarm);
     }
 
-    private List<Veiculo> createVehicle() {
+    private <T> List<Veiculo> createVehicle(VehicleFunctionCall func) {
         clearConsole();
         System.out.print("Please introduce the Vehicle's registration: ");
         String registration = in.nextLine();
@@ -151,10 +174,9 @@ public class App {
         System.out.println();
 
         System.out.print("Would you like to input the coordinates and radius? ");
-        String answer = in.nextLine();
-        while (!answer.equalsIgnoreCase("yes") && !answer.equalsIgnoreCase("no")) answer = in.nextLine();
+        String answer = checkAnswer(in.nextLine());
         if(answer.equalsIgnoreCase("no")) {
-            context.procedure_createVehicle(registration, driver, equipment, client);
+            func.createVehicle(registration, driver, equipment, client);
             return new LinkedList<>();
         }
 
@@ -171,7 +193,7 @@ public class App {
         int longitude = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
-        context.procedure_createVehicle(registration, driver, equipment, client, radius, latitude, longitude);
+        func.createVehicle(registration, driver, equipment, client, radius, latitude, longitude);
         return new LinkedList<>();
     }
 
@@ -214,6 +236,35 @@ public class App {
                 in.nextLine();
             }
         }
+    }
+
+    private int CheckRefCliente() {
+        while(true) {
+            try {
+                System.out.println();
+                System.out.print("Would you like to add a Client as a reference to this client? ");
+                String answer = checkAnswer(in.nextLine());
+                if(answer.equalsIgnoreCase("yes")) {
+                    System.out.print("Please introduce the referred client's NIF: ");
+                    int refCliente = in.nextInt();
+                    in.nextLine();
+                    return refCliente;
+                }
+                return 0;
+            } catch(InputMismatchException e) {
+                System.out.println("The input requested is not correct!");
+                in.nextLine();
+            }
+        }
+    }
+
+    private String checkAnswer(String answer) {
+        String newAnswer = answer;
+        while(!newAnswer.equalsIgnoreCase("yes") && !newAnswer.equalsIgnoreCase("no")) {
+            System.out.print("The answer should either be yes or no! ");
+            newAnswer = in.nextLine();
+        }
+        return newAnswer;
     }
 
     private void clearConsole() {

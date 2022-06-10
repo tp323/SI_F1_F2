@@ -846,6 +846,36 @@ public class JPAContext implements IContext {
         commit();
     }
 
+    public void createVehicle(String registration, int driver, int equip, int cliente) {
+        beginTransaction();
+        Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4)");
+        q.setParameter(1, registration);
+        q.setParameter(2, driver);
+        q.setParameter(3, equip);
+        q.setParameter(4, cliente);
+
+        q.executeUpdate();
+        commit();
+    }
+
+    public void createVehicle(String registration, int driver, int equip, int cliente, int raio, int lat, int log) {
+        beginTransaction();
+
+        if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration");
+
+        Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
+        q.setParameter(1, registration);
+        q.setParameter(2, driver);
+        q.setParameter(3, equip);
+        q.setParameter(4, cliente);
+        q.setParameter(5, raio);
+        q.setParameter(6, lat);
+        q.setParameter(7, log);
+
+        q.executeUpdate();
+        commit();
+    }
+
     public void createView() {
         beginTransaction();
 
