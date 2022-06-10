@@ -57,7 +57,7 @@ public class Cliente implements ICliente {
     }
 
     @Id
-    @Column(name = "nif", nullable = false)
+    @Column(name = "nif", nullable = false) /*** passar para length 8 na DB ou manter 9 com num de seg ***/
     private int nif;
 
     @Column(name = "nome", nullable = false, length = 25)

@@ -25,10 +25,10 @@ public class Coordenadas implements ICoordenadas {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "latitude", nullable = false)
+    @Column(name = "latitude", nullable = false, precision = 1)
     private Float latitude;
 
-    @Column(name = "longitude", nullable = false)
+    @Column(name = "longitude", nullable = false, precision = 1)
     private Float longitude;
 
     /**TODO: Multiple Zonas Verdes can have the same Coordenada**/
