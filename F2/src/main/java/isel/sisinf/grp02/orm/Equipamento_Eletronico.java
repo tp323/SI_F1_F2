@@ -23,8 +23,6 @@ public class Equipamento_Eletronico implements IEquipamento {
         return "Equipamento_Eletronico{" +
                 "id=" + id +
                 ", estado='" + estado + '\'' +
-                ", veiculo=" + veiculo +
-                ", bips=" + bips +
                 '}';
     }
 
@@ -33,7 +31,7 @@ public class Equipamento_Eletronico implements IEquipamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "estado", nullable = false)
+    @Column(name = "estado", nullable = false, length = 15)
     private String estado;
 
     @OneToOne(mappedBy = "equipamento", cascade = CascadeType.PERSIST)

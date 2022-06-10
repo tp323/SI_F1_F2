@@ -29,6 +29,7 @@ public class Zona_Verde implements IZonaVerde {
     @Column(name = "raio", nullable = false)
     private int raio;
 
+    // TODO: Zonas Verdes should be able to have the same Coordenadas
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coordenadas", referencedColumnName = "id")
     private Coordenadas coordenadas;

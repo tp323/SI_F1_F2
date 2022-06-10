@@ -27,7 +27,13 @@ public class Veiculo implements IVeiculo {
     }
 
     public String[] toArray() {
-        return new String[0];
+        return new String[]{
+                matricula,
+                Integer.toString(condutor.getCC()),
+                Long.toString(equipamento.getId()),
+                Integer.toString(cliente.getNif()),
+                Integer.toString(alarms)
+        };
     }
 
     @Id
@@ -35,7 +41,7 @@ public class Veiculo implements IVeiculo {
     private String matricula;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "condutor", referencedColumnName = "cc",nullable = false)
+    @JoinColumn(name = "condutor", referencedColumnName = "cc", nullable = false)
     private Condutor condutor;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)

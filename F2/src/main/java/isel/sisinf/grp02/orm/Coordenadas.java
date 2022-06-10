@@ -18,8 +18,6 @@ public class Coordenadas implements ICoordenadas {
                 "id=" + id +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
-                ", zona=" + zona +
-                ", bip=" + bip +
                 '}';
     }
 

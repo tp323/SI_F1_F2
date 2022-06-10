@@ -39,7 +39,13 @@ public class Bip implements IBip {
     }
 
     public String[] toArray() {
-        return new String[0];
+        return new String[]{
+                Long.toString(id),
+                String.valueOf(marca_temporal),
+                Boolean.toString(alarme),
+                Long.toString(equipamento.getId()),
+                Long.toString(coordenadas.getId())
+        };
     }
 
     @Id

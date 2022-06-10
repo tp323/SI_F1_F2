@@ -57,7 +57,7 @@ public class Cliente implements ICliente {
     }
 
     @Id
-    @Column(name = "nif", nullable = false, length = 9)
+    @Column(name = "nif", nullable = false)
     private int nif;
 
     @Column(name = "nome", nullable = false, length = 25)
@@ -66,7 +66,7 @@ public class Cliente implements ICliente {
     @Column(name = "morada", nullable = false, length = 150)
     private String morada;
 
-    @Column(name = "telefone", nullable = false, length = 10) /*** passar para length 13 na DB ***/
+    @Column(name = "telefone", nullable = false, length = 13) /*** passar para length 13 na DB ***/
     private String telefone;
 
     @Column(name = "ativo", nullable = false)

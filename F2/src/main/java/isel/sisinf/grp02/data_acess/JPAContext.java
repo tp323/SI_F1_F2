@@ -1,13 +1,14 @@
 package isel.sisinf.grp02.data_acess;
 
-import java.util.Collection;
-import java.util.List;
-
-
 import isel.sisinf.grp02.data_mappers.*;
 import isel.sisinf.grp02.orm.*;
 import isel.sisinf.grp02.repositories.*;
 import jakarta.persistence.*;
+
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class JPAContext implements IContext {
@@ -261,15 +262,15 @@ public class JPAContext implements IContext {
     protected class ClienteMapper implements IClienteMapper {
 
         @Override
-        public Cliente create(Cliente entity) {
+        public Integer create(Cliente entity) {
             beginTransaction();
             _em.persist(entity);
             commit();
-            return entity;
+            return entity.getNif();
         }
 
         @Override
-        public Cliente read(Cliente id) {
+        public Cliente read(Integer id) {
             return _em.find(Cliente.class, id);
         }
 
@@ -284,7 +285,6 @@ public class JPAContext implements IContext {
             c.setNome(entity.getNome());
             c.setMorada(entity.getMorada());
             c.setTelefone(entity.getTelefone());
-            c.setClienteParticular(entity.getClienteParticular());
             c.setRefCliente(entity.getRefCliente());
             commit();
             return entity.getNif();
@@ -307,16 +307,16 @@ public class JPAContext implements IContext {
     protected class ClienteParticularMapper implements ICliente_ParticularMapper {
 
         @Override
-        public Cliente_Particular create(Cliente_Particular entity) {
+        public Integer create(Cliente_Particular entity) {
             beginTransaction();
             _em.persist(entity);
             commit();
-            return entity;
+            return entity.getCC();
         }
 
         @Override
-        public Cliente_Particular read(Cliente_Particular id) {
-            return null;
+        public Cliente_Particular read(Integer id) {
+            return _em.find(Cliente_Particular.class, id);
         }
 
         @Override
@@ -350,12 +350,12 @@ public class JPAContext implements IContext {
     protected class ClienteInstitucionalMapper implements ICliente_InstitucionalMapper {
 
         @Override
-        public Cliente_Institucional create(Cliente_Institucional entity) {
+        public Integer create(Cliente_Institucional entity) {
             return null;
         }
 
         @Override
-        public Cliente_Institucional read(Cliente_Institucional id) {
+        public Cliente_Institucional read(Integer id) {
             return null;
         }
 
@@ -372,13 +372,13 @@ public class JPAContext implements IContext {
 
     protected class EquipamentoMapper implements IEquipamentoMapper {
         @Override
-        public Equipamento_Eletronico create(Equipamento_Eletronico entity) {
+        public Long create(Equipamento_Eletronico entity) {
             return null;
         }
 
         @Override
-        public Equipamento_Eletronico read(Equipamento_Eletronico id) {
-            return null;
+        public Equipamento_Eletronico read(Long id) {
+            return _em.find(Equipamento_Eletronico.class, id);
         }
 
         @Override
@@ -394,12 +394,12 @@ public class JPAContext implements IContext {
 
     protected class VeiculoMapper implements IVeiculoMapper {
         @Override
-        public Veiculo create(Veiculo entity) {
+        public Long create(Veiculo entity) {
             return null;
         }
 
         @Override
-        public Veiculo read(Veiculo id) {
+        public Veiculo read(Long id) {
             return null;
         }
 
@@ -416,12 +416,12 @@ public class JPAContext implements IContext {
 
     protected class CondutorMapper implements ICondutorMapper {
         @Override
-        public Condutor create(Condutor entity) {
+        public Long create(Condutor entity) {
             return null;
         }
 
         @Override
-        public Condutor read(Condutor id) {
+        public Condutor read(Long id) {
             return null;
         }
 
@@ -438,12 +438,12 @@ public class JPAContext implements IContext {
 
     protected class ZonaVerdeMapper implements IZonaVerdeMapper {
         @Override
-        public Zona_Verde create(Zona_Verde entity) {
+        public Long create(Zona_Verde entity) {
             return null;
         }
 
         @Override
-        public Zona_Verde read(Zona_Verde id) {
+        public Zona_Verde read(Long id) {
             return null;
         }
 
@@ -460,13 +460,13 @@ public class JPAContext implements IContext {
 
     protected class CoordenadasMapper implements ICoordenadasMapper {
         @Override
-        public Coordenadas create(Coordenadas entity) {
+        public Long create(Coordenadas entity) {
             return null;
         }
 
         @Override
-        public Coordenadas read(Coordenadas id) {
-            return null;
+        public Coordenadas read(Long id) {
+            return _em.find(Coordenadas.class, id);
         }
 
         @Override
@@ -482,13 +482,16 @@ public class JPAContext implements IContext {
 
     protected class BipMapper implements IBipMapper {
         @Override
-        public Bip create(Bip entity) {
-            return null;
+        public Long create(Bip entity) {
+            beginTransaction();
+            _em.persist(entity);
+            commit();
+            return entity.getID();
         }
 
         @Override
-        public Bip read(Bip id) {
-            return null;
+        public Bip read(Long id) {
+            return _em.find(Bip.class, id);
         }
 
         @Override
@@ -614,14 +617,19 @@ public class JPAContext implements IContext {
 
     public ICliente_ParticularMapper getClienteParticular() {return _clienteParticularMapper;}
 
+    public IBipMapper getBip() {return _bipMapper;}
 
-    public Cliente createCliente(Cliente cliente) {
+    public IEquipamentoMapper getEquipamento() {return _equipamentoMapper;}
+
+    public ICoordenadasMapper getCoordenada() {return _coordenadasMapper;}
+
+
+    public Integer createCliente(Cliente cliente) {
         return getCliente().create(cliente);
     }
 
-    public Cliente_Particular createClienteParticular(Cliente_Particular cliente_particular, Cliente client) {
-        createCliente(client);
-        return getClienteParticular().create(cliente_particular);
+    public Cliente readCliente(int nif) {
+        return getCliente().read(nif);
     }
 
     public int updateCliente(Cliente cliente) {
@@ -632,11 +640,165 @@ public class JPAContext implements IContext {
         return getCliente().delete(cliente);
     }
 
+    public Integer createClienteParticular(Cliente_Particular cliente_particular) {
+        return getClienteParticular().create(cliente_particular);
+    }
+
+    public Cliente_Particular readClienteParticular(int cc) {
+        return getClienteParticular().read(cc);
+    }
+
+    public int updateClienteParticular(Cliente_Particular cliente_particular) {
+        return getClienteParticular().update(cliente_particular);
+    }
+
     public int deleteClienteParticular(Cliente_Particular cliente_particular) {
         return getClienteParticular().delete(cliente_particular);
     }
 
-    public int procedure_getAlarmNumber(String registration, int year){
+    public Equipamento_Eletronico readEquipamentoEletronico(long id) {
+        return getEquipamento().read(id);
+    }
+
+    public Coordenadas readCoordenada(long id) {
+        return getCoordenada().read(id);
+    }
+
+    public long createBip(Bip bip) {
+        return getBip().create(bip);
+    }
+
+    public Bip readBip(Long id) {
+        return getBip().read(id);
+    }
+
+    public List<Cliente_Particular> buildClienteFromInput(
+            int nif,
+            String name,
+            String residence,
+            String phone,
+            int refClient,
+            int cc
+    ) {
+        if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
+        // TODO: Should be 8 not 9
+        if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct");
+
+        Cliente client = new Cliente(nif, name, residence, phone, true);
+        Cliente_Particular cp = new Cliente_Particular();
+        Cliente_Particular ref = new Cliente_Particular();
+        ref.setCC(refClient);
+        client.setRefCliente(readClienteParticular(ref.getCC()));
+        cp.setCC(cc);
+        cp.setCliente(client);
+        client.setClienteParticular(cp);
+        beginTransaction();
+        createCliente(client);
+        commit();
+        beginTransaction();
+        int clientId = createClienteParticular(cp);
+        commit();
+        beginTransaction();
+        Cliente_Particular insertedClient = readClienteParticular(clientId);
+        commit();
+        List<Cliente_Particular> clientList = new LinkedList<>();
+        clientList.add(insertedClient);
+        return clientList;
+    }
+
+    public List<Cliente_Particular> updateClienteFromInput(
+            int nif,
+            String name,
+            String residence,
+            String phone,
+            int refClient,
+            int cc
+    ) {
+        if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
+        // TODO: Should be 8 not 9
+        if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct");
+
+        Cliente client = new Cliente(nif, name, residence, phone, true);
+        Cliente_Particular cp = new Cliente_Particular();
+        client.setRefCliente(readClienteParticular(refClient));
+        cp.setCC(cc);
+        cp.setCliente(client);
+        client.setClienteParticular(cp);
+        beginTransaction();
+        updateCliente(client);
+        commit();
+        beginTransaction();
+        int clientId = updateClienteParticular(cp);
+        commit();
+        beginTransaction();
+        Cliente_Particular insertedClient = readClienteParticular(clientId);
+        commit();
+        List<Cliente_Particular> clientList = new LinkedList<>();
+        clientList.add(insertedClient);
+        return clientList;
+    }
+
+    public String[][] deleteClienteParticularFromInput(int nif, int cc) {
+        if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
+        // TODO: Should be 8 not 9
+        if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct");
+
+        beginTransaction();
+        Cliente clienteToDelete = readCliente(nif);
+        commit();
+        beginTransaction();
+        Cliente_Particular clienteParticularToDelete = readClienteParticular(cc);
+        commit();
+        beginTransaction();
+        deleteCliente(clienteToDelete);
+        commit();
+        beginTransaction();
+        int clienteId = deleteClienteParticular(clienteParticularToDelete);
+        commit();
+
+        String[][] deletedIdList = new String[1][];
+        deletedIdList[0] = new String[]{Integer.toString(clienteId)};
+        return deletedIdList;
+    }
+
+    public String[][] deleteClienteFromInput(int nif) {
+        if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
+
+        beginTransaction();
+        Cliente clienteToDelete = readCliente(nif);
+        commit();
+        beginTransaction();
+        int clienteId = deleteCliente(clienteToDelete);
+        commit();
+
+        String[][] deletedIdList = new String[1][];
+        deletedIdList[0] = new String[]{Integer.toString(clienteId)};
+        return deletedIdList;
+    }
+
+    public List<Bip> buildBipFromInput(
+            int equipamento,
+            Timestamp marca_temporal,
+            int coordenadas,
+            boolean alarme
+    ) {
+        Bip bip = new Bip();
+        bip.setEquipamento(readEquipamentoEletronico(equipamento));
+        bip.setMarcaTemporal(marca_temporal);
+        bip.setCoordenadas(readCoordenada(coordenadas));
+        bip.setAlarme(alarme);
+        beginTransaction();
+        Long bipId = createBip(bip);
+        commit();
+        beginTransaction();
+        Bip insertBip = readBip(bipId);
+        commit();
+        List<Bip> bipList = new LinkedList<>();
+        bipList.add(insertBip);
+        return bipList;
+    }
+
+    public int procedure_getAlarmNumber(String registration, int year) {
         if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration");
 
         StoredProcedureQuery procedureQuery =
@@ -654,7 +816,7 @@ public class JPAContext implements IContext {
         commit();
     }
 
-    public void procedure_createVehicle(String registration, int driver, int equip, int cliente){
+    public void procedure_createVehicle(String registration, int driver, int equip, int cliente) {
         beginTransaction();
         Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4)");
         q.setParameter(1, registration);
@@ -666,7 +828,7 @@ public class JPAContext implements IContext {
         commit();
     }
 
-    public void procedure_createVehicle(String registration, int driver, int equip, int cliente, int raio, int lat, int log){
+    public void procedure_createVehicle(String registration, int driver, int equip, int cliente, int raio, int lat, int log) {
         beginTransaction();
 
         if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration");
@@ -684,6 +846,35 @@ public class JPAContext implements IContext {
         commit();
     }
 
+    public void createView() {
+        beginTransaction();
+
+        Query q = _em.createNativeQuery("CREATE OR REPLACE VIEW todos_alarmes AS" +
+                " SELECT matricula, nome, latitude, longitude, marca_temporal" +
+                " FROM bip_equipamento_eletronico bip" +
+                " INNER JOIN equipamento_eletronico eq ON equipamento = eq.id" +
+                " INNER JOIN veiculo v ON eq.id = v.equipamento" +
+                " INNER JOIN condutor cond ON v.condutor = cond.cc" +
+                " INNER JOIN coordenadas coord ON coordenadas = coord.id");
+
+        q.executeUpdate();
+        commit();
+    }
+
+    public void insertView(String registration, String driverName, int latitude, int longitude, Timestamp date) {
+        beginTransaction();
+
+        Query q = _em.createNativeQuery("INSERT INTO todos_alarmes VALUES(?1, ?2, ?3, ?4, ?5)");
+        q.setParameter(1, registration);
+        q.setParameter(2, driverName);
+        q.setParameter(3, latitude);
+        q.setParameter(4, longitude);
+        q.setParameter(5, date);
+
+        q.executeUpdate();
+        commit();
+    }
+
     public void procedure_clearRequests(){
         beginTransaction();
 
@@ -691,5 +882,10 @@ public class JPAContext implements IContext {
 
         q.executeUpdate();
         commit();
+    }
+
+    private static int getNumberSize(int number) {
+        if (number == 0) return 0;
+        return getNumberSize(number / 10) + 1;
     }
 }

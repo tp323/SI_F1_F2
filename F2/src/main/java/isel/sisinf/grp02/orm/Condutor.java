@@ -19,6 +19,7 @@ public class Condutor implements ICondutor {
     @Column(name = "nome", nullable = false, length = 20)
     private String nome;
 
+    // TODO: The length should be 13 to accommodate the extra caracters
     @Column(name = "contacto", length = 10)
     private String contacto;
 

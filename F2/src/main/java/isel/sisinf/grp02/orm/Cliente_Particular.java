@@ -27,9 +27,10 @@ public class Cliente_Particular implements ICliente_Particular {
                 Integer.toString(cliente.getNif())
         };
     }
-    
+
+    // TODO: Look at NIC length (seems to be 8)
     @Id
-    @Column(name = "cc", nullable = false, length = 3)
+    @Column(name = "cc", nullable = false)
     private int cc;
 
     @OneToOne(fetch = FetchType.LAZY)

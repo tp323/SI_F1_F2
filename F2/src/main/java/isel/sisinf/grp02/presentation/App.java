@@ -1,8 +1,12 @@
 package isel.sisinf.grp02.presentation;
 
 import isel.sisinf.grp02.data_acess.JPAContext;
-import isel.sisinf.grp02.orm.*;
+import isel.sisinf.grp02.orm.Bip;
+import isel.sisinf.grp02.orm.Cliente;
+import isel.sisinf.grp02.orm.Cliente_Particular;
+import isel.sisinf.grp02.orm.Veiculo;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 interface DbOperation {
@@ -13,26 +17,28 @@ interface ParameterFunction<T> {
     T doSomething();
 }
 
+interface ClienteFunctionCall<T> {
+    T doClienteStuff(int nif, String name, String residence, String phone, int refClient, int cc);
+}
+
 public class App {
     private JPAContext context = null;
     private final HashMap<InterfaceOptions, DbOperation> DB_METHODS = new HashMap<>();
     private final Scanner in = new Scanner(System.in);
 
     public App() {
-        DB_METHODS.put(InterfaceOptions.INSERT_CLIENT_PART, () -> Table.createTable(clientInfo(), in, Cliente_Particular::toArray));
-        DB_METHODS.put(InterfaceOptions.UPDATE_CLIENT_PART, () -> Table.createTable(clientInfo(), in, Cliente_Particular::toArray));
-        DB_METHODS.put(InterfaceOptions.REMOVE_CLIENT_PART, () -> Table.createTable(removeClient(), in, Cliente_Particular::toArray));
-        //DB_METHODS.put(InterfaceOptions.TOTAL_ALARMS, () -> Table.createTable(context.getAlarms(), in));
-        //DB_METHODS.put(InterfaceOptions.PROCESS_REQUEST, () -> Table.createTable(context.process(), in));
+        DB_METHODS.put(InterfaceOptions.INSERT_CLIENT_PART, () -> Table.createTable(clientInfo((nif, name, residence, phone, refClient, cc) -> context.buildClienteFromInput(nif, name, residence, phone, refClient, cc)), in, Cliente_Particular::toArray));
+        DB_METHODS.put(InterfaceOptions.UPDATE_CLIENT_PART, () -> Table.createTable(clientInfo((nif, name, residence, phone, refClient, cc) -> context.updateClienteFromInput(nif, name, residence, phone, refClient, cc)), in, Cliente_Particular::toArray));
+        DB_METHODS.put(InterfaceOptions.REMOVE_CLIENT_PART, () -> Table.createTable(new String[]{"removed_cliente_particular"}, in, removeClient()));
+        DB_METHODS.put(InterfaceOptions.TOTAL_ALARMS, () -> Table.createTable(new String[]{"alarm_number"}, in, alarmNumber()));
+        DB_METHODS.put(InterfaceOptions.PROCESS_REQUEST, () -> context.procedure_fetchRequests());
         DB_METHODS.put(InterfaceOptions.CREATE_ALARM, () -> Table.createTable(addBip(), in, Bip::toArray));
         DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE, () -> Table.createTable(createVehicle(), in, Veiculo::toArray));
-        /*DB_METHODS.put(InterfaceOptions.SHOW_VIEW, () -> {
-            String[][] viewContents = context.showView();
-            Table.createTable(viewContents, in);
-        });*/
-        //DB_METHODS.put(InterfaceOptions.INSERT_VIEW, () -> Table.createTable(insertView(), in, Cliente_Particular::toArray));
-        //DB_METHODS.put(InterfaceOptions.DELETE_INVALID_RES, () -> Table.createTable(context.deleteInvalidRequests(), in));
-        DB_METHODS.put(InterfaceOptions.DEACTIVATE_CLIENT, () -> Table.createTable(deactivateClient(), in, Cliente::toArray));
+        //DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE_PROCEDURE, () -> Table.createTable(createVehicleWithProcedure(), in, Veiculo::toArray));
+        DB_METHODS.put(InterfaceOptions.CREATE_VIEW, () -> context.createView());
+        DB_METHODS.put(InterfaceOptions.INSERT_VIEW, this::insertView);
+        DB_METHODS.put(InterfaceOptions.DELETE_INVALID_RES, () -> context.procedure_clearRequests());
+        DB_METHODS.put(InterfaceOptions.DEACTIVATE_CLIENT, () -> Table.createTable(new String[]{"removed_cliente"}, in, deactivateClient()));
     }
 
     private enum InterfaceOptions {
@@ -45,13 +51,14 @@ public class App {
         PROCESS_REQUEST,
         CREATE_ALARM,
         CREATE_VEHICLE,
-        SHOW_VIEW,
+        CREATE_VEHICLE_PROCEDURE,
+        CREATE_VIEW,
         INSERT_VIEW,
         DELETE_INVALID_RES,
         DEACTIVATE_CLIENT
     }
 
-    private List<Cliente_Particular> clientInfo() {
+    private <T> T clientInfo(ClienteFunctionCall<T> func) {
         clearConsole();
         System.out.print("Please introduce the client's NIF: ");
         int nif = checkUserInput(in::nextInt);
@@ -75,11 +82,10 @@ public class App {
         in.nextLine();
         System.out.println();
 
-        //return dCreate(context, nif, name, residence, phone, refClient, cc);
-        return new LinkedList<>();
+        return func.doClienteStuff(nif, name, residence, phone, refClient, cc);
     }
 
-    private List<Cliente_Particular> removeClient() {
+    private String[][] removeClient() {
         clearConsole();
         System.out.print("Please introduce the client's NIF: ");
         int nif = checkUserInput(in::nextInt);
@@ -89,7 +95,22 @@ public class App {
         int cc = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
-        return new LinkedList<>();
+        return context.deleteClienteParticularFromInput(nif, cc);
+    }
+
+    private String[][] alarmNumber() {
+        clearConsole();
+        System.out.print("Please introduce the car's registration: ");
+        String registration = in.nextLine();
+        in.nextLine();
+        System.out.println();
+        System.out.print("Please introduce the year: ");
+        int year = checkUserInput(in::nextInt);
+        in.nextLine();
+        System.out.println();
+        String[][] array = new String[1][];
+        array[0] = new String[]{Integer.toString(context.procedure_getAlarmNumber(registration, year))};
+        return array;
     }
 
     private List<Bip> addBip() {
@@ -104,11 +125,11 @@ public class App {
         System.out.print("Please introduce the coordinates ID: ");
         int coordinates = checkUserInput(in::nextInt);
         System.out.println();
-        System.out.print("Is the alarm triggered?: ");
+        System.out.print("Is the alarm triggered? ");
         boolean alarm = checkUserInput(in::nextBoolean);
         in.nextLine();
         System.out.println();
-        return new LinkedList<>();
+        return context.buildBipFromInput(equipment, Timestamp.valueOf(date), coordinates, alarm);
     }
 
     private List<Veiculo> createVehicle() {
@@ -128,22 +149,33 @@ public class App {
         int client = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
+
+        System.out.print("Would you like to input the coordinates and radius? ");
+        String answer = in.nextLine();
+        while (!answer.equalsIgnoreCase("yes") && !answer.equalsIgnoreCase("no")) answer = in.nextLine();
+        if(answer.equalsIgnoreCase("no")) {
+            context.procedure_createVehicle(registration, driver, equipment, client);
+            return new LinkedList<>();
+        }
+
+        System.out.println();
         System.out.print("Please introduce the radius: ");
         int radius = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
         System.out.print("Please introduce the latitude: ");
-        float latitude = checkUserInput(in::nextFloat);
+        int latitude = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
         System.out.print("Please introduce the longitude: ");
-        float longitude = checkUserInput(in::nextFloat);
+        int longitude = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
+        context.procedure_createVehicle(registration, driver, equipment, client, radius, latitude, longitude);
         return new LinkedList<>();
     }
 
-    private List<String> insertView() {
+    private void insertView() {
         clearConsole();
         System.out.print("Please introduce the Vehicle's registration: ");
         String registration = in.nextLine();
@@ -152,25 +184,25 @@ public class App {
         String driverName = in.nextLine();
         System.out.println();
         System.out.print("Please introduce the latitude: ");
-        float latitude = checkUserInput(in::nextFloat);
+        int latitude = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
         System.out.print("Please introduce the longitude: ");
-        float longitude = checkUserInput(in::nextFloat);
+        int longitude = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
         System.out.print("Please introduce the date and time: ");
         String date = in.nextLine();
         System.out.println();
-        return new LinkedList<>();
+        context.insertView(registration, driverName, latitude, longitude, Timestamp.valueOf(date));
     }
 
-    private List<Cliente> deactivateClient() {
+    private String[][] deactivateClient() {
         clearConsole();
         System.out.print("Please introduce the Client's NIF: ");
         int nif = checkUserInput(in::nextInt);
         System.out.println();
-        return new LinkedList<>();
+        return context.deleteClienteFromInput(nif);
     }
 
     private <T> T checkUserInput(ParameterFunction<T> func) {
@@ -198,11 +230,12 @@ public class App {
         System.out.println("5. Show Alarms");
         System.out.println("6. Process Requests");
         System.out.println("7. Create Alarm");
-        System.out.println("8. Create Equipment");
-        System.out.println("9. Show view data");
-        System.out.println("10. Insert data into view");
-        System.out.println("11. Delete Invalid Requests");
-        System.out.println("12. Deactivate Client");
+        System.out.println("8. Create Vehicle");
+        System.out.println("9. Create Vehicle with Procedure");
+        System.out.println("10. Show view data");
+        System.out.println("11. Insert data into view");
+        System.out.println("12. Delete Invalid Requests");
+        System.out.println("13. Deactivate Client");
         System.out.print(">");
     }
 
@@ -239,7 +272,7 @@ public class App {
     }
 
     private void getPersistenceName() {
-        System.out.print("Please introduce the persistence name: ");
+        //System.out.print("Please introduce the persistence name: ");
         try {
             //this.context = new JPAContext(in.nextLine());
             this.context = new JPAContext();
