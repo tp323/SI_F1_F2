@@ -36,6 +36,12 @@ public class Equipamento_Eletronico implements IEquipamento {
     @Column(name = "estado", nullable = false)
     private String estado;
 
+    public enum estadosValidos{
+        Activo,
+        PausaDeAlarmes,
+        Inactivo
+    }
+
     @OneToOne(mappedBy = "equipamento", cascade = CascadeType.PERSIST)
     private Veiculo veiculo;
 

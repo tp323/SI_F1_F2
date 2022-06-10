@@ -50,7 +50,7 @@ public class Veiculo implements IVeiculo {
     private Set<Zona_Verde> zonasVerdes;
 
     @Column(name = "alarms", nullable = false)
-    private Integer alarms;
+    private Integer alarms = 0;
 
     public String getMatricula() { return matricula; }
     public Condutor getCondutor() { return condutor; }
