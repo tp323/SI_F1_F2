@@ -3,6 +3,9 @@ package isel.sisinf.grp02.orm;
 import isel.sisinf.grp02.orm.interfaces.ICoordenadas;
 import jakarta.persistence.*;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Entity
 @NamedQuery(name = "Coordenadas.findByKey",
         query = "SELECT c FROM Coordenadas c WHERE c.id =:key")
@@ -17,15 +20,6 @@ public class Coordenadas implements ICoordenadas {
     public Coordenadas(float latitude,float longitude){
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    @Override
-    public String toString() {
-        return "Coordenadas{" +
-                "id=" + id +
-                ", latitude=" + latitude +
-                ", longitude=" + longitude +
-                '}';
     }
 
     @Id

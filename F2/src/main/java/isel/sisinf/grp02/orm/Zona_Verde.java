@@ -20,16 +20,6 @@ public class Zona_Verde implements IZonaVerde {
         this.raio = raio;
     }
 
-    @Override
-    public String toString() {
-        return "Zona_Verde{" +
-                "id=" + id +
-                ", raio=" + raio +
-                ", coordenadas=" + coordenadas +
-                ", veiculo=" + veiculo +
-                '}';
-    }
-
     @Id
     @Column(name = "id", nullable = false)
     private Long id;

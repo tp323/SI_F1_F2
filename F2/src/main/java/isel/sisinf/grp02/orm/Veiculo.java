@@ -23,28 +23,6 @@ public class Veiculo implements IVeiculo {
         this.cliente = cliente;
     }
 
-    @Override
-    public String toString() {
-        return "Veiculo{" +
-                "matricula='" + matricula + '\'' +
-                ", condutor=" + condutor +
-                ", equipamento=" + equipamento +
-                ", cliente=" + cliente +
-                ", zonasVerdes=" + zonasVerdes +
-                ", alarms=" + alarms +
-                '}';
-    }
-
-    public String[] toArray() {
-        return new String[]{
-                matricula,
-                Integer.toString(condutor.getCC()),
-                Long.toString(equipamento.getId()),
-                Integer.toString(cliente.getNif()),
-                Integer.toString(alarms)
-        };
-    }
-
     @Id
     @Column(name = "matricula", nullable = false, length = 6)
     private String matricula;
