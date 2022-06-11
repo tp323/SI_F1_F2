@@ -268,6 +268,8 @@ public class JPAContext implements IContext {
 
     public void procedure_createVehicle(String registration, int driver, int equip, int cliente) {
         if(registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
+        if(getNumberSize(driver) < 9) throw new IllegalArgumentException("The driver's CC is not correct!");
+        if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
 
         beginTransaction();
         Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4)");
@@ -282,6 +284,8 @@ public class JPAContext implements IContext {
 
     public void procedure_createVehicle(String registration, int driver, int equip, int cliente, int raio, int lat, int log) {
         if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
+        if(getNumberSize(driver) < 9) throw new IllegalArgumentException("The driver's CC is not correct!");
+        if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
 
         beginTransaction();
 
@@ -311,7 +315,7 @@ public class JPAContext implements IContext {
     /***                OTHERS                  ***/
 
     public List<ClienteParticular> buildClienteFromInput(int nif, String name, String residence, String phone, int refClient, int cc) {
-        checkUserInput(nif, name, residence, phone, cc);
+        checkUserInput(nif, name, residence, phone, refClient, cc);
 
         Cliente client = new Cliente(nif, name, residence, phone, true);
         ClienteParticular cp = new ClienteParticular();
@@ -334,7 +338,7 @@ public class JPAContext implements IContext {
     }
 
     public List<ClienteParticular> updateClienteFromInput(int nif, String name, String residence, String phone, int refClient, int cc) {
-        checkUserInput(nif, name, residence, phone, cc);
+        checkUserInput(nif, name, residence, phone, refClient, cc);
 
         Cliente client = new Cliente(nif, name, residence, phone, true);
         ClienteParticular cp = new ClienteParticular();
@@ -356,9 +360,10 @@ public class JPAContext implements IContext {
         return clientList;
     }
 
-    private void checkUserInput(int nif, String name, String residence, String phone, int cc) {
+    private void checkUserInput(int nif, String name, String residence, String phone, int refClient, int cc) {
         if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
         if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct!");
+        if(getNumberSize(refClient) < 9) throw new IllegalArgumentException("The reference Client CC is not correct!");
         if(name.length() > 25) throw new IllegalArgumentException("The name is too big!");
         if(residence.length() > 150) throw new IllegalArgumentException("The residence name is too big!");
         if(phone.length() > 13) throw new IllegalArgumentException("The phone number is too big!");
@@ -416,6 +421,7 @@ public class JPAContext implements IContext {
 
     public void createVehicle(String registration, int driver, int equip, int cliente) {
         if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
+        if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
 
         beginTransaction();
 
@@ -431,6 +437,7 @@ public class JPAContext implements IContext {
 
     public void createVehicle(String registration, int driver, int equip, int cliente, Integer raio, Integer lat, Integer log) {
         if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
+        if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
 
         beginTransaction();
 

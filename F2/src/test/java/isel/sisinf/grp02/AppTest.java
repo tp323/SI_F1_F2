@@ -17,7 +17,7 @@ public class AppTest {
         assertEquals( ctx.getClientes().findByKey(111222333).getNif(),111222333);
         assertEquals( ctx.getClientes().findByKey(111222333).getNome(),"O maior da minha aldeia");
         assertEquals( ctx.getClientes().findByKey(111222333).getMorada(),"Vila Nova de Robiães");
-        assertEquals( ctx.getClientes().findByKey(111222333).getTelefone(),"911222111");
+        assertEquals( ctx.getClientes().findByKey(111222333).getTelefone(),"+351911222111");
         assertNull( ctx.getClientes().findByKey(111222333).getRefCliente());
     }
 
@@ -37,11 +37,10 @@ public class AppTest {
         }catch(Exception e) {
             System.out.println(e.getMessage());
             throw e;
-        }finally {
-            ctx.close();
         }
     }
 
+    // TODO: Needs revision
     @Test
     public void ClienteUpdate() throws Exception{
         try(JPAContext ctx = new JPAContext()) {
@@ -59,13 +58,11 @@ public class AppTest {
             assertEquals( ctx.getClientes().findByKey(254256431).getTelefone(),"923453431");
             assertNull( ctx.getClientes().findByKey(254256431).getRefCliente());
             ctx.deleteCliente(nc);
-            assertNull(ctx.getClientes().findByKey(254256431));
+            assertFalse(ctx.getClientes().findByKey(254256431).getAtivo());
             ctx.commit();
         }catch(Exception e) {
             System.out.println(e.getMessage());
             throw e;
-        }finally {
-            ctx.close();
         }
         try(JPAContext ctx = new JPAContext()) {
             ctx.beginTransaction();
@@ -82,13 +79,11 @@ public class AppTest {
             assertEquals( ctx.getClientes().findByKey(254256431).getTelefone(),"923453431");
             assertNull( ctx.getClientes().findByKey(254256431).getRefCliente());
             ctx.deleteCliente(nc);
-            assertNull(ctx.getClientes().findByKey(254256431));
+            assertFalse(ctx.getClientes().findByKey(254256431).getAtivo());
             ctx.commit();
         }catch(Exception e) {
             System.out.println(e.getMessage());
             throw e;
-        }finally {
-            ctx.close();
         }
     }
 
@@ -97,19 +92,17 @@ public class AppTest {
         try(JPAContext ctx = new JPAContext()) {
             ctx.beginTransaction();
             Cliente c = new Cliente(254256431, "Rapaz da Aldeia", "Aldeia", "923453432");
-            //ctx.createCliente(c);
-            //ctx.commit();
-            //ctx.beginTransaction();
+            ctx.createCliente(c);
+            ctx.commit();
+            ctx.beginTransaction();
 
             assertNotNull(ctx.getClientes().findByKey(254256431));
             ctx.deleteCliente(c);
             ctx.commit();
-            assertNull(ctx.getClientes().findByKey(254256431));
+            assertFalse(ctx.getClientes().findByKey(254256431).getAtivo());
         }catch(Exception e) {
             System.out.println(e.getMessage());
             throw e;
-        }finally {
-            ctx.close();
         }
     }
 }
