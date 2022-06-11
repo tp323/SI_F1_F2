@@ -15,6 +15,13 @@ import java.util.Set;
 @Table(name = "coordenadas")
 public class Coordenadas implements ICoordenadas {
 
+    public Coordenadas(){}
+
+    public Coordenadas(float latitude,float longitude){
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     @Id
     @Column(name = "id", nullable = false)
     private Long id;

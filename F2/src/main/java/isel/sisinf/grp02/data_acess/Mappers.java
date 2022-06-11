@@ -57,7 +57,7 @@ class Mappers {
         }
     }
 
-    protected class ClienteParticularMapper implements ICliente_ParticularMapper {
+    protected class ClienteParticularMapper implements IClienteParticularMapper {
 
         @Override
         public Integer create(ClienteParticular entity) {
@@ -105,7 +105,7 @@ class Mappers {
         }
     }
 
-    protected class ClienteInstitucionalMapper implements ICliente_InstitucionalMapper {
+    protected class ClienteInstitucionalMapper implements IClienteInstitucionalMapper {
 
         @Override
         public Integer create(ClienteInstitucional entity) {
@@ -113,8 +113,8 @@ class Mappers {
         }
 
         @Override
-        public ClienteInstitucional read(Integer id) {
-            return null;
+        public ClienteInstitucional read(Integer nif) {
+            return context._em.find(ClienteInstitucional.class, nif);
         }
 
         @Override
@@ -152,44 +152,50 @@ class Mappers {
 
     protected class VeiculoMapper implements IVeiculoMapper {
         @Override
-        public Long create(Veiculo entity) {
+        public String create(Veiculo entity) {
+            context.beginTransaction();
+            context._em.persist(entity);
+            context.commit();
+            return entity.getMatricula();
+        }
+
+        @Override
+        public Veiculo read(String matricula) {
+            return context._em.find(Veiculo.class, matricula);
+        }
+
+        @Override
+        public String update(Veiculo entity) {
             return null;
         }
 
         @Override
-        public Veiculo read(Long id) {
-            return null;
-        }
-
-        @Override
-        public Long update(Veiculo entity) {
-            return null;
-        }
-
-        @Override
-        public Long delete(Veiculo entity) {
+        public String delete(Veiculo entity) {
             return null;
         }
     }
 
     protected class CondutorMapper implements ICondutorMapper {
         @Override
-        public Long create(Condutor entity) {
+        public Integer create(Condutor entity) {
+            context.beginTransaction();
+            context._em.persist(entity);
+            context.commit();
+            return entity.getCC();
+        }
+
+        @Override
+        public Condutor read(Integer cc) {
+            return context._em.find(Condutor.class, cc);
+        }
+
+        @Override
+        public Integer update(Condutor entity) {
             return null;
         }
 
         @Override
-        public Condutor read(Long id) {
-            return null;
-        }
-
-        @Override
-        public Long update(Condutor entity) {
-            return null;
-        }
-
-        @Override
-        public Long delete(Condutor entity) {
+        public Integer delete(Condutor entity) {
             return null;
         }
     }
@@ -197,7 +203,10 @@ class Mappers {
     protected class ZonaVerdeMapper implements IZonaVerdeMapper {
         @Override
         public Long create(ZonaVerde entity) {
-            return null;
+            context.beginTransaction();
+            context._em.persist(entity);
+            context.commit();
+            return entity.getID();
         }
 
         @Override

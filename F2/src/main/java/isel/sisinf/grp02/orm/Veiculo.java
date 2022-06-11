@@ -14,6 +14,15 @@ import java.util.Set;
 @Table(name = "veiculo")
 public class Veiculo implements IVeiculo {
 
+    public Veiculo(){}
+
+    public Veiculo(String matricula, Condutor condutor, EquipamentoEletronico equipamento, Cliente cliente) {
+        this.matricula = matricula;
+        this.condutor = condutor;
+        this.equipamento = equipamento;
+        this.cliente = cliente;
+    }
+
     @Id
     @Column(name = "matricula", nullable = false, length = 6)
     private String matricula;

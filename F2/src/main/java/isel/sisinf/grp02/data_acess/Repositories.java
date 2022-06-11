@@ -31,7 +31,7 @@ class Repositories {
         @SuppressWarnings("unchecked")
         @Override
         public Collection<Cliente> find(String jpql, Object... params) {
-            return context.helperQueryImpl(jpql, params);
+            return context.helperQueryImpl( jpql, params);
         }
 
     }
@@ -40,7 +40,7 @@ class Repositories {
 
         @Override
         public ClienteParticular findByKey(Integer key) {
-            return context._em.createNamedQuery("Cliente_Particular.findByKey", ClienteParticular.class)
+            return context._em.createNamedQuery("Cliente_Particular.findByKey",ClienteParticular.class)
                     .setParameter("key", key)
                     .getSingleResult();
         }
@@ -61,7 +61,7 @@ class Repositories {
 
         @Override
         public ClienteInstitucional findByKey(Integer key) {
-            return context._em.createNamedQuery("Cliente_Institucional.findByKey", ClienteInstitucional.class)
+            return context._em.createNamedQuery("Cliente_Institucional.findByKey",ClienteInstitucional.class)
                     .setParameter("key", key)
                     .getSingleResult();
         }
@@ -82,7 +82,7 @@ class Repositories {
 
         @Override
         public EquipamentoEletronico findByKey(Long key) {
-            return context._em.createNamedQuery("Equipamento_Eletronico.findByKey", EquipamentoEletronico.class)
+            return context._em.createNamedQuery("Equipamento_Eletronico.findByKey",EquipamentoEletronico.class)
                     .setParameter("key", key)
                     .getSingleResult();
         }
@@ -95,7 +95,7 @@ class Repositories {
 
         @Override
         public List findAll() {
-            return context._em.createNamedQuery("Equipamento_Eletronico.findAll", EquipamentoEletronico.class)
+            return context._em.createNamedQuery("Equipamento_Eletronico.findAll",EquipamentoEletronico.class)
                     .getResultList();
         }
     }
@@ -149,7 +149,7 @@ class Repositories {
 
         @Override
         public ZonaVerde findByKey(Long key) {
-            return context._em.createNamedQuery("Zona_Verde.findByKey", ZonaVerde.class)
+            return context._em.createNamedQuery("Zona_Verde.findByKey",ZonaVerde.class)
                     .setParameter("key", key)
                     .getSingleResult();
         }
@@ -163,7 +163,7 @@ class Repositories {
 
         @Override
         public List findAll() {
-            return context._em.createNamedQuery("Zona_Verde.findAll", ZonaVerde.class)
+            return context._em.createNamedQuery("Zona_Verde.findAll",ZonaVerde.class)
                     .getResultList();
         }
     }
