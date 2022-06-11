@@ -29,7 +29,7 @@ public class Coordenadas implements ICoordenadas {
     }
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "latitude", nullable = false, precision = 1)
@@ -38,9 +38,8 @@ public class Coordenadas implements ICoordenadas {
     @Column(name = "longitude", nullable = false, precision = 1)
     private Float longitude;
 
-    /**TODO: Multiple Zonas Verdes can have the same Coordenada**/
-    @OneToOne(mappedBy = "coordenadas", cascade = CascadeType.PERSIST)
-    private Zona_Verde zona;
+    @OneToMany(mappedBy = "coordenadas", cascade = CascadeType.PERSIST)
+    private Set<Zona_Verde> zonas = new LinkedHashSet<>();
 
     @OneToOne(mappedBy = "coordenadas", cascade = CascadeType.PERSIST)
     private Bip bip;
@@ -49,12 +48,29 @@ public class Coordenadas implements ICoordenadas {
     public Float getLatitude() { return latitude; }
     public Float getLongitude() { return longitude; }
     public Bip getBip() { return bip; }
-    public Zona_Verde getZonaVerde() { return zona; }
+    public Set<Zona_Verde> getZonaVerde() { return zonas; }
 
 
     public void setId(Long id) { this.id = id; }
     public void setLatitude(Float latitude) { this.latitude = latitude; }
     public void setLongitude(Float longitude) { this.longitude = longitude; }
     public void setBip(Bip bip) { this.bip = bip; }
-    public void setZonaVerde(Zona_Verde zona) { this.zona = zona; }
+    public void setZonaVerde(Set<Zona_Verde> zonas) { this.zonas = zonas; }
+
+    @Override
+    public String toString() {
+        return "Coordenadas{" +
+                "id=" + id +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
+    }
+
+    public String[] toArray() {
+        return new String[]{
+                Long.toString(id),
+                Float.toString(latitude),
+                Float.toString(longitude)
+        };
+    }
 }

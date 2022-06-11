@@ -179,7 +179,7 @@ CREATE OR REPLACE FUNCTION checkAlarm() RETURNS TRIGGER AS
         isValid boolean := true;
 
         ITERATOR CURSOR FOR
-            SELECT raio, coordenadas
+            SELECT zona_verde.raio, coordenadas
             FROM zona_verde
             INNER JOIN veiculo v2 on v2.matricula = zona_verde.veiculo
             INNER JOIN equipamento_eletronico ee on ee.id = v2.equipamento

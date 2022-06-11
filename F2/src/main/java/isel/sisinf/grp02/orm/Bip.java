@@ -27,44 +27,24 @@ public class Bip implements IBip {
 
     public static final String alarm_number = "alarm_number";
 
-    @Override
-    public String toString() {
-        return "Bip{" +
-                "id=" + id +
-                ", marca_temporal=" + marca_temporal +
-                ", alarme=" + alarme +
-                ", equipamento=" + equipamento +
-                ", coordenadas=" + coordenadas +
-                '}';
-    }
-
-    public String[] toArray() {
-        return new String[]{
-                Long.toString(id),
-                String.valueOf(marca_temporal),
-                Boolean.toString(alarme),
-                Long.toString(equipamento.getId()),
-                Long.toString(coordenadas.getId())
-        };
-    }
-
     @Id
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(name = "marca_temporal", nullable = false)
-    private Timestamp marca_temporal;
-
-    @Column(name = "alarme", nullable = false)
-    private boolean alarme;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "equipamento", referencedColumnName = "id")
     private Equipamento_Eletronico equipamento;
 
+    @Column(name = "marca_temporal", nullable = false)
+    private Timestamp marca_temporal;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coordenadas", referencedColumnName = "id")
     private Coordenadas coordenadas;
+
+    @Column(name = "alarme", nullable = false)
+    private boolean alarme;
 
 
     public Long getID() { return id; }
@@ -79,4 +59,25 @@ public class Bip implements IBip {
     public void setMarcaTemporal(Timestamp marcaTemporal) { this.marca_temporal = marcaTemporal; }
     public void setCoordenadas(Coordenadas coordenadas) { this.coordenadas = coordenadas; }
     public void setAlarme(Boolean alarme) { this.alarme = alarme; }
+
+    @Override
+    public String toString() {
+        return "Bip{" +
+                "id=" + id +
+                ", equipamento=" + equipamento +
+                ", marca_temporal='" + marca_temporal + '\'' +
+                ", coordenadas=" + coordenadas +
+                ", alarme=" + alarme +
+                '}';
+    }
+
+    public String[] toArray() {
+        return new String[]{
+                Long.toString(id),
+                Long.toString(equipamento.getId()),
+                String.valueOf(marca_temporal),
+                Long.toString(coordenadas.getId()),
+                Boolean.toString(alarme)
+        };
+    }
 }

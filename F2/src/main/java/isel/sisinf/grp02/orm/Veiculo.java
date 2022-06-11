@@ -89,4 +89,24 @@ public class Veiculo implements IVeiculo {
     }
     public void setZonasVerdes(Set<Zona_Verde> zonasVerdes) { this.zonasVerdes = zonasVerdes; }
 
+    @Override
+    public String toString() {
+        return "Veiculo{" +
+                "matricula='" + matricula + '\'' +
+                ", condutor=" + condutor.getCC() +
+                ", equipamento=" + equipamento.getId() +
+                ", cliente=" + cliente.getNif() +
+                ", alarms=" + alarms +
+                '}';
+    }
+
+    public String[] toArray() {
+        return new String[]{
+                matricula,
+                Integer.toString(condutor.getCC()),
+                Long.toString(equipamento.getId()),
+                Integer.toString(cliente.getNif()),
+                Integer.toString(alarms)
+        };
+    }
 }

@@ -13,22 +13,6 @@ import java.util.Set;
 @Table(name = "cliente_particular")
 public class Cliente_Particular implements ICliente_Particular {
 
-    @Override
-    public String toString() {
-        return "Cliente_Particular{" +
-                "cc=" + cc +
-                ", cliente=" + cliente +
-                '}';
-    }
-
-    public String[] toArray() {
-        return new String[]{
-                Integer.toString(cc),
-                Integer.toString(cliente.getNif())
-        };
-    }
-
-    // TODO: Look at NIC length (seems to be 8)
     @Id
     @Column(name = "cc", nullable = false)
     private int cc;
@@ -49,4 +33,19 @@ public class Cliente_Particular implements ICliente_Particular {
     public void setCC(int cc) { this.cc = cc;}
     public void setCliente(Cliente client) { this.cliente = client; }
     public void setReferred(Set<Cliente> referred) { this.referred = referred; }
+
+    @Override
+    public String toString() {
+        return "Cliente_Particular{" +
+                "cc=" + cc +
+                ", cliente=" + cliente.getNif() +
+                '}';
+    }
+
+    public String[] toArray() {
+        return new String[]{
+                Integer.toString(cc),
+                Integer.toString(cliente.getNif())
+        };
+    }
 }

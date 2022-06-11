@@ -18,26 +18,28 @@ import java.util.Set;
 @Table(name = "equipamento_eletronico")
 public class Equipamento_Eletronico implements IEquipamento {
 
-    @Override
-    public String toString() {
-        return "Equipamento_Eletronico{" +
-                "id=" + id +
-                ", estado='" + estado + '\'' +
-                '}';
-    }
-
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "estado", nullable = false, length = 15)
     private String estado;
 
-    public enum estadosValidos {
-        Activo,
-        PausaDeAlarmes,
-        Inactivo
+    public enum EstadosValidos {
+        Activo("Activo"),
+        PausaDeAlarmes("PausaDeAlarmes"),
+        Inactivo("Inactivo");
+
+        private String estado;
+
+        EstadosValidos(String estado) {
+            this.estado = estado;
+        }
+
+        public String getEstado() {
+            return estado;
+        }
     }
 
     @OneToOne(mappedBy = "equipamento", cascade = CascadeType.PERSIST)
@@ -55,4 +57,19 @@ public class Equipamento_Eletronico implements IEquipamento {
     public void setEstado(String status) { this.estado = status; }
     public void setVeiculo(Veiculo veiculo) { this.veiculo = veiculo; }
     public void setBips(Set<Bip> bips) { this.bips = bips; }
+
+    @Override
+    public String toString() {
+        return "Equipamento_Eletronico{" +
+                "id=" + id +
+                ", estado='" + estado + '\'' +
+                '}';
+    }
+
+    public String[] toArray() {
+        return new String[]{
+                Long.toString(id),
+                estado
+        };
+    }
 }
