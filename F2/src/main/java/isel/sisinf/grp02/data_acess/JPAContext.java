@@ -10,9 +10,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class JPAContext implements IContext {
-
     private EntityManagerFactory _emf;
     private EntityManager _em;
 
@@ -308,10 +306,15 @@ public class JPAContext implements IContext {
 
         @Override
         public Integer create(Cliente_Particular entity) {
-            beginTransaction();
-            _em.persist(entity);
-            commit();
-            return entity.getCC();
+            try {
+                beginTransaction();
+                _em.persist(entity);
+                commit();
+                return entity.getCC();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
 
         @Override
@@ -553,6 +556,9 @@ public class JPAContext implements IContext {
         this(System.getenv("POSTGRES_PERSISTENCE_NAME"));
     }
 
+    /** TODO: Does it make sense to build the whole object each time a call to a function is made or should it just
+     * re-initialize _emf and _em
+     */
     public JPAContext(String persistentCtx) {
         super();
 
@@ -681,7 +687,6 @@ public class JPAContext implements IContext {
             int cc
     ) {
         if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
-        // TODO: Should be 8 not 9
         if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct");
 
         Cliente client = new Cliente(nif, name, residence, phone, true);
@@ -694,8 +699,6 @@ public class JPAContext implements IContext {
         client.setClienteParticular(cp);
         beginTransaction();
         createCliente(client);
-        commit();
-        beginTransaction();
         int clientId = createClienteParticular(cp);
         commit();
         beginTransaction();
@@ -715,7 +718,6 @@ public class JPAContext implements IContext {
             int cc
     ) {
         if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
-        // TODO: Should be 8 not 9
         if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct");
 
         Cliente client = new Cliente(nif, name, residence, phone, true);
@@ -740,7 +742,6 @@ public class JPAContext implements IContext {
 
     public String[][] deleteClienteParticularFromInput(int nif, int cc) {
         if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
-        // TODO: Should be 8 not 9
         if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct");
 
         beginTransaction();
@@ -787,12 +788,8 @@ public class JPAContext implements IContext {
         bip.setMarcaTemporal(marca_temporal);
         bip.setCoordenadas(readCoordenada(coordenadas));
         bip.setAlarme(alarme);
-        beginTransaction();
         Long bipId = createBip(bip);
-        commit();
-        beginTransaction();
         Bip insertBip = readBip(bipId);
-        commit();
         List<Bip> bipList = new LinkedList<>();
         bipList.add(insertBip);
         return bipList;

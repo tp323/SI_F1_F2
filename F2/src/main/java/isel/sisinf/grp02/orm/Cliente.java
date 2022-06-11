@@ -33,31 +33,8 @@ public class Cliente implements ICliente {
         this.telefone = telefone;
     }
 
-    @Override
-    public String toString() {
-        return "Cliente[" +
-                "nif=" + nif +
-                ", nome='" + nome + '\'' +
-                ", morada='" + morada + '\'' +
-                ", telefone='" + telefone + '\'' +
-                ", ativo=" + ativo +
-                ", refCliente=" + refCliente +
-                ']';
-    }
-
-    public String[] toArray() {
-        return new String[]{
-                Integer.toString(nif),
-                this.nome,
-                this.morada,
-                this.telefone,
-                Boolean.toString(this.ativo),
-                refCliente == null ? "null" : Integer.toString(refCliente.getCC())
-        };
-    }
-
     @Id
-    @Column(name = "nif", nullable = false) /*** passar para length 8 na DB ou manter 9 com num de seg ***/
+    @Column(name = "nif", nullable = false)
     private int nif;
 
     @Column(name = "nome", nullable = false, length = 25)
@@ -66,15 +43,15 @@ public class Cliente implements ICliente {
     @Column(name = "morada", nullable = false, length = 150)
     private String morada;
 
-    @Column(name = "telefone", nullable = false, length = 13) /*** passar para length 13 na DB ***/
+    @Column(name = "telefone", nullable = false, length = 13)
     private String telefone;
-
-    @Column(name = "ativo", nullable = false)
-    private boolean ativo = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ref_cliente")
     private Cliente_Particular refCliente = null;
+
+    @Column(name = "ativo", nullable = false)
+    private boolean ativo = false;
 
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.PERSIST)
     private Cliente_Particular cliente_particular;
@@ -105,4 +82,27 @@ public class Cliente implements ICliente {
     public void setClienteInstitucional(Cliente_Institucional cliente_institucional) { this.cliente_institucional = cliente_institucional; }
     public void setAtivo(boolean ativo) {this.ativo = ativo;}
     public void setVeiculos(Set<Veiculo> veiculos) {this.veiculos = veiculos;}
+
+    @Override
+    public String toString() {
+        return "Cliente[" +
+                "nif=" + nif +
+                ", nome='" + nome + '\'' +
+                ", morada='" + morada + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", refCliente=" + refCliente +
+                ", ativo=" + ativo +
+                ']';
+    }
+
+    public String[] toArray() {
+        return new String[]{
+                Integer.toString(nif),
+                this.nome,
+                this.morada,
+                this.telefone,
+                refCliente == null ? "null" : Integer.toString(refCliente.getCC()),
+                Boolean.toString(this.ativo)
+        };
+    }
 }

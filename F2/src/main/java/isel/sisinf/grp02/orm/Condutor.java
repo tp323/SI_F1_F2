@@ -19,8 +19,7 @@ public class Condutor implements ICondutor {
     @Column(name = "nome", nullable = false, length = 20)
     private String nome;
 
-    // TODO: The length should be 13 to accommodate the extra caracters
-    @Column(name = "contacto", length = 10)
+    @Column(name = "contacto", length = 13)
     private String contacto;
 
     @OneToMany(mappedBy = "condutor", cascade = CascadeType.PERSIST)
@@ -37,4 +36,20 @@ public class Condutor implements ICondutor {
     public void setContacto(String contacto) {this.contacto = contacto;}
     public void setVeiculos(Set<Veiculo> veiculos) {this.veiculos = veiculos;}
 
+    @Override
+    public String toString() {
+        return "Condutor{" +
+                "cc=" + cc +
+                ", nome=" + nome + '\'' +
+                ", contacto='" + contacto + '\'' +
+                '}';
+    }
+
+    public String[] toArray() {
+        return new String[]{
+                Integer.toString(cc),
+                nome,
+                contacto
+        };
+    }
 }

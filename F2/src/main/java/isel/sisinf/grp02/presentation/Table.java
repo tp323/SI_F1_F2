@@ -105,7 +105,7 @@ public class Table {
 
     static void createTable(String[] head, Scanner in, String[][] objs) {
         System.out.println();
-        if(objs == null || objs.length == 0 || head == null || head.length == 0) {
+        if(objs.length == 0 || head == null || head.length == 0) {
             System.out.println("(empty)");
             System.out.print("Press enter to continue...");
             in.nextLine();

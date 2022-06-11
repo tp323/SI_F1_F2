@@ -3,6 +3,9 @@ package isel.sisinf.grp02.orm;
 import isel.sisinf.grp02.orm.interfaces.ICoordenadas;
 import jakarta.persistence.*;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Entity
 @NamedQuery(name = "Coordenadas.findByKey",
         query = "SELECT c FROM Coordenadas c WHERE c.id =:key")
@@ -11,6 +14,35 @@ import jakarta.persistence.*;
 
 @Table(name = "coordenadas")
 public class Coordenadas implements ICoordenadas {
+
+    @Id
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @Column(name = "latitude", nullable = false, precision = 1)
+    private Float latitude;
+
+    @Column(name = "longitude", nullable = false, precision = 1)
+    private Float longitude;
+
+    @OneToMany(mappedBy = "coordenadas", cascade = CascadeType.PERSIST)
+    private Set<Zona_Verde> zonas = new LinkedHashSet<>();
+
+    @OneToOne(mappedBy = "coordenadas", cascade = CascadeType.PERSIST)
+    private Bip bip;
+
+    public Long getId() { return id; }
+    public Float getLatitude() { return latitude; }
+    public Float getLongitude() { return longitude; }
+    public Bip getBip() { return bip; }
+    public Set<Zona_Verde> getZonaVerde() { return zonas; }
+
+
+    public void setId(Long id) { this.id = id; }
+    public void setLatitude(Float latitude) { this.latitude = latitude; }
+    public void setLongitude(Float longitude) { this.longitude = longitude; }
+    public void setBip(Bip bip) { this.bip = bip; }
+    public void setZonaVerde(Set<Zona_Verde> zonas) { this.zonas = zonas; }
 
     @Override
     public String toString() {
@@ -21,33 +53,11 @@ public class Coordenadas implements ICoordenadas {
                 '}';
     }
 
-    @Id
-    @Column(name = "id")
-    private Long id;
-
-    @Column(name = "latitude", nullable = false, precision = 1)
-    private Float latitude;
-
-    @Column(name = "longitude", nullable = false, precision = 1)
-    private Float longitude;
-
-    /**TODO: Multiple Zonas Verdes can have the same Coordenada**/
-    @OneToOne(mappedBy = "coordenadas", cascade = CascadeType.PERSIST)
-    private Zona_Verde zona;
-
-    @OneToOne(mappedBy = "coordenadas", cascade = CascadeType.PERSIST)
-    private Bip bip;
-
-    public Long getId() { return id; }
-    public Float getLatitude() { return latitude; }
-    public Float getLongitude() { return longitude; }
-    public Bip getBip() { return bip; }
-    public Zona_Verde getZonaVerde() { return zona; }
-
-
-    public void setId(Long id) { this.id = id; }
-    public void setLatitude(Float latitude) { this.latitude = latitude; }
-    public void setLongitude(Float longitude) { this.longitude = longitude; }
-    public void setBip(Bip bip) { this.bip = bip; }
-    public void setZonaVerde(Zona_Verde zona) { this.zona = zona; }
+    public String[] toArray() {
+        return new String[]{
+                Long.toString(id),
+                Float.toString(latitude),
+                Float.toString(longitude)
+        };
+    }
 }

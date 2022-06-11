@@ -9,7 +9,7 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
         part_client INT;
         active BOOLEAN;
     BEGIN
-        CALL insert_cliente_particular(133454563, CAST ('Ernesto Ferrero-Roche' AS VARCHAR), CAST ('Albal' AS VARCHAR), '926021405', NULL, 395478546);
+        CALL insert_cliente_particular(133454563, CAST ('Ernesto Ferrero-Roche' AS VARCHAR), CAST ('Albal' AS VARCHAR), '+351926021405', NULL, 395478546);
         SELECT nif INTO client
         FROM cliente
         WHERE nif = 133454563;
@@ -22,7 +22,7 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
             RETURN;
         END IF;
 
-        CALL update_cliente_particular(133454563, 'Ernesto Ferrero-Roche', 'Albal', '926021405', 12122233);
+        CALL update_cliente_particular(133454563, 'Ernesto Ferrero-Roche', 'Albal', '+351926021405', 12122233);
 
         SELECT ref_cliente INTO client
         FROM cliente

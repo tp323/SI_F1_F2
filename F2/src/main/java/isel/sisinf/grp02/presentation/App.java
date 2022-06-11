@@ -105,7 +105,12 @@ public class App {
         in.nextLine();
         System.out.println();
 
-        return func.doClienteStuff(nif, name, residence, phone, refClient, cc);
+        try {
+            return func.doClienteStuff(nif, name, residence, phone, refClient, cc);
+        } catch (Exception e) {
+            onError(e);
+            return null;
+        }
     }
 
     private String[][] removeClient() {
@@ -118,7 +123,12 @@ public class App {
         int cc = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
-        return context.deleteClienteParticularFromInput(nif, cc);
+        try {
+            return context.deleteClienteParticularFromInput(nif, cc);
+        } catch (Exception e) {
+            onError(e);
+            return null;
+        }
     }
 
     private String[][] alarmNumber() {
@@ -132,8 +142,13 @@ public class App {
         in.nextLine();
         System.out.println();
         String[][] array = new String[1][];
-        array[0] = new String[]{Integer.toString(context.procedure_getAlarmNumber(registration, year))};
-        return array;
+        try {
+            array[0] = new String[]{Integer.toString(context.procedure_getAlarmNumber(registration, year))};
+            return array;
+        } catch (Exception e) {
+            onError(e);
+            return null;
+        }
     }
 
     private List<Bip> addBip() {
@@ -152,10 +167,15 @@ public class App {
         boolean alarm = checkUserInput(in::nextBoolean);
         in.nextLine();
         System.out.println();
-        return context.buildBipFromInput(equipment, Timestamp.valueOf(date), coordinates, alarm);
+        try {
+            return context.buildBipFromInput(equipment, Timestamp.valueOf(date), coordinates, alarm);
+        } catch (Exception e) {
+            onError(e);
+            return null;
+        }
     }
 
-    private <T> List<Veiculo> createVehicle(VehicleFunctionCall func) {
+    private List<Veiculo> createVehicle(VehicleFunctionCall func) {
         clearConsole();
         System.out.print("Please introduce the Vehicle's registration: ");
         String registration = in.nextLine();
@@ -176,8 +196,13 @@ public class App {
         System.out.print("Would you like to input the coordinates and radius? ");
         String answer = checkAnswer(in.nextLine());
         if(answer.equalsIgnoreCase("no")) {
-            func.createVehicle(registration, driver, equipment, client);
-            return new LinkedList<>();
+            try {
+                func.createVehicle(registration, driver, equipment, client);
+                return new LinkedList<>();
+            } catch (Exception e) {
+                onError(e);
+                return null;
+            }
         }
 
         System.out.println();
@@ -193,8 +218,13 @@ public class App {
         int longitude = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
-        func.createVehicle(registration, driver, equipment, client, radius, latitude, longitude);
-        return new LinkedList<>();
+        try {
+            func.createVehicle(registration, driver, equipment, client, radius, latitude, longitude);
+            return new LinkedList<>();
+        } catch (Exception e) {
+            onError(e);
+            return null;
+        }
     }
 
     private void insertView() {
@@ -216,7 +246,11 @@ public class App {
         System.out.print("Please introduce the date and time: ");
         String date = in.nextLine();
         System.out.println();
-        context.insertView(registration, driverName, latitude, longitude, Timestamp.valueOf(date));
+        try {
+            context.insertView(registration, driverName, latitude, longitude, Timestamp.valueOf(date));
+        } catch (Exception e) {
+            onError(e);
+        }
     }
 
     private String[][] deactivateClient() {
@@ -224,7 +258,12 @@ public class App {
         System.out.print("Please introduce the Client's NIF: ");
         int nif = checkUserInput(in::nextInt);
         System.out.println();
-        return context.deleteClienteFromInput(nif);
+        try {
+            return context.deleteClienteFromInput(nif);
+        } catch (Exception e) {
+            onError(e);
+            return null;
+        }
     }
 
     private <T> T checkUserInput(ParameterFunction<T> func) {
@@ -348,5 +387,13 @@ public class App {
         } catch(InterruptedException ignored) {
 
         }
+    }
+
+    private void onError(Exception e) {
+        clearConsole();
+        System.out.println("There seems to have been an error!");
+        System.out.println(e.getMessage());
+        System.out.println("Press enter to continue...");
+        in.nextLine();
     }
 }

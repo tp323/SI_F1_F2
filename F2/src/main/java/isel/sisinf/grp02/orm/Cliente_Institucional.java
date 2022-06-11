@@ -11,13 +11,13 @@ import jakarta.persistence.*;
 @Table(name = "cliente_institucional")
 public class Cliente_Institucional implements ICliente_Institucional {
 
+    @Column(name = "nome_contacto", nullable = false, length = 25)
+    private String nomeContacto;
+
     @Id
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente", referencedColumnName = "nif")
     private Cliente cliente;
-
-    @Column(name = "nome_contacto", nullable = false, length = 25)
-    private String nomeContacto;
 
 
     public String getNomeContacto() { return nomeContacto; }
@@ -25,4 +25,19 @@ public class Cliente_Institucional implements ICliente_Institucional {
 
     public void setNomeContacto(String nomeContacto) { this.nomeContacto = nomeContacto; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
+
+    @Override
+    public String toString() {
+        return "Cliente[" +
+                "nomeContacto='" + nomeContacto + '\'' +
+                ", cliente='" + cliente.getNif() +
+                ']';
+    }
+
+    public String[] toArray() {
+        return new String[]{
+                nomeContacto,
+                Integer.toString(cliente.getNif())
+        };
+    }
 }

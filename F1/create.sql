@@ -4,7 +4,7 @@ BEGIN transaction;
 		NIF int primary key check(NIF between 100000000 and 999999999),
 		nome varchar(25) not null,
 		morada varchar(150) not null,
-		telefone varchar(10) not null,
+		telefone varchar(13) not null,
 		ref_cliente int DEFAULT null,
 		ativo boolean DEFAULT TRUE not null
 	);
@@ -59,7 +59,7 @@ ADD constraint ref_cliente_part foreign KEY (cliente) references Cliente(NIF) DE
 	create table IF NOT EXISTS Condutor(
 		CC int primary key, 
 		nome varchar(20) not null,
-		contacto varchar(10)
+		contacto varchar(13)
 	);
 	--Veiculo(matricula, condutor, equipamento, cliente)
 	create table IF NOT EXISTS Veiculo(
