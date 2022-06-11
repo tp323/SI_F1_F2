@@ -135,7 +135,6 @@ public class App {
         clearConsole();
         System.out.print("Please introduce the car's registration: ");
         String registration = in.nextLine();
-        in.nextLine();
         System.out.println();
         System.out.print("Please introduce the year: ");
         int year = checkUserInput(in::nextInt);

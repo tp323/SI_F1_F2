@@ -250,14 +250,19 @@ public class JPAContext implements IContext {
     /***                PROCEDURES                ***/
 
     public int procedure_getAlarmNumber(String registration, int year) {
+        _em.getTransaction().begin();
         if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
 
-        StoredProcedureQuery procedureQuery =
-                _em.createNamedStoredProcedureQuery(Bip.alarm_number);
-        procedureQuery.setParameter(1, registration);
-        procedureQuery.setParameter(2, year);
-        procedureQuery.execute();
-        return procedureQuery.getFirstResult();
+        StoredProcedureQuery pQuery =
+                _em.createNamedStoredProcedureQuery("alarm_number")
+                        .setParameter(1, registration)
+                        .setParameter(2, year);
+
+
+        pQuery.execute();
+        int numbAlarms = (int) pQuery.getOutputParameterValue(3);
+        _em.getTransaction().commit();
+        return numbAlarms;
     }
 
     public void procedure_fetchRequests(){

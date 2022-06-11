@@ -24,7 +24,13 @@ public class testalineas {
     }
 
     public static void main(String[] args) throws Exception {
-        test();
+        //test();
+        try(JPAContext ctx = new JPAContext()) {
+            System.out.println(Integer.toString(ctx.procedure_getAlarmNumber("FF17FF", 2015)));
+            ctx.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
 
@@ -54,6 +60,10 @@ public class testalineas {
         ClienteParticular cp = ctx.getClientesParticulares().findByKey(ref);
         nc.setRefCliente(cp);
         ctx.updateCliente(nc);
+    }
+
+    public static void e(JPAContext ctx){
+
     }
 
 
