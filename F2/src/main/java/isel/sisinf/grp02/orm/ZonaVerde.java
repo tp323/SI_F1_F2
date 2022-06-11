@@ -5,12 +5,12 @@ import jakarta.persistence.*;
 
 @Entity
 @NamedQuery(name = "Zona_Verde.findByKey",
-        query = "SELECT c FROM Zona_Verde c WHERE c.id =:key")
+        query = "SELECT c FROM ZonaVerde c WHERE c.id =:key")
 @NamedQuery(name="Zona_Verde.findAll",
-        query="SELECT v FROM Zona_Verde v")
+        query="SELECT v FROM ZonaVerde v")
 
 @Table(name = "Zona_Verde")
-public class Zona_Verde implements IZonaVerde {
+public class ZonaVerde implements IZonaVerde {
 
     @Id
     @Column(name = "id", nullable = false)
@@ -41,7 +41,7 @@ public class Zona_Verde implements IZonaVerde {
 
     @Override
     public String toString() {
-        return "Zona_Verde{" +
+        return "ZonaVerde{" +
                 "id=" + id +
                 ", coordenadas=" + coordenadas.getId() +
                 ", veiculo=" + veiculo.getMatricula() +

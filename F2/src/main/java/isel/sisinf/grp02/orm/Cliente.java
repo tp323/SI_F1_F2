@@ -48,16 +48,16 @@ public class Cliente implements ICliente {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ref_cliente")
-    private Cliente_Particular refCliente = null;
+    private ClienteParticular refCliente = null;
 
     @Column(name = "ativo", nullable = false)
     private boolean ativo = false;
 
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.PERSIST)
-    private Cliente_Particular cliente_particular;
+    private ClienteParticular cliente_particular;
 
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.PERSIST)
-    private Cliente_Institucional cliente_institucional;
+    private ClienteInstitucional cliente_institucional;
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.PERSIST)
     private Set<Veiculo> veiculos = new LinkedHashSet<>();
@@ -67,9 +67,9 @@ public class Cliente implements ICliente {
     public String getMorada() {return morada;}
     public String getTelefone() {return telefone;}
     public boolean getAtivo() {return ativo;}
-    public Cliente_Particular getRefCliente() {return refCliente;}
-    public Cliente_Particular getClienteParticular() { return cliente_particular; }
-    public Cliente_Institucional getClienteInstitucional() { return cliente_institucional; }
+    public ClienteParticular getRefCliente() {return refCliente;}
+    public ClienteParticular getClienteParticular() { return cliente_particular; }
+    public ClienteInstitucional getClienteInstitucional() { return cliente_institucional; }
     public Set<Veiculo> getVeiculos() {return veiculos;}
 
 
@@ -77,9 +77,9 @@ public class Cliente implements ICliente {
     public void setNome(String nome) {this.nome = nome;}
     public void setMorada(String morada) {this.morada = morada;}
     public void setTelefone(String telefone) {this.telefone = telefone;}
-    public void setRefCliente(Cliente_Particular refCliente) {this.refCliente = refCliente;}
-    public void setClienteParticular(Cliente_Particular cliente_particular) { this.cliente_particular = cliente_particular; }
-    public void setClienteInstitucional(Cliente_Institucional cliente_institucional) { this.cliente_institucional = cliente_institucional; }
+    public void setRefCliente(ClienteParticular refCliente) {this.refCliente = refCliente;}
+    public void setClienteParticular(ClienteParticular cliente_particular) { this.cliente_particular = cliente_particular; }
+    public void setClienteInstitucional(ClienteInstitucional cliente_institucional) { this.cliente_institucional = cliente_institucional; }
     public void setAtivo(boolean ativo) {this.ativo = ativo;}
     public void setVeiculos(Set<Veiculo> veiculos) {this.veiculos = veiculos;}
 

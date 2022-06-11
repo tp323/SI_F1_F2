@@ -2,7 +2,7 @@ package isel.sisinf.grp02.presentation;
 
 import isel.sisinf.grp02.data_acess.JPAContext;
 import isel.sisinf.grp02.orm.Bip;
-import isel.sisinf.grp02.orm.Cliente_Particular;
+import isel.sisinf.grp02.orm.ClienteParticular;
 import isel.sisinf.grp02.orm.Veiculo;
 
 import java.sql.Timestamp;
@@ -31,8 +31,8 @@ public class App {
     private final Scanner in = new Scanner(System.in);
 
     public App() {
-        DB_METHODS.put(InterfaceOptions.INSERT_CLIENT_PART, () -> Table.createTable(clientInfo((nif, name, residence, phone, refClient, cc) -> context.buildClienteFromInput(nif, name, residence, phone, refClient, cc)), in, Cliente_Particular::toArray));
-        DB_METHODS.put(InterfaceOptions.UPDATE_CLIENT_PART, () -> Table.createTable(clientInfo((nif, name, residence, phone, refClient, cc) -> context.updateClienteFromInput(nif, name, residence, phone, refClient, cc)), in, Cliente_Particular::toArray));
+        DB_METHODS.put(InterfaceOptions.INSERT_CLIENT_PART, () -> Table.createTable(clientInfo((nif, name, residence, phone, refClient, cc) -> context.buildClienteFromInput(nif, name, residence, phone, refClient, cc)), in, ClienteParticular::toArray));
+        DB_METHODS.put(InterfaceOptions.UPDATE_CLIENT_PART, () -> Table.createTable(clientInfo((nif, name, residence, phone, refClient, cc) -> context.updateClienteFromInput(nif, name, residence, phone, refClient, cc)), in, ClienteParticular::toArray));
         DB_METHODS.put(InterfaceOptions.REMOVE_CLIENT_PART, () -> Table.createTable(new String[]{"removed_cliente_particular"}, in, removeClient()));
         DB_METHODS.put(InterfaceOptions.TOTAL_ALARMS, () -> Table.createTable(new String[]{"alarm_number"}, in, alarmNumber()));
         DB_METHODS.put(InterfaceOptions.PROCESS_REQUEST, () -> context.procedure_fetchRequests());

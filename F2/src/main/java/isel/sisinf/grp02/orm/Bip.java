@@ -34,7 +34,7 @@ public class Bip implements IBip {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "equipamento", referencedColumnName = "id")
-    private Equipamento_Eletronico equipamento;
+    private EquipamentoEletronico equipamento;
 
     @Column(name = "marca_temporal", nullable = false)
     private Timestamp marca_temporal;
@@ -48,14 +48,14 @@ public class Bip implements IBip {
 
 
     public Long getID() { return id; }
-    public Equipamento_Eletronico getEquipamento() { return equipamento; }
+    public EquipamentoEletronico getEquipamento() { return equipamento; }
     public Timestamp getMarcaTemporal() { return marca_temporal; }
     public Coordenadas getCoordenadas() { return coordenadas; }
     public Boolean getAlarme() { return alarme; }
 
 
     public void setID(Long id) { this.id = id; }
-    public void setEquipamento(Equipamento_Eletronico equipamento) { this.equipamento = equipamento; }
+    public void setEquipamento(EquipamentoEletronico equipamento) { this.equipamento = equipamento; }
     public void setMarcaTemporal(Timestamp marcaTemporal) { this.marca_temporal = marcaTemporal; }
     public void setCoordenadas(Coordenadas coordenadas) { this.coordenadas = coordenadas; }
     public void setAlarme(Boolean alarme) { this.alarme = alarme; }

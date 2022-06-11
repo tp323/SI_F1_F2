@@ -24,30 +24,30 @@ public class Veiculo implements IVeiculo {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "equipamento", referencedColumnName = "id", nullable = false)
-    private Equipamento_Eletronico equipamento;
+    private EquipamentoEletronico equipamento;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cliente", referencedColumnName = "nif", nullable = false)
     private Cliente cliente;
 
     @OneToMany(mappedBy = "veiculo", cascade = CascadeType.PERSIST)
-    private Set<Zona_Verde> zonasVerdes;
+    private Set<ZonaVerde> zonasVerdes;
 
     @Column(name = "alarms", nullable = false)
     private Integer alarms = 0;
 
     public String getMatricula() { return matricula; }
     public Condutor getCondutor() { return condutor; }
-    public Equipamento_Eletronico getEquipamento() { return equipamento; }
+    public EquipamentoEletronico getEquipamento() { return equipamento; }
     public Cliente getCliente() { return cliente; }
     public Integer getAlarms() { return alarms; }
 
-    public Set<Zona_Verde> getZonasVerdes() { return zonasVerdes; }
+    public Set<ZonaVerde> getZonasVerdes() { return zonasVerdes; }
     public void setMatricula(String matricula) {this.matricula = matricula;}
     public void setCondutor(Condutor condutor) {
         this.condutor = condutor;
     }
-    public void setEquipamento(Equipamento_Eletronico equipamento) {
+    public void setEquipamento(EquipamentoEletronico equipamento) {
         this.equipamento = equipamento;
     }
     public void setCliente(Cliente cliente) {
@@ -56,7 +56,7 @@ public class Veiculo implements IVeiculo {
     public void setAlarms(Integer alarms) {
         this.alarms = alarms;
     }
-    public void setZonasVerdes(Set<Zona_Verde> zonasVerdes) { this.zonasVerdes = zonasVerdes; }
+    public void setZonasVerdes(Set<ZonaVerde> zonasVerdes) { this.zonasVerdes = zonasVerdes; }
 
     @Override
     public String toString() {

@@ -1,15 +1,15 @@
 package isel.sisinf.grp02.orm;
 
-import isel.sisinf.grp02.orm.interfaces.ICliente_Institucional;
+import isel.sisinf.grp02.orm.interfaces.IClienteInstitucional;
 import jakarta.persistence.*;
 
 @Entity
-@NamedQuery(name="Cliente_Institucional.findByKey", query="SELECT c FROM Cliente_Institucional c WHERE c.cliente =:key")
+@NamedQuery(name="Cliente_Institucional.findByKey", query="SELECT c FROM ClienteInstitucional c WHERE c.cliente =:key")
 @NamedQuery(name="Cliente_Institucional.findAll",
-        query="SELECT ci FROM Cliente_Institucional ci")
+        query="SELECT ci FROM ClienteInstitucional ci")
 
 @Table(name = "cliente_institucional")
-public class Cliente_Institucional implements ICliente_Institucional {
+public class ClienteInstitucional implements IClienteInstitucional {
 
     @Column(name = "nome_contacto", nullable = false, length = 25)
     private String nomeContacto;

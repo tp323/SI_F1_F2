@@ -3,7 +3,7 @@ package isel.sisinf.grp02.orm.interfaces;
 import isel.sisinf.grp02.orm.Cliente;
 import java.util.Set;
 
-public interface ICliente_Particular {
+public interface IClienteParticular {
     int getCC();
     Cliente getCliente();
     Set<Cliente> getReferred();

@@ -26,7 +26,7 @@ public class Coordenadas implements ICoordenadas {
     private Float longitude;
 
     @OneToMany(mappedBy = "coordenadas", cascade = CascadeType.PERSIST)
-    private Set<Zona_Verde> zonas = new LinkedHashSet<>();
+    private Set<ZonaVerde> zonas = new LinkedHashSet<>();
 
     @OneToOne(mappedBy = "coordenadas", cascade = CascadeType.PERSIST)
     private Bip bip;
@@ -35,14 +35,14 @@ public class Coordenadas implements ICoordenadas {
     public Float getLatitude() { return latitude; }
     public Float getLongitude() { return longitude; }
     public Bip getBip() { return bip; }
-    public Set<Zona_Verde> getZonaVerde() { return zonas; }
+    public Set<ZonaVerde> getZonaVerde() { return zonas; }
 
 
     public void setId(Long id) { this.id = id; }
     public void setLatitude(Float latitude) { this.latitude = latitude; }
     public void setLongitude(Float longitude) { this.longitude = longitude; }
     public void setBip(Bip bip) { this.bip = bip; }
-    public void setZonaVerde(Set<Zona_Verde> zonas) { this.zonas = zonas; }
+    public void setZonaVerde(Set<ZonaVerde> zonas) { this.zonas = zonas; }
 
     @Override
     public String toString() {

@@ -2,12 +2,10 @@ package isel.sisinf.grp02.presentation;
 
 import isel.sisinf.grp02.data_acess.JPAContext;
 import isel.sisinf.grp02.orm.Cliente;
-import isel.sisinf.grp02.orm.Cliente_Particular;
-import jakarta.xml.bind.annotation.XmlType;
+import isel.sisinf.grp02.orm.ClienteParticular;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
 public class testalineas {
     public static void test() throws Exception {
@@ -32,7 +30,7 @@ public class testalineas {
         test();
     }
 
-    public static List<Cliente_Particular> dCreate(
+    public static List<ClienteParticular> dCreate(
             JPAContext ctx,
             int nif,
             String name,
@@ -42,8 +40,8 @@ public class testalineas {
             int cc
     ){
         Cliente client = new Cliente(nif, name, residence, phone, true);
-        Cliente_Particular cp = new Cliente_Particular();
-        Cliente_Particular ref = new Cliente_Particular();
+        ClienteParticular cp = new ClienteParticular();
+        ClienteParticular ref = new ClienteParticular();
         ref.setCC(refClient);
         client.setRefCliente(ctx.getClienteParticular().read(ref.getCC()));
         cp.setCC(cc);
@@ -56,23 +54,23 @@ public class testalineas {
         int clientId = ctx.createClienteParticular(cp);
         ctx.commit();
         ctx.beginTransaction();
-        Cliente_Particular insertedClient = ctx.getClienteParticular().read(clientId);
+        ClienteParticular insertedClient = ctx.getClienteParticular().read(clientId);
         ctx.commit();
-        List<Cliente_Particular> clientList = new LinkedList<>();
+        List<ClienteParticular> clientList = new LinkedList<>();
         clientList.add(insertedClient);
         return clientList;
 
 
         /*Cliente c = new Cliente(254256432, "Rapaz da Aldeia", "Aldeia", "923453432");
-        Cliente_Particular cp = new Cliente_Particular();
+        ClienteParticular cp = new ClienteParticular();
         cp.setCC(987987988);
         cp.setCliente(c);
         c.setClienteParticular(cp);
-        Cliente_Particular insertedClient = ctx.createClienteParticular(cp, c);
+        ClienteParticular insertedClient = ctx.createClienteParticular(cp, c);
 
-        List<Cliente_Particular> clientList = new LinkedList<>();
+        List<ClienteParticular> clientList = new LinkedList<>();
         clientList.add(insertedClient);
-        Table.createTable(clientList, new Scanner(System.in), Cliente_Particular::toArray);
+        Table.createTable(clientList, new Scanner(System.in), ClienteParticular::toArray);
         return clientList;*/
 
         /*
@@ -82,7 +80,7 @@ public class testalineas {
 
     public static void dDelete(JPAContext ctx){
         Cliente c = new Cliente(254256431, "Rapaz da Aldeia", "Aldeia", "923453432");
-        Cliente_Particular cp = new Cliente_Particular();
+        ClienteParticular cp = new ClienteParticular();
         cp.setCC(987987987);
         cp.setCliente(c);
         c.setClienteParticular(cp);
@@ -93,7 +91,7 @@ public class testalineas {
     public static void dUpdate(JPAContext ctx){
         Cliente c = ctx.getClientes().findByKey(121222333);
         Cliente nc = new Cliente(121222333, "Rapaz da Aldeia", "Aldeia", "923453432");
-        Cliente_Particular cp = ctx.getClientesParticulares().findByKey(100000000);
+        ClienteParticular cp = ctx.getClientesParticulares().findByKey(100000000);
         nc.setRefCliente(cp);
         ctx.updateCliente(nc);
     }

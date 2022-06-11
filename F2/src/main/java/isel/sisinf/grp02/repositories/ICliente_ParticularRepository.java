@@ -1,8 +1,8 @@
 package isel.sisinf.grp02.repositories;
 
-import isel.sisinf.grp02.orm.Cliente_Particular;
+import isel.sisinf.grp02.orm.ClienteParticular;
 
 import java.util.Collection;
 
-public interface ICliente_ParticularRepository extends IRepository<Cliente_Particular, Collection<Cliente_Particular>, Integer>{
+public interface ICliente_ParticularRepository extends IRepository<ClienteParticular, Collection<ClienteParticular>, Integer>{
 }

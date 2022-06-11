@@ -11,12 +11,12 @@ import java.util.Set;
  */
 @Entity
 @NamedQuery(name = "Equipamento_Eletronico.findByKey",
-        query = "SELECT c FROM Equipamento_Eletronico c WHERE c.id =:key")
+        query = "SELECT c FROM EquipamentoEletronico c WHERE c.id =:key")
 @NamedQuery(name="Equipamento_Eletronico.findAll",
-        query="SELECT c FROM Equipamento_Eletronico c")
+        query="SELECT c FROM EquipamentoEletronico c")
 
 @Table(name = "equipamento_eletronico")
-public class Equipamento_Eletronico implements IEquipamento {
+public class EquipamentoEletronico implements IEquipamento {
 
     @Id
     @Column(name = "id", nullable = false)
@@ -60,7 +60,7 @@ public class Equipamento_Eletronico implements IEquipamento {
 
     @Override
     public String toString() {
-        return "Equipamento_Eletronico{" +
+        return "EquipamentoEletronico{" +
                 "id=" + id +
                 ", estado='" + estado + '\'' +
                 '}';

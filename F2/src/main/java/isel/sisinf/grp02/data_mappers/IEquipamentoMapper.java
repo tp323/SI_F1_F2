@@ -1,6 +1,6 @@
 package isel.sisinf.grp02.data_mappers;
 
-import isel.sisinf.grp02.orm.Equipamento_Eletronico;
+import isel.sisinf.grp02.orm.EquipamentoEletronico;
 
-public interface IEquipamentoMapper extends IDataMapper<Equipamento_Eletronico, Long> {
+public interface IEquipamentoMapper extends IDataMapper<EquipamentoEletronico, Long> {
 }

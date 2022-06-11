@@ -1,6 +1,6 @@
 package isel.sisinf.grp02.data_mappers;
 
-import isel.sisinf.grp02.orm.Cliente_Institucional;
+import isel.sisinf.grp02.orm.ClienteInstitucional;
 
-public interface ICliente_InstitucionalMapper extends IDataMapper<Cliente_Institucional, Integer> {
+public interface ICliente_InstitucionalMapper extends IDataMapper<ClienteInstitucional, Integer> {
 }

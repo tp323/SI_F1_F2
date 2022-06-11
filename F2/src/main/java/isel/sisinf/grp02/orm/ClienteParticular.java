@@ -1,17 +1,17 @@
 package isel.sisinf.grp02.orm;
 
-import isel.sisinf.grp02.orm.interfaces.ICliente_Particular;
+import isel.sisinf.grp02.orm.interfaces.IClienteParticular;
 import jakarta.persistence.*;
 
 import java.util.Set;
 
 @Entity
-@NamedQuery(name="Cliente_Particular.findByKey", query="SELECT c FROM Cliente_Particular c WHERE c.cc =:key")
+@NamedQuery(name="Cliente_Particular.findByKey", query="SELECT c FROM ClienteParticular c WHERE c.cc =:key")
 @NamedQuery(name="Cliente_Particular.findAll",
-        query="SELECT cp FROM Cliente_Particular cp")
+        query="SELECT cp FROM ClienteParticular cp")
 
 @Table(name = "cliente_particular")
-public class Cliente_Particular implements ICliente_Particular {
+public class ClienteParticular implements IClienteParticular {
 
     @Id
     @Column(name = "cc", nullable = false)
@@ -36,7 +36,7 @@ public class Cliente_Particular implements ICliente_Particular {
 
     @Override
     public String toString() {
-        return "Cliente_Particular{" +
+        return "ClienteParticular{" +
                 "cc=" + cc +
                 ", cliente=" + cliente.getNif() +
                 '}';

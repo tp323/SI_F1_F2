@@ -2,23 +2,23 @@ package isel.sisinf.grp02.orm.interfaces;
 
 import isel.sisinf.grp02.orm.Cliente;
 import isel.sisinf.grp02.orm.Condutor;
-import isel.sisinf.grp02.orm.Equipamento_Eletronico;
-import isel.sisinf.grp02.orm.Zona_Verde;
+import isel.sisinf.grp02.orm.EquipamentoEletronico;
+import isel.sisinf.grp02.orm.ZonaVerde;
 
 import java.util.Set;
 
 public interface IVeiculo {
     String getMatricula();
     Condutor getCondutor();
-    Equipamento_Eletronico getEquipamento();
+    EquipamentoEletronico getEquipamento();
     Cliente getCliente();
     Integer getAlarms();
-    Set<Zona_Verde> getZonasVerdes();
+    Set<ZonaVerde> getZonasVerdes();
 
     void setMatricula(String matricula);
     void setCondutor(Condutor condutor);
-    void setEquipamento(Equipamento_Eletronico equipamento);
+    void setEquipamento(EquipamentoEletronico equipamento);
     void setCliente(Cliente cliente);
     void setAlarms(Integer alarms);
-    void setZonasVerdes(Set<Zona_Verde> zonasVerdes);
+    void setZonasVerdes(Set<ZonaVerde> zonasVerdes);
 }
