@@ -12,9 +12,6 @@ public class testalineas {
         //create
         try(JPAContext ctx = new JPAContext()) {
             ctx.beginTransaction();
-            //dCreate(ctx);
-            //dDelete(ctx);
-            dUpdate(ctx);
             //ctx.procedure_createVehicle("123456", 111111115, 3, 100000000, 01, 01 ,01);
             //hnoproc(ctx);
             //ctx.createView();
@@ -32,8 +29,10 @@ public class testalineas {
 
 
     public static void dDelete(JPAContext ctx){
-        int nif = 121222333;
-        Cliente c = ctx.readCliente(nif);
+        int cc = 121222333;
+        // TODO(throw exception if cc not in db)
+        ClienteParticular cp = ctx.readClienteParticular(cc);
+        Cliente c = cp.getCliente();
         if(c.getRefCliente()!=null){
             ClienteParticular ref = c.getRefCliente();
             c.setRefCliente(null);
@@ -70,6 +69,7 @@ public class testalineas {
         Float latitude = 6f;
         Float longitude = 9.0f;
         Integer raio = 3;
+
         Condutor condutor = ctx.readCondutor(ccCondutor);
         /***    EXCEÇÃO SE O CARRO JÁ EXISTIR PARA AQUELA MATRICULA    ***/
         if(condutor != null) {
