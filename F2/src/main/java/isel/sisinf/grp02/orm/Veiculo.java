@@ -14,6 +14,15 @@ import java.util.Set;
 @Table(name = "veiculo")
 public class Veiculo implements IVeiculo {
 
+    public Veiculo(){}
+
+    public Veiculo(String matricula, Condutor condutor, Equipamento_Eletronico equipamento, Cliente cliente) {
+        this.matricula = matricula;
+        this.condutor = condutor;
+        this.equipamento = equipamento;
+        this.cliente = cliente;
+    }
+
     @Override
     public String toString() {
         return "Veiculo{" +

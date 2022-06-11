@@ -12,6 +12,13 @@ import jakarta.persistence.*;
 @Table(name = "coordenadas")
 public class Coordenadas implements ICoordenadas {
 
+    public Coordenadas(){}
+
+    public Coordenadas(float latitude,float longitude){
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     @Override
     public String toString() {
         return "Coordenadas{" +

@@ -5,5 +5,5 @@ import isel.sisinf.grp02.repositories.IRepository;
 
 import java.util.Collection;
 
-public interface ICondutorMapper extends IDataMapper<Condutor, Long> {
+public interface ICondutorMapper extends IDataMapper<Condutor, Integer> {
 }

@@ -46,7 +46,7 @@ public class App {
 
             @Override
             public void createVehicle(String registration, int driver, int equip, int cliente) {
-                context.createVehicle(registration, driver, equip, cliente);
+                context.createVehicle(registration, driver, equip, cliente, null, null, null);
             }
         }), in, Veiculo::toArray));
         DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE_PROCEDURE, () -> Table.createTable(createVehicle(new VehicleFunctionCall() {

@@ -12,6 +12,14 @@ import jakarta.persistence.*;
 @Table(name = "Zona_Verde")
 public class Zona_Verde implements IZonaVerde {
 
+    public Zona_Verde(){}
+
+    public Zona_Verde(Coordenadas coordenadas, Veiculo veiculo, int raio){
+        this.coordenadas = coordenadas;
+        this.veiculo = veiculo;
+        this.raio = raio;
+    }
+
     @Override
     public String toString() {
         return "Zona_Verde{" +

@@ -355,8 +355,8 @@ public class JPAContext implements IContext {
         }
 
         @Override
-        public Cliente_Institucional read(Integer id) {
-            return null;
+        public Cliente_Institucional read(Integer nif) {
+            return _em.find(Cliente_Institucional.class, nif);
         }
 
         @Override
@@ -394,44 +394,50 @@ public class JPAContext implements IContext {
 
     protected class VeiculoMapper implements IVeiculoMapper {
         @Override
-        public Long create(Veiculo entity) {
+        public String create(Veiculo entity) {
+            beginTransaction();
+            _em.persist(entity);
+            commit();
+            return entity.getMatricula();
+        }
+
+        @Override
+        public Veiculo read(String matricula) {
+            return _em.find(Veiculo.class, matricula);
+        }
+
+        @Override
+        public String update(Veiculo entity) {
             return null;
         }
 
         @Override
-        public Veiculo read(Long id) {
-            return null;
-        }
-
-        @Override
-        public Long update(Veiculo entity) {
-            return null;
-        }
-
-        @Override
-        public Long delete(Veiculo entity) {
+        public String delete(Veiculo entity) {
             return null;
         }
     }
 
     protected class CondutorMapper implements ICondutorMapper {
         @Override
-        public Long create(Condutor entity) {
+        public Integer create(Condutor entity) {
+            beginTransaction();
+            _em.persist(entity);
+            commit();
+            return entity.getCC();
+        }
+
+        @Override
+        public Condutor read(Integer cc) {
+            return _em.find(Condutor.class, cc);
+        }
+
+        @Override
+        public Integer update(Condutor entity) {
             return null;
         }
 
         @Override
-        public Condutor read(Long id) {
-            return null;
-        }
-
-        @Override
-        public Long update(Condutor entity) {
-            return null;
-        }
-
-        @Override
-        public Long delete(Condutor entity) {
+        public Integer delete(Condutor entity) {
             return null;
         }
     }
@@ -439,7 +445,10 @@ public class JPAContext implements IContext {
     protected class ZonaVerdeMapper implements IZonaVerdeMapper {
         @Override
         public Long create(Zona_Verde entity) {
-            return null;
+            beginTransaction();
+            _em.persist(entity);
+            commit();
+            return entity.getID();
         }
 
         @Override
@@ -617,23 +626,24 @@ public class JPAContext implements IContext {
 
     public ICliente_ParticularMapper getClienteParticular() {return _clienteParticularMapper;}
 
-    public IBipMapper getBip() {return _bipMapper;}
-
     public IEquipamentoMapper getEquipamento() {return _equipamentoMapper;}
 
+    public IVeiculoMapper getVeiculo() {return _veiculoMapper;}
+
+    public ICondutorMapper getCondutor() {return _condutorMapper;}
+
+    public IZonaVerdeMapper getZonaVerdeMapper() {return _zonaVerdeMapper;}
+
     public ICoordenadasMapper getCoordenada() {return _coordenadasMapper;}
+
+    public IBipMapper getBip() {return _bipMapper;}
+
+
+    /***                CREATE                ***/
 
 
     public Integer createCliente(Cliente cliente) {
         return getCliente().create(cliente);
-    }
-
-    public Cliente readCliente(int nif) {
-        return getCliente().read(nif);
-    }
-
-    public int updateCliente(Cliente cliente) {
-        return getCliente().update(cliente);
     }
 
     public int deleteCliente(Cliente cliente) {
@@ -644,159 +654,61 @@ public class JPAContext implements IContext {
         return getClienteParticular().create(cliente_particular);
     }
 
-    public Cliente_Particular readClienteParticular(int cc) {
-        return getClienteParticular().read(cc);
-    }
-
-    public int updateClienteParticular(Cliente_Particular cliente_particular) {
-        return getClienteParticular().update(cliente_particular);
-    }
-
-    public int deleteClienteParticular(Cliente_Particular cliente_particular) {
-        return getClienteParticular().delete(cliente_particular);
-    }
-
-    public Equipamento_Eletronico readEquipamentoEletronico(long id) {
-        return getEquipamento().read(id);
-    }
-
-    public Coordenadas readCoordenada(long id) {
-        return getCoordenada().read(id);
+    public String createVeiculo(Veiculo veiculo) {
+        return getVeiculo().create(veiculo);
     }
 
     public long createBip(Bip bip) {
         return getBip().create(bip);
     }
 
+
+    /***                READ                ***/
+
+    public Cliente readCliente(int nif) {
+        return getCliente().read(nif);
+    }
+
+    public Cliente_Particular readClienteParticular(int cc) {
+        return getClienteParticular().read(cc);
+    }
+
+    public Equipamento_Eletronico readEquipamentoEletronico(long id) {
+        return getEquipamento().read(id);
+    }
+
+    public Condutor readCondutor(int cc) {
+        return getCondutor().read(cc);
+    }
+
+    public Coordenadas readCoordenada(long id) {
+        return getCoordenada().read(id);
+    }
+
     public Bip readBip(Long id) {
         return getBip().read(id);
     }
 
-    public List<Cliente_Particular> buildClienteFromInput(
-            int nif,
-            String name,
-            String residence,
-            String phone,
-            int refClient,
-            int cc
-    ) {
-        if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
-        // TODO: Should be 8 not 9
-        if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct");
 
-        Cliente client = new Cliente(nif, name, residence, phone, true);
-        Cliente_Particular cp = new Cliente_Particular();
-        Cliente_Particular ref = new Cliente_Particular();
-        ref.setCC(refClient);
-        client.setRefCliente(readClienteParticular(ref.getCC()));
-        cp.setCC(cc);
-        cp.setCliente(client);
-        client.setClienteParticular(cp);
-        beginTransaction();
-        createCliente(client);
-        commit();
-        beginTransaction();
-        int clientId = createClienteParticular(cp);
-        commit();
-        beginTransaction();
-        Cliente_Particular insertedClient = readClienteParticular(clientId);
-        commit();
-        List<Cliente_Particular> clientList = new LinkedList<>();
-        clientList.add(insertedClient);
-        return clientList;
+    /***                UPDATE                ***/
+
+    public int updateCliente(Cliente cliente) {
+        return getCliente().update(cliente);
     }
 
-    public List<Cliente_Particular> updateClienteFromInput(
-            int nif,
-            String name,
-            String residence,
-            String phone,
-            int refClient,
-            int cc
-    ) {
-        if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
-        // TODO: Should be 8 not 9
-        if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct");
-
-        Cliente client = new Cliente(nif, name, residence, phone, true);
-        Cliente_Particular cp = new Cliente_Particular();
-        client.setRefCliente(readClienteParticular(refClient));
-        cp.setCC(cc);
-        cp.setCliente(client);
-        client.setClienteParticular(cp);
-        beginTransaction();
-        updateCliente(client);
-        commit();
-        beginTransaction();
-        int clientId = updateClienteParticular(cp);
-        commit();
-        beginTransaction();
-        Cliente_Particular insertedClient = readClienteParticular(clientId);
-        commit();
-        List<Cliente_Particular> clientList = new LinkedList<>();
-        clientList.add(insertedClient);
-        return clientList;
+    public int updateClienteParticular(Cliente_Particular cliente_particular) {
+        return getClienteParticular().update(cliente_particular);
     }
 
-    public String[][] deleteClienteParticularFromInput(int nif, int cc) {
-        if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
-        // TODO: Should be 8 not 9
-        if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct");
 
-        beginTransaction();
-        Cliente clienteToDelete = readCliente(nif);
-        commit();
-        beginTransaction();
-        Cliente_Particular clienteParticularToDelete = readClienteParticular(cc);
-        commit();
-        beginTransaction();
-        deleteCliente(clienteToDelete);
-        commit();
-        beginTransaction();
-        int clienteId = deleteClienteParticular(clienteParticularToDelete);
-        commit();
+    /***                DELETE                ***/
 
-        String[][] deletedIdList = new String[1][];
-        deletedIdList[0] = new String[]{Integer.toString(clienteId)};
-        return deletedIdList;
+    public int deleteClienteParticular(Cliente_Particular cliente_particular) {
+        return getClienteParticular().delete(cliente_particular);
     }
 
-    public String[][] deleteClienteFromInput(int nif) {
-        if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
 
-        beginTransaction();
-        Cliente clienteToDelete = readCliente(nif);
-        commit();
-        beginTransaction();
-        int clienteId = deleteCliente(clienteToDelete);
-        commit();
-
-        String[][] deletedIdList = new String[1][];
-        deletedIdList[0] = new String[]{Integer.toString(clienteId)};
-        return deletedIdList;
-    }
-
-    public List<Bip> buildBipFromInput(
-            int equipamento,
-            Timestamp marca_temporal,
-            int coordenadas,
-            boolean alarme
-    ) {
-        Bip bip = new Bip();
-        bip.setEquipamento(readEquipamentoEletronico(equipamento));
-        bip.setMarcaTemporal(marca_temporal);
-        bip.setCoordenadas(readCoordenada(coordenadas));
-        bip.setAlarme(alarme);
-        beginTransaction();
-        Long bipId = createBip(bip);
-        commit();
-        beginTransaction();
-        Bip insertBip = readBip(bipId);
-        commit();
-        List<Bip> bipList = new LinkedList<>();
-        bipList.add(insertBip);
-        return bipList;
-    }
+    /***                PROCEDURES                ***/
 
     public int procedure_getAlarmNumber(String registration, int year) {
         if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration");
@@ -846,23 +758,137 @@ public class JPAContext implements IContext {
         commit();
     }
 
-    public void createVehicle(String registration, int driver, int equip, int cliente) {
+    public void procedure_clearRequests(){
         beginTransaction();
-        Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4)");
-        q.setParameter(1, registration);
-        q.setParameter(2, driver);
-        q.setParameter(3, equip);
-        q.setParameter(4, cliente);
+
+        Query q = _em.createNativeQuery("call deleteinvalids()");
 
         q.executeUpdate();
         commit();
     }
 
-    public void createVehicle(String registration, int driver, int equip, int cliente, int raio, int lat, int log) {
+
+    /***                OTHERS                  ***/
+
+
+
+
+
+
+
+    public List<Cliente_Particular> buildClienteFromInput(int nif, String name, String residence, String phone, int refClient, int cc) {
+        if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
+        if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct");
+
+        Cliente client = new Cliente(nif, name, residence, phone, true);
+        Cliente_Particular cp = new Cliente_Particular();
+        Cliente_Particular ref = new Cliente_Particular();
+        ref.setCC(refClient);
+        client.setRefCliente(readClienteParticular(ref.getCC()));
+        cp.setCC(cc);
+        cp.setCliente(client);
+        client.setClienteParticular(cp);
+        beginTransaction();
+        createCliente(client);
+        commit();
+        beginTransaction();
+        int clientId = createClienteParticular(cp);
+        commit();
+        beginTransaction();
+        Cliente_Particular insertedClient = readClienteParticular(clientId);
+        commit();
+        List<Cliente_Particular> clientList = new LinkedList<>();
+        clientList.add(insertedClient);
+        return clientList;
+    }
+
+    public List<Cliente_Particular> updateClienteFromInput(int nif, String name, String residence, String phone, int refClient, int cc) {
+        if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
+        // TODO: Should be 8 not 9
+        if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct");
+
+        Cliente client = new Cliente(nif, name, residence, phone, true);
+        Cliente_Particular cp = new Cliente_Particular();
+        client.setRefCliente(readClienteParticular(refClient));
+        cp.setCC(cc);
+        cp.setCliente(client);
+        client.setClienteParticular(cp);
+        beginTransaction();
+        updateCliente(client);
+        commit();
+        beginTransaction();
+        int clientId = updateClienteParticular(cp);
+        commit();
+        beginTransaction();
+        Cliente_Particular insertedClient = readClienteParticular(clientId);
+        commit();
+        List<Cliente_Particular> clientList = new LinkedList<>();
+        clientList.add(insertedClient);
+        return clientList;
+    }
+
+    public String[][] deleteClienteParticularFromInput(int nif, int cc) {
+        if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
+        if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct");
+
+        beginTransaction();
+        Cliente clienteToDelete = readCliente(nif);
+        commit();
+        beginTransaction();
+        Cliente_Particular clienteParticularToDelete = readClienteParticular(cc);
+        commit();
+        beginTransaction();
+        deleteCliente(clienteToDelete);
+        commit();
+        beginTransaction();
+        int clienteId = deleteClienteParticular(clienteParticularToDelete);
+        commit();
+
+        String[][] deletedIdList = new String[1][];
+        deletedIdList[0] = new String[]{Integer.toString(clienteId)};
+        return deletedIdList;
+    }
+
+    public String[][] deleteClienteFromInput(int nif) {
+        if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
+
+        beginTransaction();
+        Cliente clienteToDelete = readCliente(nif);
+        commit();
+        beginTransaction();
+        int clienteId = deleteCliente(clienteToDelete);
+        commit();
+
+        String[][] deletedIdList = new String[1][];
+        deletedIdList[0] = new String[]{Integer.toString(clienteId)};
+        return deletedIdList;
+    }
+
+    public List<Bip> buildBipFromInput(int equipamento, Timestamp marca_temporal, int coordenadas, boolean alarme) {
+        Bip bip = new Bip();
+        bip.setEquipamento(readEquipamentoEletronico(equipamento));
+        bip.setMarcaTemporal(marca_temporal);
+        bip.setCoordenadas(readCoordenada(coordenadas));
+        bip.setAlarme(alarme);
+        beginTransaction();
+        Long bipId = createBip(bip);
+        commit();
+        beginTransaction();
+        Bip insertBip = readBip(bipId);
+        commit();
+        List<Bip> bipList = new LinkedList<>();
+        bipList.add(insertBip);
+        return bipList;
+    }
+
+    public void createVehicle(String registration, int driver, int equip, int cliente, Integer raio, Integer lat, Integer log) {
         beginTransaction();
 
         if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration");
-
+        if(raio==null || lat==null || log==null){
+            /***    VERIFICAR USO DE NULS PARA CRIAR OU N ZONA VERDE    ***/
+            //TODO(procedure talvez esteja errado)
+        }
         Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
         q.setParameter(1, registration);
         q.setParameter(2, driver);
@@ -905,14 +931,6 @@ public class JPAContext implements IContext {
         commit();
     }
 
-    public void procedure_clearRequests(){
-        beginTransaction();
-
-        Query q = _em.createNativeQuery("call deleteinvalids()");
-
-        q.executeUpdate();
-        commit();
-    }
 
     private static int getNumberSize(int number) {
         if (number == 0) return 0;
