@@ -13,6 +13,13 @@ import java.util.Set;
 @Table(name = "cliente_particular")
 public class ClienteParticular implements IClienteParticular {
 
+    public ClienteParticular(){}
+
+    public ClienteParticular(int cc, Cliente cliente){
+        this.cc = cc;
+        this.cliente = cliente;
+    }
+
     @Id
     @Column(name = "cc", nullable = false)
     private int cc;

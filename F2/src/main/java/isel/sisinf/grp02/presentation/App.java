@@ -284,7 +284,7 @@ public class App {
                 System.out.print("Would you like to add a Client as a reference to this client? ");
                 String answer = checkAnswer(in.nextLine());
                 if(answer.equalsIgnoreCase("yes")) {
-                    System.out.print("Please introduce the referred client's NIF: ");
+                    System.out.print("Please introduce the client's CC of the person who reffered you: ");
                     int refCliente = in.nextInt();
                     in.nextLine();
                     return refCliente;

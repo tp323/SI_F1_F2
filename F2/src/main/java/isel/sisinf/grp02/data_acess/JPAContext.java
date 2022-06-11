@@ -4,6 +4,7 @@ import isel.sisinf.grp02.data_mappers.*;
 import isel.sisinf.grp02.orm.*;
 import isel.sisinf.grp02.repositories.*;
 import jakarta.persistence.*;
+import org.glassfish.jaxb.core.v2.TODO;
 
 import java.sql.Timestamp;
 import java.util.LinkedList;
@@ -317,16 +318,16 @@ public class JPAContext implements IContext {
     public List<ClienteParticular> buildClienteFromInput(int nif, String name, String residence, String phone, int refClient, int cc) {
         checkUserInput(nif, name, residence, phone, refClient, cc);
 
-        Cliente client = new Cliente(nif, name, residence, phone, true);
-        ClienteParticular cp = new ClienteParticular();
-        ClienteParticular ref = new ClienteParticular();
-        ref.setCC(refClient);
-        client.setRefCliente(readClienteParticular(ref.getCC()));
-        cp.setCC(cc);
-        cp.setCliente(client);
-        client.setClienteParticular(cp);
+        Cliente c = new Cliente(nif, name, residence, phone, true);
+        ClienteParticular cp = new ClienteParticular(cc, c);
+        if(refClient != 0) {
+            ClienteParticular ref = readClienteParticular(refClient);
+            c.setRefCliente(ref);
+            //TODO(Atirar exceção se refCliente n existe na DB)
+        }
+        c.setClienteParticular(cp);
         beginTransaction();
-        createCliente(client);
+        createCliente(c);
         int clientId = createClienteParticular(cp);
         commit();
         beginTransaction();
@@ -363,7 +364,7 @@ public class JPAContext implements IContext {
     private void checkUserInput(int nif, String name, String residence, String phone, int refClient, int cc) {
         if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
         if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct!");
-        if(getNumberSize(refClient) < 9) throw new IllegalArgumentException("The reference Client CC is not correct!");
+        if(getNumberSize(refClient) < 9 && refClient!=0) throw new IllegalArgumentException("The reference Client CC is not correct!");
         if(name.length() > 25) throw new IllegalArgumentException("The name is too big!");
         if(residence.length() > 150) throw new IllegalArgumentException("The residence name is too big!");
         if(phone.length() > 13) throw new IllegalArgumentException("The phone number is too big!");
