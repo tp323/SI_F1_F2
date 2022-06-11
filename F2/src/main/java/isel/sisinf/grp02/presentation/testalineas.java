@@ -14,9 +14,9 @@ public class testalineas {
             ctx.beginTransaction();
             //dCreate(ctx);
             //dDelete(ctx);
-            //dUpdate(ctx);
+            dUpdate(ctx);
             //ctx.procedure_createVehicle("123456", 111111115, 3, 100000000, 01, 01 ,01);
-            hnoproc(ctx);
+            //hnoproc(ctx);
             //ctx.createView();
             ctx.commit();
         }
@@ -30,71 +30,36 @@ public class testalineas {
         test();
     }
 
-    public static List<ClienteParticular> dCreate(
-            JPAContext ctx,
-            int nif,
-            String name,
-            String residence,
-            String phone,
-            int refClient,
-            int cc
-    ){
-        Cliente client = new Cliente(nif, name, residence, phone, true);
-        ClienteParticular cp = new ClienteParticular();
-        ClienteParticular ref = new ClienteParticular();
-        ref.setCC(refClient);
-        client.setRefCliente(ctx.getClienteParticular().read(ref.getCC()));
-        cp.setCC(cc);
-        cp.setCliente(client);
-        client.setClienteParticular(cp);
-        ctx.beginTransaction();
-        ctx.createCliente(client);
-        ctx.commit();
-        ctx.beginTransaction();
-        int clientId = ctx.createClienteParticular(cp);
-        ctx.commit();
-        ctx.beginTransaction();
-        ClienteParticular insertedClient = ctx.getClienteParticular().read(clientId);
-        ctx.commit();
-        List<ClienteParticular> clientList = new LinkedList<>();
-        clientList.add(insertedClient);
-        return clientList;
-
-
-        /*Cliente c = new Cliente(254256432, "Rapaz da Aldeia", "Aldeia", "923453432");
-        ClienteParticular cp = new ClienteParticular();
-        cp.setCC(987987988);
-        cp.setCliente(c);
-        c.setClienteParticular(cp);
-        ClienteParticular insertedClient = ctx.createClienteParticular(cp, c);
-
-        List<ClienteParticular> clientList = new LinkedList<>();
-        clientList.add(insertedClient);
-        Table.createTable(clientList, new Scanner(System.in), ClienteParticular::toArray);
-        return clientList;*/
-
-        /*
-
-        return new String[0][];*/
-    }
 
     public static void dDelete(JPAContext ctx){
-        Cliente c = new Cliente(254256431, "Rapaz da Aldeia", "Aldeia", "923453432");
-        ClienteParticular cp = new ClienteParticular();
-        cp.setCC(987987987);
-        cp.setCliente(c);
-        c.setClienteParticular(cp);
+        int nif = 121222333;
+        Cliente c = ctx.readCliente(nif);
+        if(c.getRefCliente()!=null){
+            ClienteParticular ref = c.getRefCliente();
+            c.setRefCliente(null);
+            ctx.deleteClienteParticular(ref);
+        }
+        ctx.deleteClienteParticular(c.getClienteParticular());
         ctx.deleteCliente(c);
-        //ctx.deleteClienteParticular(cp);
     }
 
     public static void dUpdate(JPAContext ctx){
-        Cliente c = ctx.getClientes().findByKey(121222333);
-        Cliente nc = new Cliente(121222333, "Rapaz da Aldeia", "Aldeia", "923453432");
-        ClienteParticular cp = ctx.getClientesParticulares().findByKey(100000000);
+        int nif = 121222333;
+        String nome = "Rapaz da Aldeia";
+        String morada = "Aldeia";
+        String num = "923453432";
+        int ref = 100000000;
+
+        Cliente c = ctx.getClientes().findByKey(nif);
+        Cliente nc = new Cliente(nif, nome, morada, num);
+        ClienteParticular cp = ctx.getClientesParticulares().findByKey(ref);
         nc.setRefCliente(cp);
         ctx.updateCliente(nc);
     }
+
+
+
+
 
     /*** SEGUIR PRESENTE LÓGICA DE ERROR HANDLING OU ENVOLVER EM TRY CATCH APENAS? ***/
     public static void hnoproc(JPAContext ctx){
