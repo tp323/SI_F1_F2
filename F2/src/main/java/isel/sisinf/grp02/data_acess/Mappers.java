@@ -271,4 +271,29 @@ class Mappers {
             return null;
         }
     }
+
+    protected class ReadOnlyMapper implements IReadOnlyMapper {
+        @Override
+        public String create(TodosAlarmes entity) {
+            context.beginTransaction();
+            context._em.persist(entity);
+            context.commit();
+            return entity.getMatricula();
+        }
+
+        @Override
+        public TodosAlarmes read(String id) {
+            return context._em.find(TodosAlarmes.class, id);
+        }
+
+        @Override
+        public String update(TodosAlarmes entity) {
+            return null;
+        }
+
+        @Override
+        public String delete(TodosAlarmes entity) {
+            return null;
+        }
+    }
 }

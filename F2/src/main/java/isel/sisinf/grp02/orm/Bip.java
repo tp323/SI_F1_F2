@@ -38,7 +38,7 @@ public class Bip implements IBip {
     private EquipamentoEletronico equipamento;
 
     @Column(name = "marca_temporal", nullable = false)
-    private Timestamp marca_temporal;
+    private Timestamp marcaTemporal;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coordenadas", referencedColumnName = "id")
@@ -50,14 +50,14 @@ public class Bip implements IBip {
 
     public Long getID() { return id; }
     public EquipamentoEletronico getEquipamento() { return equipamento; }
-    public Timestamp getMarcaTemporal() { return marca_temporal; }
+    public Timestamp getMarcaTemporal() { return marcaTemporal; }
     public Coordenadas getCoordenadas() { return coordenadas; }
     public Boolean getAlarme() { return alarme; }
 
 
     public void setID(Long id) { this.id = id; }
     public void setEquipamento(EquipamentoEletronico equipamento) { this.equipamento = equipamento; }
-    public void setMarcaTemporal(Timestamp marcaTemporal) { this.marca_temporal = marcaTemporal; }
+    public void setMarcaTemporal(Timestamp marcaTemporal) { this.marcaTemporal = marcaTemporal; }
     public void setCoordenadas(Coordenadas coordenadas) { this.coordenadas = coordenadas; }
     public void setAlarme(Boolean alarme) { this.alarme = alarme; }
 
@@ -66,7 +66,7 @@ public class Bip implements IBip {
         return "Bip{" +
                 "id=" + id +
                 ", equipamento=" + equipamento +
-                ", marca_temporal='" + marca_temporal + '\'' +
+                ", marca_temporal='" + marcaTemporal + '\'' +
                 ", coordenadas=" + coordenadas +
                 ", alarme=" + alarme +
                 '}';
@@ -76,7 +76,7 @@ public class Bip implements IBip {
         return new String[]{
                 Long.toString(id),
                 Long.toString(equipamento.getId()),
-                String.valueOf(marca_temporal),
+                marcaTemporal.toString(),
                 Long.toString(coordenadas.getId()),
                 Boolean.toString(alarme)
         };

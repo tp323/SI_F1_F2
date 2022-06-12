@@ -89,7 +89,7 @@ public class Table {
 
     static <T> void createTable(List<T> objs, Scanner in, ArrayConvertFunction<T> func) {
         System.out.println();
-        if(objs.size() == 0 || objs.get(0) == null) {
+        if(objs == null || objs.size() == 0 || objs.get(0) == null) {
             System.out.println("(empty)");
             System.out.print("Press enter to continue...");
             in.nextLine();
@@ -105,7 +105,7 @@ public class Table {
 
     static void createTable(String[] head, Scanner in, String[][] objs) {
         System.out.println();
-        if(objs.length == 0 || head == null || head.length == 0) {
+        if(objs == null || objs.length == 0 || head == null || head.length == 0) {
             System.out.println("(empty)");
             System.out.print("Press enter to continue...");
             in.nextLine();

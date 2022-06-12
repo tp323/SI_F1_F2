@@ -21,17 +21,18 @@ class Repositories {
                     .setParameter("key", key)
                     .getSingleResult();
         }
-        @Override
-        public List findAll() {
-            return context._em.createNamedQuery("Cliente.findAll",Cliente.class)
-                    .getResultList();
-        }
 
 
         @SuppressWarnings("unchecked")
         @Override
         public Collection<Cliente> find(String jpql, Object... params) {
             return context.helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List<Cliente> findAll() {
+            return context._em.createNamedQuery("Cliente.findAll",Cliente.class)
+                    .getResultList();
         }
 
     }
@@ -51,7 +52,7 @@ class Repositories {
         public Collection<ClienteParticular> find(String jpql, Object... params) {return context.helperQueryImpl( jpql, params);}
 
         @Override
-        public List findAll() {
+        public List<ClienteParticular> findAll() {
             return context._em.createNamedQuery("Cliente_Particular.findAll", ClienteParticular.class)
                     .getResultList();
         }
@@ -72,7 +73,7 @@ class Repositories {
         public Collection<ClienteInstitucional> find(String jpql, Object... params) {return context.helperQueryImpl( jpql, params);}
 
         @Override
-        public List findAll() {
+        public List<ClienteInstitucional> findAll() {
             return context._em.createNamedQuery("Cliente_Institucional.findAll", ClienteInstitucional.class)
                     .getResultList();
         }
@@ -94,7 +95,7 @@ class Repositories {
         }
 
         @Override
-        public List findAll() {
+        public List<EquipamentoEletronico> findAll() {
             return context._em.createNamedQuery("Equipamento_Eletronico.findAll",EquipamentoEletronico.class)
                     .getResultList();
         }
@@ -116,7 +117,7 @@ class Repositories {
         }
 
         @Override
-        public List findAll() {
+        public List<Veiculo> findAll() {
             return context._em.createNamedQuery("Veiculo.findAll",Veiculo.class)
                     .getResultList();
         }
@@ -139,7 +140,7 @@ class Repositories {
         }
 
         @Override
-        public List findAll() {
+        public List<Condutor> findAll() {
             return context._em.createNamedQuery("Condutor.findAll",Condutor.class)
                     .getResultList();
         }
@@ -162,7 +163,7 @@ class Repositories {
         }
 
         @Override
-        public List findAll() {
+        public List<ZonaVerde> findAll() {
             return context._em.createNamedQuery("Zona_Verde.findAll",ZonaVerde.class)
                     .getResultList();
         }
@@ -185,7 +186,7 @@ class Repositories {
         }
 
         @Override
-        public List findAll() {
+        public List<Coordenadas> findAll() {
             return context._em.createNamedQuery("Coordenadas.findAll",Coordenadas.class)
                     .getResultList();
         }
@@ -208,8 +209,31 @@ class Repositories {
         }
 
         @Override
-        public List findAll() {
+        public List<Bip> findAll() {
             return context._em.createNamedQuery("Bip.findAll",Bip.class)
+                    .getResultList();
+        }
+    }
+
+    protected class ReadOnlyRepository implements IReadOnlyRepository {
+
+        @Override
+        public TodosAlarmes findByKey(String key) {
+            return context._em.createNamedQuery("todos_alarmes.findByKey", TodosAlarmes.class)
+                    .setParameter("key", key)
+                    .getSingleResult();
+        }
+
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Collection<TodosAlarmes> find(String jpql, Object... params) {
+            return context.helperQueryImpl( jpql, params);
+        }
+
+        @Override
+        public List<TodosAlarmes> findAll() {
+            return context._em.createNamedQuery("todos_alarmes.findAll", TodosAlarmes.class)
                     .getResultList();
         }
     }
