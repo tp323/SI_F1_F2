@@ -11,7 +11,6 @@ public class AppTest {
 
     private final JPAContext ctx = new JPAContext();
 
-
     @Test
     public void ClienteCreate() throws Exception{
         try(JPAContext ctx = new JPAContext()) {
@@ -50,13 +49,11 @@ public class AppTest {
             ctx.beginTransaction();
             Cliente c = new Cliente(254256431, "Rapaz da Aldeia", "Aldeia", "923453432");
             ctx.createCliente(c);
-            ctx.commit();
-            ctx.beginTransaction();
 
             assertNotNull(ctx.getClientes().findByKey(254256431));
             ctx.deleteCliente(c);
-            ctx.commit();
             assertFalse(ctx.getClientes().findByKey(254256431).getAtivo());
+            ctx.rollback();
         }catch(Exception e) {
             System.out.println(e.getMessage());
             throw e;

@@ -51,7 +51,7 @@ public class Cliente implements ICliente {
     private ClienteParticular refCliente = null;
 
     @Column(name = "ativo", nullable = false)
-    private boolean ativo = false;
+    private boolean ativo = true;
 
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.PERSIST)
     private ClienteParticular cliente_particular;

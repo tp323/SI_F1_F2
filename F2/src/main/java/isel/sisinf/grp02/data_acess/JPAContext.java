@@ -464,7 +464,7 @@ public class JPAContext implements IContext {
         return bipList;
     }
 
-    public void createView() {
+    public List<TodosAlarmes> createView() {
         beginTransaction();
 
         Query q = _em.createNativeQuery("CREATE OR REPLACE VIEW todos_alarmes AS" +
