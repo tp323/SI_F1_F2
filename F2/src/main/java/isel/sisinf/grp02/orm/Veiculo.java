@@ -5,11 +5,43 @@ import jakarta.persistence.*;
 
 import java.util.Set;
 
-
 @Entity
+@NamedStoredProcedureQuery(
+        name = "createVehiclenoZona_Verde",
+        procedureName = Veiculo.createVehicle,
+        resultClasses = Integer.class,
+        parameters = {
+                //newRegistration varchar(6), newDriver int, newEquip int, newClient int, raio int = null, lat numeric = null, long numeric = null
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),    //newRegistration
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class),   //newDriver
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class),   //newEquip
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class),   //newClient
+                @StoredProcedureParameter(mode = ParameterMode.REF_CURSOR, type = void.class)
+
+
+        }
+)
+
+
+@NamedStoredProcedureQuery(
+        name = Veiculo.createVehicle+"withZonaVerde",
+        procedureName = Veiculo.createVehicle,
+        resultClasses = Integer.class,
+        parameters = {
+                //newRegistration varchar(6), newDriver int, newEquip int, newClient int, raio int = null, lat numeric = null, long numeric = null
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class),    //newRegistration
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class),   //newDriver
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = Long.class),   //newEquip
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class),   //newClient
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = Integer.class),   //raio
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = Float.class),   //lat
+                @StoredProcedureParameter(mode = ParameterMode.IN, type = Float.class)   //long
+
+        }
+)
+
 @NamedQuery(name="Veiculo.findByKey", query="SELECT v FROM Veiculo v WHERE v.matricula =:key")
-@NamedQuery(name="Veiculo.findAll",
-        query="SELECT v FROM Veiculo v")
+@NamedQuery(name="Veiculo.findAll", query="SELECT v FROM Veiculo v")
 
 @Table(name = "veiculo")
 public class Veiculo implements IVeiculo {
@@ -22,6 +54,8 @@ public class Veiculo implements IVeiculo {
         this.equipamento = equipamento;
         this.cliente = cliente;
     }
+
+    public static final String createVehicle = "createVehicle";
 
     @Id
     @Column(name = "matricula", nullable = false, length = 6)

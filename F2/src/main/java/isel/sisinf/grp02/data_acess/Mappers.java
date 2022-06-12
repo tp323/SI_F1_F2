@@ -228,7 +228,10 @@ class Mappers {
     protected class CoordenadasMapper implements ICoordenadasMapper {
         @Override
         public Long create(Coordenadas entity) {
-            return null;
+            context.beginTransaction();
+            context._em.persist(entity);
+            context.commit();
+            return entity.getId();
         }
 
         @Override

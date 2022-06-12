@@ -10,7 +10,11 @@ import java.util.Set;
 @NamedQuery(name = "Coordenadas.findByKey",
         query = "SELECT c FROM Coordenadas c WHERE c.id =:key")
 @NamedQuery(name="Coordenadas.findAll",
-        query="SELECT v FROM Coordenadas v")
+        query="SELECT c FROM Coordenadas c")
+@NamedQuery(name="Coordenadas.findByLatLong",
+        query="SELECT c FROM Coordenadas c WHERE c.latitude =:lat AND c.longitude =:log")
+@NamedQuery(name="Coordenadas.findLast",
+        query="SELECT c FROM Coordenadas c ORDER BY c.id")
 
 @Table(name = "coordenadas")
 public class Coordenadas implements ICoordenadas {
@@ -23,6 +27,7 @@ public class Coordenadas implements ICoordenadas {
     }
 
     @Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 

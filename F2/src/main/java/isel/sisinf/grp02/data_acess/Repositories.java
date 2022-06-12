@@ -189,6 +189,20 @@ class Repositories {
             return context._em.createNamedQuery("Coordenadas.findAll",Coordenadas.class)
                     .getResultList();
         }
+
+        @Override
+        public Coordenadas findByLatLong(Float lat, Float log) {
+            return context._em.createNamedQuery("Coordenadas.findByLatLong",Coordenadas.class)
+                    .setParameter("lat", lat)
+                    .setParameter("log", log)
+                    .getSingleResult();
+        }
+
+        @Override
+        public Coordenadas findLast() {
+            return context._em.createNamedQuery("Coordenadas.findLast",Coordenadas.class)
+                    .getSingleResult();
+        }
     }
 
     protected class BipRepository implements IBipRepository {

@@ -6,6 +6,7 @@ import isel.sisinf.grp02.repositories.*;
 import jakarta.persistence.*;
 import org.glassfish.jaxb.core.v2.TODO;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
@@ -171,7 +172,7 @@ public class JPAContext implements IContext {
 
     public ICondutorMapper getCondutor() {return _condutorMapper;}
 
-    public IZonaVerdeMapper getZonaVerdeMapper() {return _zonaVerdeMapper;}
+    public IZonaVerdeMapper getZonaVerde() {return _zonaVerdeMapper;}
 
     public ICoordenadasMapper getCoordenada() {return _coordenadasMapper;}
 
@@ -197,6 +198,15 @@ public class JPAContext implements IContext {
         return getVeiculo().create(veiculo);
     }
 
+
+    public Long createZonaVerde(ZonaVerde zonaVerde) {
+        return getZonaVerde().create(zonaVerde);
+    }
+
+    public Long createCoordenada(Coordenadas coordenadas) {
+        return getCoordenada().create(coordenadas);
+    }
+
     public long createBip(Bip bip) {
         return getBip().create(bip);
     }
@@ -218,6 +228,10 @@ public class JPAContext implements IContext {
 
     public Condutor readCondutor(int cc) {
         return getCondutor().read(cc);
+    }
+
+    public ZonaVerde readZonaVerde(long id) {
+        return getZonaVerde().read(id);
     }
 
     public Coordenadas readCoordenada(long id) {
@@ -272,39 +286,47 @@ public class JPAContext implements IContext {
         commit();
     }
 
-    public void procedure_createVehicle(String registration, int driver, int equip, int cliente) {
+    /*public void procedure_createVehicle(String registration, int driver, int equip, int cliente) {
         if(registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
         if(getNumberSize(driver) < 9) throw new IllegalArgumentException("The driver's CC is not correct!");
         if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
 
-        beginTransaction();
-        Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4)");
-        q.setParameter(1, registration);
-        q.setParameter(2, driver);
-        q.setParameter(3, equip);
-        q.setParameter(4, cliente);
+        _em.getTransaction().begin();
+        Query pQuery =
+                _em.createNativeQuery("Call createVehicle (?1, ?2, ?3, ?4)");
+        pQuery.setParameter(1, registration);
+        pQuery.setParameter(2, driver);
+        pQuery.setParameter(3, equip);
+        pQuery.setParameter(4, cliente);
 
-        q.executeUpdate();
-        commit();
-    }
+        pQuery.executeUpdate();
+        _em.getTransaction().commit();
+    }*/
 
-    public void procedure_createVehicle(String registration, int driver, int equip, int cliente, int raio, int lat, int log) {
+    public void procedure_createVehicle(String registration, int driver, int equip, int cliente, Integer raio, BigDecimal lat, BigDecimal log) {
         if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
         if(getNumberSize(driver) < 9) throw new IllegalArgumentException("The driver's CC is not correct!");
         if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
 
         beginTransaction();
-
-        Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
-        q.setParameter(1, registration);
-        q.setParameter(2, driver);
-        q.setParameter(3, equip);
-        q.setParameter(4, cliente);
-        q.setParameter(5, raio);
-        q.setParameter(6, lat);
-        q.setParameter(7, log);
-
-        q.executeUpdate();
+        if (raio == null || lat == null || log == null) {
+            Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4)");
+            q.setParameter(1, registration);
+            q.setParameter(2, driver);
+            q.setParameter(3, equip);
+            q.setParameter(4, cliente);
+            q.executeUpdate();
+        }else {
+            Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
+            q.setParameter(1, registration);
+            q.setParameter(2, driver);
+            q.setParameter(3, equip);
+            q.setParameter(4, cliente);
+            q.setParameter(5, raio);
+            q.setParameter(6, lat);
+            q.setParameter(7, log);
+            q.executeUpdate();
+        }
         commit();
     }
 
@@ -423,41 +445,6 @@ public class JPAContext implements IContext {
         List<Bip> bipList = new LinkedList<>();
         bipList.add(insertBip);
         return bipList;
-    }
-
-    public void createVehicle(String registration, int driver, int equip, int cliente) {
-        if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
-        if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
-
-        beginTransaction();
-
-        Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
-        q.setParameter(1, registration);
-        q.setParameter(2, driver);
-        q.setParameter(3, equip);
-        q.setParameter(4, cliente);
-
-        q.executeUpdate();
-        commit();
-    }
-
-    public void createVehicle(String registration, int driver, int equip, int cliente, Integer raio, Integer lat, Integer log) {
-        if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
-        if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
-
-        beginTransaction();
-
-        Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
-        q.setParameter(1, registration);
-        q.setParameter(2, driver);
-        q.setParameter(3, equip);
-        q.setParameter(4, cliente);
-        q.setParameter(5, raio);
-        q.setParameter(6, lat);
-        q.setParameter(7, log);
-
-        q.executeUpdate();
-        commit();
     }
 
     public void createView() {

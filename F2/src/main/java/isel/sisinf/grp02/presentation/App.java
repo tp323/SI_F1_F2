@@ -5,6 +5,7 @@ import isel.sisinf.grp02.orm.Bip;
 import isel.sisinf.grp02.orm.ClienteParticular;
 import isel.sisinf.grp02.orm.Veiculo;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -21,8 +22,8 @@ interface ClienteFunctionCall<T> {
 }
 
 interface VehicleFunctionCall {
-    void createVehicle(String registration, int driver, int equip, int cliente, int raio, int lat, int log);
-    void  createVehicle(String registration, int driver, int equip, int cliente);
+    void createVehicle(String registration, int driver, int equip, int cliente, Integer raio, BigDecimal lat, BigDecimal log);
+    //void  createVehicle(String registration, int driver, int equip, int cliente);
 }
 
 public class App {
@@ -40,26 +41,27 @@ public class App {
         DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE, () -> Table.createTable(createVehicle(new VehicleFunctionCall() {
 
             @Override
-            public void createVehicle(String registration, int driver, int equip, int cliente, int raio, int lat, int log) {
-                context.createVehicle(registration, driver, equip, cliente, raio, lat, log);
+            public void createVehicle(String registration, int driver, int equip, int cliente, Integer raio, BigDecimal lat, BigDecimal log) {
+                context.procedure_createVehicle(registration, driver, equip, cliente, raio, lat, log);
             }
-
+/*
             @Override
             public void createVehicle(String registration, int driver, int equip, int cliente) {
-                context.createVehicle(registration, driver, equip, cliente);
-            }
+                context.procedure_createVehicle(registration, driver, equip, cliente);
+            }*/
         }), in, Veiculo::toArray));
         DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE_PROCEDURE, () -> Table.createTable(createVehicle(new VehicleFunctionCall() {
 
             @Override
-            public void createVehicle(String registration, int driver, int equip, int cliente, int raio, int lat, int log) {
+            public void createVehicle(String registration, int driver, int equip, int cliente, Integer raio, BigDecimal lat, BigDecimal log) {
                 context.procedure_createVehicle(registration, driver, equip, cliente, raio, lat, log);
             }
-
+/*
             @Override
             public void createVehicle(String registration, int driver, int equip, int cliente) {
                 context.procedure_createVehicle(registration, driver, equip, cliente);
-            }
+            }*/
+
         }), in, Veiculo::toArray));
         DB_METHODS.put(InterfaceOptions.CREATE_VIEW, () -> context.createView());
         DB_METHODS.put(InterfaceOptions.INSERT_VIEW, this::insertView);
@@ -196,7 +198,7 @@ public class App {
         String answer = checkAnswer(in.nextLine());
         if(answer.equalsIgnoreCase("no")) {
             try {
-                func.createVehicle(registration, driver, equipment, client);
+                func.createVehicle(registration, driver, equipment, client, null,null,null);
                 return new LinkedList<>();
             } catch (Exception e) {
                 onError(e);
@@ -210,11 +212,11 @@ public class App {
         in.nextLine();
         System.out.println();
         System.out.print("Please introduce the latitude: ");
-        int latitude = checkUserInput(in::nextInt);
+        BigDecimal latitude = checkUserInput(in::nextBigDecimal);
         in.nextLine();
         System.out.println();
         System.out.print("Please introduce the longitude: ");
-        int longitude = checkUserInput(in::nextInt);
+        BigDecimal longitude = checkUserInput(in::nextBigDecimal);
         in.nextLine();
         System.out.println();
         try {

@@ -11,15 +11,6 @@ public class AppTest {
 
     private final JPAContext ctx = new JPAContext();
 
-    @Test
-    public void ClienteFindByKey() {
-        assertNotNull(ctx.getClientes().findByKey(111222333));
-        assertEquals( ctx.getClientes().findByKey(111222333).getNif(),111222333);
-        assertEquals( ctx.getClientes().findByKey(111222333).getNome(),"O maior da minha aldeia");
-        assertEquals( ctx.getClientes().findByKey(111222333).getMorada(),"Vila Nova de Robiães");
-        assertEquals( ctx.getClientes().findByKey(111222333).getTelefone(),"+351911222111");
-        assertNull( ctx.getClientes().findByKey(111222333).getRefCliente());
-    }
 
     @Test
     public void ClienteCreate() throws Exception{
@@ -40,47 +31,13 @@ public class AppTest {
         }
     }
 
-    // TODO: Needs revision
     @Test
-    public void ClienteUpdate() throws Exception{
+    public void ClienteParticularCreate() throws Exception{
         try(JPAContext ctx = new JPAContext()) {
             ctx.beginTransaction();
-            Cliente c = new Cliente(254256431, "Rapaz da Aldeia", "Aldeia", "923453432");
-            ctx.createCliente(c);
-            ctx.commit();
-            ctx.beginTransaction();
-            Cliente nc = new Cliente(254256431, "Rapaz de outra Aldeia", "Aldeia 2", "923453431");
-            ctx.updateCliente(nc);
-            assertNotNull(ctx.getClientes().findByKey(254256431));
-            assertEquals( ctx.getClientes().findByKey(254256431).getNif(),254256431);
-            assertEquals( ctx.getClientes().findByKey(254256431).getNome(),"Rapaz de outra Aldeia");
-            assertEquals( ctx.getClientes().findByKey(254256431).getMorada(),"Aldeia 2");
-            assertEquals( ctx.getClientes().findByKey(254256431).getTelefone(),"923453431");
-            assertNull( ctx.getClientes().findByKey(254256431).getRefCliente());
-            ctx.deleteCliente(nc);
-            assertFalse(ctx.getClientes().findByKey(254256431).getAtivo());
-            ctx.commit();
-        }catch(Exception e) {
-            System.out.println(e.getMessage());
-            throw e;
-        }
-        try(JPAContext ctx = new JPAContext()) {
-            ctx.beginTransaction();
-            Cliente c = new Cliente(254256431, "Rapaz da Aldeia", "Aldeia", "923453432");
-            ctx.createCliente(c);
-            ctx.commit();
-            ctx.beginTransaction();
-            Cliente nc = new Cliente(254256431, "Rapaz de outra Aldeia", "Aldeia 2", "923453431");
-            ctx.updateCliente(nc);
-            assertNotNull(ctx.getClientes().findByKey(254256431));
-            assertEquals( ctx.getClientes().findByKey(254256431).getNif(),254256431);
-            assertEquals( ctx.getClientes().findByKey(254256431).getNome(),"Rapaz de outra Aldeia");
-            assertEquals( ctx.getClientes().findByKey(254256431).getMorada(),"Aldeia 2");
-            assertEquals( ctx.getClientes().findByKey(254256431).getTelefone(),"923453431");
-            assertNull( ctx.getClientes().findByKey(254256431).getRefCliente());
-            ctx.deleteCliente(nc);
-            assertFalse(ctx.getClientes().findByKey(254256431).getAtivo());
-            ctx.commit();
+            ctx.buildClienteFromInput(254256431, "Rapaz da Aldeia", "Aldeia", "923453432",0,787565333);
+            assertNotNull(ctx.readClienteParticular(787565333));
+            ctx.rollback();
         }catch(Exception e) {
             System.out.println(e.getMessage());
             throw e;
