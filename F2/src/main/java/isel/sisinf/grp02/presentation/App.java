@@ -20,8 +20,8 @@ interface ClienteFunctionCall<T> {
 }
 
 interface VehicleFunctionCall {
-    void createVehicle(String registration, int driver, int equip, int cliente, Integer raio, BigDecimal lat, BigDecimal log);
-    //void  createVehicle(String registration, int driver, int equip, int cliente);
+    List<Veiculo> createVehicle(String registration, int driver, int equip, int cliente, int raio, BigDecimal lat, BigDecimal log);
+    List<Veiculo>  createVehicle(String registration, int driver, int equip, int cliente);
 }
 
 public class App {
@@ -34,36 +34,22 @@ public class App {
         DB_METHODS.put(InterfaceOptions.UPDATE_CLIENT_PART, () -> Table.createTable(clientInfo((nif, name, residence, phone, refClient, cc) -> context.updateClienteFromInput(nif, name, residence, phone, refClient, cc)), in, Cliente::toArray));
         DB_METHODS.put(InterfaceOptions.REMOVE_CLIENT_PART, () -> Table.createTable(new String[]{"removed_cliente_particular"}, in, removeClient()));
         DB_METHODS.put(InterfaceOptions.TOTAL_ALARMS, () -> Table.createTable(new String[]{"alarm_number"}, in, alarmNumber()));
-        DB_METHODS.put(InterfaceOptions.PROCESS_REQUEST, () -> context.procedure_fetchRequests());
-        DB_METHODS.put(InterfaceOptions.CREATE_ALARM, () -> Table.createTable(addBip(), in, Bip::toArray));
+        DB_METHODS.put(InterfaceOptions.PROCESS_REQUEST, this::requestProcess);
         DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE, () -> Table.createTable(createVehicle(new VehicleFunctionCall() {
 
             @Override
-            public void createVehicle(String registration, int driver, int equip, int cliente, Integer raio, BigDecimal lat, BigDecimal log) {
-                context.procedure_createVehicle(registration, driver, equip, cliente, raio, lat, log);
+            public List<Veiculo> createVehicle(String registration, int driver, int equip, int cliente, int raio, BigDecimal lat, BigDecimal log) {
+                return context.procedure_createVehicle(registration, driver, equip, cliente, raio, lat, log);
             }
-/*
-            @Override
-            public void createVehicle(String registration, int driver, int equip, int cliente) {
-                context.procedure_createVehicle(registration, driver, equip, cliente);
-            }*/
-        }), in, Veiculo::toArray));
-        DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE_PROCEDURE, () -> Table.createTable(createVehicle(new VehicleFunctionCall() {
 
             @Override
-            public void createVehicle(String registration, int driver, int equip, int cliente, Integer raio, BigDecimal lat, BigDecimal log) {
-                context.procedure_createVehicle(registration, driver, equip, cliente, raio, lat, log);
+            public List<Veiculo> createVehicle(String registration, int driver, int equip, int cliente) {
+                return context.procedure_createVehicle(registration, driver, equip, cliente);
             }
-/*
-            @Override
-            public void createVehicle(String registration, int driver, int equip, int cliente) {
-                context.procedure_createVehicle(registration, driver, equip, cliente);
-            }*/
-
         }), in, Veiculo::toArray));
         DB_METHODS.put(InterfaceOptions.CREATE_VIEW, () -> Table.createTable(viewCreation(), in, TodosAlarmes::toArray));
         DB_METHODS.put(InterfaceOptions.INSERT_VIEW, () -> Table.createTable(insertView(), in, TodosAlarmes::toArray));
-        DB_METHODS.put(InterfaceOptions.DELETE_INVALID_RES, () -> context.procedure_clearRequests());
+        DB_METHODS.put(InterfaceOptions.DELETE_INVALID_RES, this::invalidDeletion);
         DB_METHODS.put(InterfaceOptions.DEACTIVATE_CLIENT, () -> Table.createTable(new String[]{"removed_cliente"}, in, deactivateClient()));
     }
 
@@ -75,9 +61,7 @@ public class App {
         REMOVE_CLIENT_PART,
         TOTAL_ALARMS,
         PROCESS_REQUEST,
-        CREATE_ALARM,
         CREATE_VEHICLE,
-        CREATE_VEHICLE_PROCEDURE,
         CREATE_VIEW,
         INSERT_VIEW,
         DELETE_INVALID_RES,
@@ -136,38 +120,25 @@ public class App {
         int year = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
-        String[][] array = new String[1][];
         try {
-            array[0] = new String[]{Integer.toString(context.procedure_getAlarmNumber(registration, year))};
-            return array;
+            return new String[][]{{Integer.toString(context.procedure_getAlarmNumber(registration, year))}};
         } catch (Exception e) {
             onError(e);
             return null;
         }
     }
 
-    private List<Bip> addBip() {
-        clearConsole();
-        System.out.print("Please introduce the equipment's ID: ");
-        int equipment = checkUserInput(in::nextInt);
-        in.nextLine();
-        System.out.println();
-        System.out.print("Please introduce the time and date: ");
-        String date = in.nextLine();
-        System.out.println();
-        System.out.print("Please introduce the coordinates ID: ");
-        int coordinates = checkUserInput(in::nextInt);
-        System.out.println();
-        System.out.print("Is the alarm triggered? ");
-        boolean alarm = checkUserInput(in::nextBoolean);
-        in.nextLine();
-        System.out.println();
+    private void requestProcess() {
+        boolean worked = false;
         try {
-            return context.buildBipFromInput(equipment, Timestamp.valueOf(date), coordinates, alarm);
+            worked = context.procedure_fetchRequests();
         } catch (Exception e) {
             onError(e);
-            return null;
         }
+        if (worked) System.out.println("Request process completed successfully!");
+        else System.out.println("Request process was not successful.");
+        System.out.print("Press enter to continue...");
+        in.nextLine();
     }
 
     private List<Veiculo> createVehicle(VehicleFunctionCall func) {
@@ -192,8 +163,7 @@ public class App {
         String answer = checkAnswer(in.nextLine());
         if(answer.equalsIgnoreCase("no")) {
             try {
-                func.createVehicle(registration, driver, equipment, client, null,null,null);
-                return new LinkedList<>();
+                return func.createVehicle(registration, driver, equipment, client);
             } catch (Exception e) {
                 onError(e);
                 return null;
@@ -214,8 +184,7 @@ public class App {
         in.nextLine();
         System.out.println();
         try {
-            func.createVehicle(registration, driver, equipment, client, radius, latitude, longitude);
-            return new LinkedList<>();
+            return func.createVehicle(registration, driver, equipment, client, radius, latitude, longitude);
         } catch (Exception e) {
             onError(e);
             return null;
@@ -256,6 +225,19 @@ public class App {
             onError(e);
             return null;
         }
+    }
+
+    private void invalidDeletion() {
+        boolean worked = false;
+        try {
+            worked = context.procedure_clearRequests();
+        } catch (Exception e) {
+            onError(e);
+        }
+        if(worked) System.out.println("Invalid deletion was successful!");
+        else System.out.println("Invalid deletion was not successful.");
+        System.out.print("Press enter to continue...");
+        in.nextLine();
     }
 
     private String[][] deactivateClient() {
@@ -317,21 +299,20 @@ public class App {
     }
 
     private void displayMenu() {
+        int i = 0;
         System.out.println("Vehicles Control Management");
         System.out.println();
-        System.out.println("1. Exit");
-        System.out.println("2. Insert Client");
-        System.out.println("3. Update Client");
-        System.out.println("4. Remove Client");
-        System.out.println("5. Show Alarms");
-        System.out.println("6. Process Requests");
-        System.out.println("7. Create Alarm");
-        System.out.println("8. Create Vehicle");
-        System.out.println("9. Create Vehicle with Procedure");
-        System.out.println("10. Show view data");
-        System.out.println("11. Insert data into view");
-        System.out.println("12. Delete Invalid Requests");
-        System.out.println("13. Deactivate Client");
+        System.out.println(++i + ". Exit");
+        System.out.println(++i + ". Insert Client");
+        System.out.println(++i + ". Update Client");
+        System.out.println(++i + ". Remove Client");
+        System.out.println(++i + ". Show Alarms");
+        System.out.println(++i + ". Process Requests");
+        System.out.println(++i + ". Create Vehicle");
+        System.out.println(++i + ". Show view data");
+        System.out.println(++i + ". Insert data into view");
+        System.out.println(++i + ". Delete Invalid Requests");
+        System.out.println(++i + ". Deactivate Client");
         System.out.print(">");
     }
 

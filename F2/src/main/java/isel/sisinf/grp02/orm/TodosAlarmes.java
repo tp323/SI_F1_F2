@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 
 @Entity
 @NamedQuery(name = "todos_alarmes.findByKey",
-        query = "SELECT t FROM TodosAlarmes t WHERE t.matricula =:key")
+        query = "SELECT t FROM TodosAlarmes t WHERE t.matricula =:key AND t.nome =:key AND t.latitude =:key AND t.longitude =:key AND t.marcaTemporal =:key")
 @NamedQuery(name="todos_alarmes.findAll",
         query="SELECT t FROM TodosAlarmes t")
 
@@ -25,21 +25,24 @@ public class TodosAlarmes implements ITodosAlarmes {
     }
 
     @Id
-    @Column(name = "matricula", nullable = false, length = 6)
+    @Column(name = "matricula", nullable = false)
     private String matricula;
 
-    @Column(name = "nome", nullable = false, length = 20)
+    @Id
+    @Column(name = "nome", nullable = false)
     private String nome;
 
+    @Id
     @Column(name = "latitude", nullable = false)
     private float latitude;
 
+    @Id
     @Column(name = "longitude", nullable = false)
     private float longitude;
 
+    @Id
     @Column(name = "marca_temporal", nullable = false)
     private Timestamp marcaTemporal;
-
 
     @Override
     public String getMatricula() {

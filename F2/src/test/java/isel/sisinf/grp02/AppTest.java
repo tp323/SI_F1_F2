@@ -72,10 +72,10 @@ public class AppTest {
     public void ClienteUpdateWithoutRef(){
         try(JPAContext ctx = new JPAContext()) {
             ctx.beginTransaction();
-            ctx.updateClienteFromInput(254256431, "Rapaz da Aldeia", "Aldeia", "923453432",0,100000000);
-            Cliente c = new Cliente(254256431, "Rapaz", "Ali", "222333444");
-            Cliente nc = ctx.readCliente(254256431);
-            ClienteParticular ncp = ctx.readClienteParticular(100000000);
+            ctx.updateClienteFromInput(111222333, "Rapaz da Aldeia", "Aldeia", "923453432",0,121222333);
+            Cliente c = new Cliente(111222333, "Rapaz da Aldeia", "Aldeia", "923453432");
+            Cliente nc = ctx.readCliente(111222333);
+            ClienteParticular ncp = ctx.readClienteParticular(121222333);
             assertNotNull(nc);
             assertNotNull(ncp);
             c.setClienteParticular(ncp);
@@ -91,10 +91,10 @@ public class AppTest {
     public void ClienteUpdateWitRef() {
         try (JPAContext ctx = new JPAContext()) {
             ctx.beginTransaction();
-            ctx.updateClienteFromInput(254256431, "Rapaz da Aldeia", "Aldeia", "923453432", 999999999, 100000000);
-            Cliente c = new Cliente(254256431, "Rapaz", "Ali", "222333444");
-            Cliente nc = ctx.readCliente(254256431);
-            ClienteParticular ncp = ctx.readClienteParticular(100000000);
+            ctx.updateClienteFromInput(111222333, "Rapaz da Aldeia", "Aldeia", "923453432", 999999999, 121222333);
+            Cliente c = new Cliente(111222333, "Rapaz da Aldeia", "Aldeia", "923453432");
+            Cliente nc = ctx.readCliente(111222333);
+            ClienteParticular ncp = ctx.readClienteParticular(121222333);
             assertNotNull(nc);
             assertNotNull(ncp);
             c.setClienteParticular(ncp);

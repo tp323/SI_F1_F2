@@ -4,10 +4,12 @@ import isel.sisinf.grp02.data_mappers.*;
 import isel.sisinf.grp02.orm.*;
 import isel.sisinf.grp02.repositories.*;
 import jakarta.persistence.*;
+import org.eclipse.persistence.queries.StoredProcedureCall;
+import org.postgresql.core.NativeQuery;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
 public class JPAContext implements IContext {
@@ -260,6 +262,10 @@ public class JPAContext implements IContext {
         return getBip().read(id);
     }
 
+    public Veiculo readVeiculo(String matricula) {
+        return getVeiculo().read(matricula);
+    }
+
     public TodosAlarmes readTodosAlarmes(String matricula) {
         return getTodosAlarmes().read(matricula);
     }
@@ -298,48 +304,51 @@ public class JPAContext implements IContext {
         pQuery.execute();
         int numbAlarms = (int) pQuery.getOutputParameterValue(3);
         _em.getTransaction().commit();
+
         return numbAlarms;
     }
 
-    public void procedure_fetchRequests(){
+    public boolean procedure_fetchRequests(){
         beginTransaction();
-        Query q = _em.createNativeQuery("call processRequests()");
+
+
+        Query q = _em.createNativeQuery("CALL processRequests()");
+
         q.executeUpdate();
         commit();
+
+        return true;
     }
 
-    /*public void procedure_createVehicle(String registration, int driver, int equip, int cliente) {
+    public List<Veiculo> procedure_createVehicle(String registration, int driver, int equip, int cliente) {
         if(registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
         if(getNumberSize(driver) < 9) throw new IllegalArgumentException("The driver's CC is not correct!");
         if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
 
-        _em.getTransaction().begin();
-        Query pQuery =
-                _em.createNativeQuery("Call createVehicle (?1, ?2, ?3, ?4)");
-        pQuery.setParameter(1, registration);
-        pQuery.setParameter(2, driver);
-        pQuery.setParameter(3, equip);
-        pQuery.setParameter(4, cliente);
+        beginTransaction();
+        Query q = _em.createNativeQuery("Call createVehicle (?1, ?2, ?3, ?4)");
+        q.setParameter(1, registration);
+        q.setParameter(2, driver);
+        q.setParameter(3, equip);
+        q.setParameter(4, cliente);
 
-        pQuery.executeUpdate();
-        _em.getTransaction().commit();
-    }*/
+        q.executeUpdate();
+        commit();
 
-    public void procedure_createVehicle(String registration, int driver, int equip, int cliente, Integer raio, BigDecimal lat, BigDecimal log) {
+        beginTransaction();
+        Veiculo insertedVeiculo = readVeiculo(registration);
+        commit();
+
+        return Collections.singletonList(insertedVeiculo);
+    }
+
+    public List<Veiculo> procedure_createVehicle(String registration, int driver, int equip, int cliente, int raio, BigDecimal lat, BigDecimal log) {
         if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
         if(getNumberSize(driver) < 9) throw new IllegalArgumentException("The driver's CC is not correct!");
         if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
 
         beginTransaction();
-        if (raio == null || lat == null || log == null) {
-            Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4)");
-            q.setParameter(1, registration);
-            q.setParameter(2, driver);
-            q.setParameter(3, equip);
-            q.setParameter(4, cliente);
-            q.executeUpdate();
-        }else {
-            Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
+        Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
             q.setParameter(1, registration);
             q.setParameter(2, driver);
             q.setParameter(3, equip);
@@ -347,18 +356,26 @@ public class JPAContext implements IContext {
             q.setParameter(5, raio);
             q.setParameter(6, lat);
             q.setParameter(7, log);
-            q.executeUpdate();
-        }
-        commit();
-    }
-
-    public void procedure_clearRequests(){
-        beginTransaction();
-
-        Query q = _em.createNativeQuery("call deleteinvalids()");
 
         q.executeUpdate();
         commit();
+
+        beginTransaction();
+        Veiculo insertedVeiculo = readVeiculo(registration);
+        commit();
+
+        return Collections.singletonList(insertedVeiculo);
+    }
+
+    public boolean procedure_clearRequests(){
+        beginTransaction();
+
+        Query q = _em.createNativeQuery("CALL deleteinvalids()");
+
+        q.executeUpdate();
+        commit();
+
+        return true;
     }
 
 
@@ -382,9 +399,8 @@ public class JPAContext implements IContext {
         beginTransaction();
         ClienteParticular insertedClient = readClienteParticular(clientId);
         commit();
-        List<ClienteParticular> clientList = new LinkedList<>();
-        clientList.add(insertedClient);
-        return clientList;
+
+        return Collections.singletonList(insertedClient);
     }
 
     public List<Cliente> updateClienteFromInput(int nif, String name, String residence, String phone, int refClient, int cc) {
@@ -398,14 +414,19 @@ public class JPAContext implements IContext {
             client.setRefCliente(ref);
         }
         beginTransaction();
+        Cliente existingCliente = readCliente(nif);
+        commit();
+
+        if(existingCliente.getClienteParticular().getCC() != cc) throw new IllegalArgumentException("This CC does not belong to this client!");
+
+        beginTransaction();
         int clientId = updateCliente(client);
         commit();
         beginTransaction();
         Cliente insertedClient = readCliente(clientId);
         commit();
-        List<Cliente> clientList = new LinkedList<>();
-        clientList.add(insertedClient);
-        return clientList;
+
+        return Collections.singletonList(insertedClient);
     }
 
     private void checkUserInput(int nif, String name, String residence, String phone, int refClient, int cc) {
@@ -431,9 +452,7 @@ public class JPAContext implements IContext {
         int clienteId = deleteCliente(clienteToDelete);
         commit();
 
-        String[][] deletedIdList = new String[1][];
-        deletedIdList[0] = new String[]{Integer.toString(clienteId)};
-        return deletedIdList;
+        return new String[][]{{Integer.toString(clienteId)}};
     }
 
     public String[][] deleteClienteFromInput(int nif) {
@@ -446,22 +465,7 @@ public class JPAContext implements IContext {
         int clienteId = deleteCliente(clienteToDelete);
         commit();
 
-        String[][] deletedIdList = new String[1][];
-        deletedIdList[0] = new String[]{Integer.toString(clienteId)};
-        return deletedIdList;
-    }
-
-    public List<Bip> buildBipFromInput(int equipamento, Timestamp marca_temporal, int coordenadas, boolean alarme) {
-        Bip bip = new Bip();
-        bip.setEquipamento(readEquipamentoEletronico(equipamento));
-        bip.setMarcaTemporal(marca_temporal);
-        bip.setCoordenadas(readCoordenada(coordenadas));
-        bip.setAlarme(alarme);
-        long bipId = createBip(bip);
-        Bip insertBip = readBip(bipId);
-        List<Bip> bipList = new LinkedList<>();
-        bipList.add(insertBip);
-        return bipList;
+        return new String[][]{{Integer.toString(clienteId)}};
     }
 
     public List<TodosAlarmes> createView() {
@@ -481,6 +485,7 @@ public class JPAContext implements IContext {
         beginTransaction();
         List <TodosAlarmes> list = getTodosAlarmesRep().findAll();
         commit();
+
         return list;
     }
 
@@ -488,33 +493,14 @@ public class JPAContext implements IContext {
         if(registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
         if(driverName.length() > 20) throw new IllegalArgumentException("The driver's name is too big!");
 
-        //beginTransaction();
-
-        /*Query q = _em.createNativeQuery("INSERT INTO todos_alarmes VALUES(?1, ?2, ?3, ?4, ?5)");
-        q.setParameter(1, registration);
-        q.setParameter(2, driverName);
-        q.setParameter(3, latitude);
-        q.setParameter(4, longitude);
-        q.setParameter(5, date);
-
-        q.executeUpdate();*/
-        TodosAlarmes viewAlarmes = new TodosAlarmes();
-        viewAlarmes.setMatricula(registration);
-        viewAlarmes.setNome(driverName);
-        viewAlarmes.setLatitude(latitude);
-        viewAlarmes.setLongitude(longitude);
-        viewAlarmes.setMarcaTemporal(date);
+        TodosAlarmes viewAlarmes = new TodosAlarmes(registration, driverName, latitude, longitude, date);
 
         String matricula = createTodosAlarmes(viewAlarmes);
         beginTransaction();
         TodosAlarmes insertedAlarm = readTodosAlarmes(matricula);
         commit();
-        List<TodosAlarmes> alarmsList = new LinkedList<>();
-        alarmsList.add(insertedAlarm);
-        return alarmsList;
 
-
-        //commit();
+        return Collections.singletonList(insertedAlarm);
     }
 
     private static int getNumberSize(int number) {
