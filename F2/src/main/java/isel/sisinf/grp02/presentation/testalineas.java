@@ -15,11 +15,18 @@ public class testalineas {
             //ctx.beginTransaction();
             //ctx.procedure_createVehicle("123456", 111111115, 3, 100000000, 01, 01 ,01);
             //e(ctx);
-            hnoproc(ctx);
+            //hnoproc(ctx);
             //hcomproc(ctx);
             //ctx.createView();
+            //Coordenadas coord = new Coordenadas(6,6);
+            Coordenadas coord = new Coordenadas();
+            coord.setLatitude(6);
+            coord.setLongitude(5);
+
+            long c = ctx.createCoordenada(coord);
 
             //ctx.commit();
+            System.out.println(c);
         }
         catch(Exception e) {
             System.out.println(e.getMessage());

@@ -7,9 +7,11 @@ import java.util.Objects;
 
 @Entity
 @NamedQuery(name = "Zona_Verde.findByKey",
-        query = "SELECT c FROM ZonaVerde c WHERE c.id =:key")
+        query = "SELECT zv FROM ZonaVerde zv WHERE zv.id =:key")
 @NamedQuery(name="Zona_Verde.findAll",
-        query="SELECT v FROM ZonaVerde v")
+        query="SELECT zv FROM ZonaVerde zv")
+//@NamedQuery(name="ZonaVerde.findByLatLongVehicleRaio",
+//        query="SELECT zv FROM ZonaVerde zv join Coordenadas c join Veiculo v WHERE c.latitude =:lat AND c.longitude =:log AND v.veiculo =:vei AND zv.raio=:r")
 
 @Table(name = "Zona_Verde")
 public class ZonaVerde implements IZonaVerde {

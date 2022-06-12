@@ -167,6 +167,16 @@ class Repositories {
             return context._em.createNamedQuery("Zona_Verde.findAll",ZonaVerde.class)
                     .getResultList();
         }
+
+        /*@Override
+        public ZonaVerde findByLatLongVehicleRaio(Float lat, Float log, String vei, Integer r) {
+            return context._em.createNamedQuery("Zona_Verde.findByLatLongVehicleRaio",ZonaVerde.class)
+                    .setParameter("lat", lat)
+                    .setParameter("log", log)
+                    .setParameter("vei", vei)
+                    .setParameter("r", r)
+                    .getSingleResult();
+        }*/
     }
 
     protected class CoordenadasRepository implements ICoordenadasRepository {

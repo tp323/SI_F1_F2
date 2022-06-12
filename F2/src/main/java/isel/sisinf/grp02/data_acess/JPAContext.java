@@ -308,9 +308,24 @@ public class JPAContext implements IContext {
         return numbAlarms;
     }
 
+    public int procedure_getAlarmNumber(int year) {
+        _em.getTransaction().begin();
+
+        StoredProcedureQuery pQuery =
+                _em.createNamedStoredProcedureQuery("alarm_number")
+                        .setParameter(1, null)
+                        .setParameter(2, year);
+
+
+        pQuery.execute();
+        int numbAlarms = (int) pQuery.getOutputParameterValue(3);
+        _em.getTransaction().commit();
+
+        return numbAlarms;
+    }
+
     public boolean procedure_fetchRequests(){
         beginTransaction();
-
 
         Query q = _em.createNativeQuery("CALL processRequests()");
 
