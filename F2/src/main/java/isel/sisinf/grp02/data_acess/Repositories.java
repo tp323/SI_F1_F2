@@ -168,15 +168,15 @@ class Repositories {
                     .getResultList();
         }
 
-        /*@Override
-        public ZonaVerde findByLatLongVehicleRaio(Float lat, Float log, String vei, Integer r) {
-            return context._em.createNamedQuery("Zona_Verde.findByLatLongVehicleRaio",ZonaVerde.class)
+        @Override
+        public List<ZonaVerde> findByParameters(Float lat, Float log, String vei, Integer r) {
+            return context._em.createNamedQuery("Zona_Verde.findByParameters",ZonaVerde.class)
                     .setParameter("lat", lat)
                     .setParameter("log", log)
                     .setParameter("vei", vei)
                     .setParameter("r", r)
-                    .getSingleResult();
-        }*/
+                    .getResultList();
+        }
     }
 
     protected class CoordenadasRepository implements ICoordenadasRepository {

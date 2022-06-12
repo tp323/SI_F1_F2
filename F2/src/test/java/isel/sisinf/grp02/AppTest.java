@@ -5,6 +5,7 @@ import isel.sisinf.grp02.orm.*;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -158,7 +159,7 @@ public class AppTest {
     //TODO(test f with and without optimistic locking)
 
     @Test
-    public void CreateVehicleWithProcedureWithNewNonaVerde() {
+    public void CreateVehicleWithProcedureWithNewZonaVerde() {
         try (JPAContext ctx = new JPAContext()) {
             ctx.beginTransaction();
             ctx.procedure_createVehicle("zz24zz",111111113,3,999999999, 3,new BigDecimal(6), new BigDecimal(6));
@@ -171,16 +172,15 @@ public class AppTest {
 
             coord.setId(ctx.getCoordenadas().findByLatLong(6f,6f).getId());
 
-
             ZonaVerde zv = new ZonaVerde(coord,v,3);
 
+            List<ZonaVerde> t = ctx.getZonasVerdes().findByParameters(6f,6f,"zz24zz",3);
 
 
             assertEquals(v, ctx.readVeiculo("zz24zz"));
             assertEquals(coord,ctx.getCoordenadas().findByLatLong(6f,6f));
-            //assertEquals(zv,ctx.getZonasVerdes().findByLatLongVehicleRaio(6f,6f,"zz24zz",3));
-            /***    can't test coordenadas and zona verde due to bid decimal to float conversion    ***/
-            ctx.rollback();
+            //assertEquals(zv,ctx.getZonasVerdes().findByParameters(6f,6f,"zz24zz",3));
+            ctx.commit();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());

@@ -2,10 +2,8 @@ package isel.sisinf.grp02.presentation;
 
 import isel.sisinf.grp02.data_acess.JPAContext;
 import isel.sisinf.grp02.orm.*;
-import jakarta.xml.bind.annotation.XmlType;
 
 import java.math.BigDecimal;
-import java.util.*;
 
 public class testalineas {
     public static void test() throws Exception {
@@ -19,14 +17,8 @@ public class testalineas {
             //hcomproc(ctx);
             //ctx.createView();
             //Coordenadas coord = new Coordenadas(6,6);
-            Coordenadas coord = new Coordenadas();
-            coord.setLatitude(6);
-            coord.setLongitude(5);
-
-            long c = ctx.createCoordenada(coord);
 
             //ctx.commit();
-            System.out.println(c);
         }
         catch(Exception e) {
             System.out.println(e.getMessage());
@@ -99,17 +91,11 @@ public class testalineas {
 
         Condutor condutor = ctx.readCondutor(ccCondutor);
         /***    EXCEÇÃO SE O CARRO JÁ EXISTIR PARA AQUELA MATRICULA    ***/
-        if(condutor != null) {
-            //TODO(ATIRAR EXCEÇÃO does not exist in db )
-        }
+        if(condutor != null) throw new IllegalArgumentException("Driver not found");
         EquipamentoEletronico equip = ctx.readEquipamentoEletronico(idEquip);
-        if(equip != null) {
-            //TODO(ATIRAR EXCEÇÃO does not exist in db )
-        }
+        if(equip != null) throw new IllegalArgumentException("Equipment not found");
         Cliente cliente = ctx.readCliente(nifCliente);
-        if(equip != null) {
-            //TODO(ATIRAR EXCEÇÃO does not exist in db )
-        }
+        if(cliente != null) throw new IllegalArgumentException("Client not found");
         Veiculo v = new Veiculo(matricula, condutor, equip, cliente);
         ctx.createVeiculo(v);
         if(latitude!=null && longitude != null && raio != null){
