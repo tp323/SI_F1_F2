@@ -13,7 +13,7 @@ AS $$
     BEGIN
         INSERT INTO cliente VALUES (newNif,newNome,newMorada,newTelefone,newRef_cliente);
 		if(newNif not in (SELECT cliente.nif FROM cliente)) then
-        	RAISE NOTICE 'Cliente nao inserido';
+        	RAISE EXCEPTION 'Cliente nao inserido';
         END IF;
         INSERT INTO cliente_particular VALUES (newCC,newNif);
 		--check if cliente was correctly added to the DB
@@ -31,9 +31,9 @@ $$
     begin
 		--check if nif is valid
 		--not sure if this exception should exist
-		IF (nif_to_update NOT IN (SELECT nif FROM cliente)) then
-			RAISE NOTICE 'Nao existe cliente para este nif';
-		END IF;
+		IF (nif_to_update) NOT IN (SELECT cliente FROM cliente_particular) THEN
+            RAISE EXCEPTION 'Não é Cliente Particular!';
+        END IF;
        	UPDATE cliente SET nome = new_nome WHERE nif = nif_to_update;
        	UPDATE cliente SET morada = new_morada WHERE nif = nif_to_update;
        	UPDATE cliente SET telefone = new_telefone WHERE nif = nif_to_update;
@@ -117,6 +117,8 @@ AS
 
     INSERT INTO bip_equipamento_eletronico(id, equipamento, marca_temporal, coordenadas)
     VALUES (DEFAULT, equip, requestMarca_temporal, cords);
+    DELETE FROM requests
+    WHERE id = requestID;
 
 end;
 $$;

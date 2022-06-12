@@ -4,7 +4,6 @@ import isel.sisinf.grp02.data_mappers.*;
 import isel.sisinf.grp02.orm.*;
 import isel.sisinf.grp02.repositories.*;
 import jakarta.persistence.*;
-import org.glassfish.jaxb.core.v2.TODO;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -27,6 +26,7 @@ public class JPAContext implements IContext {
     private final IZonaVerdeRepository _zonaVerdeRepository;
     private final ICoordenadasRepository _coordenadasRepository;
     private final IBipRepository _bipRepository;
+    private final IReadOnlyRepository _todosAlarmesRepository;
 
 
     private final IClienteMapper _clienteMapper;
@@ -38,6 +38,7 @@ public class JPAContext implements IContext {
     private final IZonaVerdeMapper _zonaVerdeMapper;
     private final ICoordenadasMapper _coordenadasMapper;
     private final IBipMapper _bipMapper;
+    private final IReadOnlyMapper _todosAlarmesMapper;
 
 
 
@@ -102,19 +103,28 @@ public class JPAContext implements IContext {
     public JPAContext(String persistentCtx) {
         super();
 
-        this._emf = Persistence.createEntityManagerFactory(persistentCtx);
-        this._em = _emf.createEntityManager();
+        try {
+            this._emf = Persistence.createEntityManagerFactory(persistentCtx);
+            this._em = _emf.createEntityManager();
+        } catch (PersistenceException exception) {
+            System.out.println(exception.getMessage() + ".");
+            System.out.println("Please check the name of the persistence in the Persistence.xml file located in resources/META-INF!");
+            System.out.println("The name of the persistence in there should match the name for the Factory instance to run!");
+            System.out.println("If that doesn't work, delete the target folder and rebuild the project!");
+            System.exit(1);
+        }
 
-        Repositories repo = new Repositories(this);
-        this._clienteRepository = repo.new ClienteRepository();
-        this._clienteParticularRepository = repo.new ClienteParticularRepository();
-        this._clienteInstitucionalRepository = repo.new ClienteInstitucionalRepository();
-        this._equipamentoRepository = repo.new EquipamentoRepository();
-        this._veiculoRepository = repo.new VeiculoRepository();
-        this._condutorRepository = repo.new CondutorRepository();
-        this._zonaVerdeRepository = repo.new ZonaVerdeRepository();
-        this._coordenadasRepository = repo.new CoordenadasRepository();
-        this._bipRepository = repo.new BipRepository();
+        Repositories repositories = new Repositories(this);
+        this._clienteRepository = repositories.new ClienteRepository();
+        this._clienteParticularRepository = repositories.new ClienteParticularRepository();
+        this._clienteInstitucionalRepository = repositories.new ClienteInstitucionalRepository();
+        this._equipamentoRepository = repositories.new EquipamentoRepository();
+        this._veiculoRepository = repositories.new VeiculoRepository();
+        this._condutorRepository = repositories.new CondutorRepository();
+        this._zonaVerdeRepository = repositories.new ZonaVerdeRepository();
+        this._coordenadasRepository = repositories.new CoordenadasRepository();
+        this._bipRepository = repositories.new BipRepository();
+        this._todosAlarmesRepository = repositories.new ReadOnlyRepository();
 
         Mappers mappers = new Mappers(this);
         this._clienteMapper = mappers.new ClienteMapper();
@@ -126,7 +136,7 @@ public class JPAContext implements IContext {
         this._zonaVerdeMapper = mappers.new ZonaVerdeMapper();
         this._coordenadasMapper = mappers.new CoordenadasMapper();
         this._bipMapper = mappers.new BipMapper();
-
+        this._todosAlarmesMapper = mappers.new ReadOnlyMapper();
     }
 
 
@@ -159,6 +169,8 @@ public class JPAContext implements IContext {
     @Override
     public IBipRepository getBips() {return _bipRepository;}
 
+    public IReadOnlyRepository getTodosAlarmesRep() {return _todosAlarmesRepository;}
+
 
     /***                MAPPERS                ***/
 
@@ -177,6 +189,8 @@ public class JPAContext implements IContext {
     public ICoordenadasMapper getCoordenada() {return _coordenadasMapper;}
 
     public IBipMapper getBip() {return _bipMapper;}
+
+    public IReadOnlyMapper getTodosAlarmes() {return _todosAlarmesMapper;}
 
 
     /***                CREATE                ***/
@@ -211,6 +225,10 @@ public class JPAContext implements IContext {
         return getBip().create(bip);
     }
 
+    public String createTodosAlarmes(TodosAlarmes todosAlarmes) {
+        return getTodosAlarmes().create(todosAlarmes);
+    }
+
 
     /***                READ                ***/
 
@@ -238,8 +256,12 @@ public class JPAContext implements IContext {
         return getCoordenada().read(id);
     }
 
-    public Bip readBip(Long id) {
+    public Bip readBip(long id) {
         return getBip().read(id);
+    }
+
+    public TodosAlarmes readTodosAlarmes(String matricula) {
+        return getTodosAlarmes().read(matricula);
     }
 
 
@@ -349,8 +371,8 @@ public class JPAContext implements IContext {
         ClienteParticular cp = new ClienteParticular(cc, c);
         if(refClient != 0) {
             ClienteParticular ref = readClienteParticular(refClient);
+            if(ref == null) throw new IllegalArgumentException("Referred client does not exist!");
             c.setRefCliente(ref);
-            //TODO(Atirar exceção se refCliente n existe na DB)
         }
         c.setClienteParticular(cp);
         beginTransaction();
@@ -365,25 +387,23 @@ public class JPAContext implements IContext {
         return clientList;
     }
 
-    public List<ClienteParticular> updateClienteFromInput(int nif, String name, String residence, String phone, int refClient, int cc) {
+    public List<Cliente> updateClienteFromInput(int nif, String name, String residence, String phone, int refClient, int cc) {
         checkUserInput(nif, name, residence, phone, refClient, cc);
+        if(readClienteParticular(cc) == null) throw new IllegalArgumentException("A client with such CC does not exist!");
 
         Cliente client = new Cliente(nif, name, residence, phone, true);
-        ClienteParticular cp = new ClienteParticular();
-        client.setRefCliente(readClienteParticular(refClient));
-        cp.setCC(cc);
-        cp.setCliente(client);
-        client.setClienteParticular(cp);
+        if(refClient != 0) {
+            ClienteParticular ref = readClienteParticular(refClient);
+            if(ref == null) throw new IllegalArgumentException("Referred client does not exist!");
+            client.setRefCliente(ref);
+        }
         beginTransaction();
-        updateCliente(client);
+        int clientId = updateCliente(client);
         commit();
         beginTransaction();
-        int clientId = updateClienteParticular(cp);
+        Cliente insertedClient = readCliente(clientId);
         commit();
-        beginTransaction();
-        ClienteParticular insertedClient = readClienteParticular(clientId);
-        commit();
-        List<ClienteParticular> clientList = new LinkedList<>();
+        List<Cliente> clientList = new LinkedList<>();
         clientList.add(insertedClient);
         return clientList;
     }
@@ -397,21 +417,18 @@ public class JPAContext implements IContext {
         if(phone.length() > 13) throw new IllegalArgumentException("The phone number is too big!");
     }
 
-    public String[][] deleteClienteParticularFromInput(int nif, int cc) {
+    public String[][] deleteClienteParticularFromInput(int nif) {
         if(getNumberSize(nif) < 9) throw new IllegalArgumentException("The NIF is not correct!");
-        if(getNumberSize(cc) < 9) throw new IllegalArgumentException("The CC is not correct!");
 
         beginTransaction();
         Cliente clienteToDelete = readCliente(nif);
         commit();
+        if(clienteToDelete.getClienteParticular() == null) throw new IllegalArgumentException("The client is not a Cliente Particular!");
         beginTransaction();
-        ClienteParticular clienteParticularToDelete = readClienteParticular(cc);
+        deleteClienteParticular(clienteToDelete.getClienteParticular());
         commit();
         beginTransaction();
-        deleteCliente(clienteToDelete);
-        commit();
-        beginTransaction();
-        int clienteId = deleteClienteParticular(clienteParticularToDelete);
+        int clienteId = deleteCliente(clienteToDelete);
         commit();
 
         String[][] deletedIdList = new String[1][];
@@ -440,7 +457,7 @@ public class JPAContext implements IContext {
         bip.setMarcaTemporal(marca_temporal);
         bip.setCoordenadas(readCoordenada(coordenadas));
         bip.setAlarme(alarme);
-        Long bipId = createBip(bip);
+        long bipId = createBip(bip);
         Bip insertBip = readBip(bipId);
         List<Bip> bipList = new LinkedList<>();
         bipList.add(insertBip);
@@ -460,23 +477,44 @@ public class JPAContext implements IContext {
 
         q.executeUpdate();
         commit();
+
+        beginTransaction();
+        List <TodosAlarmes> list = getTodosAlarmesRep().findAll();
+        commit();
+        return list;
     }
 
-    public void insertView(String registration, String driverName, int latitude, int longitude, Timestamp date) {
+    public List<TodosAlarmes> insertView(String registration, String driverName, int latitude, int longitude, Timestamp date) {
         if(registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
         if(driverName.length() > 20) throw new IllegalArgumentException("The driver's name is too big!");
 
-        beginTransaction();
+        //beginTransaction();
 
-        Query q = _em.createNativeQuery("INSERT INTO todos_alarmes VALUES(?1, ?2, ?3, ?4, ?5)");
+        /*Query q = _em.createNativeQuery("INSERT INTO todos_alarmes VALUES(?1, ?2, ?3, ?4, ?5)");
         q.setParameter(1, registration);
         q.setParameter(2, driverName);
         q.setParameter(3, latitude);
         q.setParameter(4, longitude);
         q.setParameter(5, date);
 
-        q.executeUpdate();
+        q.executeUpdate();*/
+        TodosAlarmes viewAlarmes = new TodosAlarmes();
+        viewAlarmes.setMatricula(registration);
+        viewAlarmes.setNome(driverName);
+        viewAlarmes.setLatitude(latitude);
+        viewAlarmes.setLongitude(longitude);
+        viewAlarmes.setMarcaTemporal(date);
+
+        String matricula = createTodosAlarmes(viewAlarmes);
+        beginTransaction();
+        TodosAlarmes insertedAlarm = readTodosAlarmes(matricula);
         commit();
+        List<TodosAlarmes> alarmsList = new LinkedList<>();
+        alarmsList.add(insertedAlarm);
+        return alarmsList;
+
+
+        //commit();
     }
 
     private static int getNumberSize(int number) {

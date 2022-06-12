@@ -1,9 +1,7 @@
 package isel.sisinf.grp02.presentation;
 
 import isel.sisinf.grp02.data_acess.JPAContext;
-import isel.sisinf.grp02.orm.Bip;
-import isel.sisinf.grp02.orm.ClienteParticular;
-import isel.sisinf.grp02.orm.Veiculo;
+import isel.sisinf.grp02.orm.*;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -33,7 +31,7 @@ public class App {
 
     public App() {
         DB_METHODS.put(InterfaceOptions.INSERT_CLIENT_PART, () -> Table.createTable(clientInfo((nif, name, residence, phone, refClient, cc) -> context.buildClienteFromInput(nif, name, residence, phone, refClient, cc)), in, ClienteParticular::toArray));
-        DB_METHODS.put(InterfaceOptions.UPDATE_CLIENT_PART, () -> Table.createTable(clientInfo((nif, name, residence, phone, refClient, cc) -> context.updateClienteFromInput(nif, name, residence, phone, refClient, cc)), in, ClienteParticular::toArray));
+        DB_METHODS.put(InterfaceOptions.UPDATE_CLIENT_PART, () -> Table.createTable(clientInfo((nif, name, residence, phone, refClient, cc) -> context.updateClienteFromInput(nif, name, residence, phone, refClient, cc)), in, Cliente::toArray));
         DB_METHODS.put(InterfaceOptions.REMOVE_CLIENT_PART, () -> Table.createTable(new String[]{"removed_cliente_particular"}, in, removeClient()));
         DB_METHODS.put(InterfaceOptions.TOTAL_ALARMS, () -> Table.createTable(new String[]{"alarm_number"}, in, alarmNumber()));
         DB_METHODS.put(InterfaceOptions.PROCESS_REQUEST, () -> context.procedure_fetchRequests());
@@ -63,8 +61,8 @@ public class App {
             }*/
 
         }), in, Veiculo::toArray));
-        DB_METHODS.put(InterfaceOptions.CREATE_VIEW, () -> context.createView());
-        DB_METHODS.put(InterfaceOptions.INSERT_VIEW, this::insertView);
+        DB_METHODS.put(InterfaceOptions.CREATE_VIEW, () -> Table.createTable(viewCreation(), in, TodosAlarmes::toArray));
+        DB_METHODS.put(InterfaceOptions.INSERT_VIEW, () -> Table.createTable(insertView(), in, TodosAlarmes::toArray));
         DB_METHODS.put(InterfaceOptions.DELETE_INVALID_RES, () -> context.procedure_clearRequests());
         DB_METHODS.put(InterfaceOptions.DEACTIVATE_CLIENT, () -> Table.createTable(new String[]{"removed_cliente"}, in, deactivateClient()));
     }
@@ -121,12 +119,8 @@ public class App {
         int nif = checkUserInput(in::nextInt);
         in.nextLine();
         System.out.println();
-        System.out.print("Please introduce the client's CC: ");
-        int cc = checkUserInput(in::nextInt);
-        in.nextLine();
-        System.out.println();
         try {
-            return context.deleteClienteParticularFromInput(nif, cc);
+            return context.deleteClienteParticularFromInput(nif);
         } catch (Exception e) {
             onError(e);
             return null;
@@ -228,7 +222,16 @@ public class App {
         }
     }
 
-    private void insertView() {
+    private List<TodosAlarmes> viewCreation() {
+        try {
+            return context.createView();
+        } catch (Exception e) {
+            onError(e);
+            return null;
+        }
+    }
+
+    private List<TodosAlarmes> insertView() {
         clearConsole();
         System.out.print("Please introduce the Vehicle's registration: ");
         String registration = in.nextLine();
@@ -248,9 +251,10 @@ public class App {
         String date = in.nextLine();
         System.out.println();
         try {
-            context.insertView(registration, driverName, latitude, longitude, Timestamp.valueOf(date));
+            return context.insertView(registration, driverName, latitude, longitude, Timestamp.valueOf(date));
         } catch (Exception e) {
             onError(e);
+            return null;
         }
     }
 
@@ -285,7 +289,8 @@ public class App {
                 System.out.print("Would you like to add a Client as a reference to this client? ");
                 String answer = checkAnswer(in.nextLine());
                 if(answer.equalsIgnoreCase("yes")) {
-                    System.out.print("Please introduce the client's CC of the person who reffered you: ");
+                    System.out.println();
+                    System.out.print("Please introduce the client's CC of who referred the client: ");
                     int refCliente = in.nextInt();
                     in.nextLine();
                     return refCliente;

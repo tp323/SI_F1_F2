@@ -7,14 +7,14 @@ import java.util.Set;
 
 public interface ICoordenadas {
     Long getId();
-    Float getLatitude();
-    Float getLongitude();
+    float getLatitude();
+    float getLongitude();
     Bip getBip();
     Set<ZonaVerde> getZonaVerde();
 
     void setId(Long id);
-    void setLatitude(Float latitude);
-    void setLongitude(Float longitude);
+    void setLatitude(float latitude);
+    void setLongitude(float longitude);
     void setBip(Bip bip);
     void setZonaVerde(Set<ZonaVerde> zona);
 }

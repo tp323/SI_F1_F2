@@ -32,10 +32,10 @@ public class Coordenadas implements ICoordenadas {
     private Long id;
 
     @Column(name = "latitude", nullable = false, precision = 1)
-    private Float latitude;
+    private float latitude;
 
     @Column(name = "longitude", nullable = false, precision = 1)
-    private Float longitude;
+    private float longitude;
 
     @OneToMany(mappedBy = "coordenadas", cascade = CascadeType.PERSIST)
     private Set<ZonaVerde> zonas = new LinkedHashSet<>();
@@ -44,15 +44,15 @@ public class Coordenadas implements ICoordenadas {
     private Bip bip;
 
     public Long getId() { return id; }
-    public Float getLatitude() { return latitude; }
-    public Float getLongitude() { return longitude; }
+    public float getLatitude() { return latitude; }
+    public float getLongitude() { return longitude; }
     public Bip getBip() { return bip; }
     public Set<ZonaVerde> getZonaVerde() { return zonas; }
 
 
     public void setId(Long id) { this.id = id; }
-    public void setLatitude(Float latitude) { this.latitude = latitude; }
-    public void setLongitude(Float longitude) { this.longitude = longitude; }
+    public void setLatitude(float latitude) { this.latitude = latitude; }
+    public void setLongitude(float longitude) { this.longitude = longitude; }
     public void setBip(Bip bip) { this.bip = bip; }
     public void setZonaVerde(Set<ZonaVerde> zonas) { this.zonas = zonas; }
 
