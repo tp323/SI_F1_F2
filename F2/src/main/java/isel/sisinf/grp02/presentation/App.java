@@ -19,11 +19,6 @@ interface ClienteFunctionCall<T> {
     T doClienteStuff(int nif, String name, String residence, String phone, int refClient, int cc);
 }
 
-interface VehicleFunctionCall {
-    List<Veiculo> createVehicle(String registration, int driver, int equip, int cliente, int raio, BigDecimal lat, BigDecimal log);
-    List<Veiculo>  createVehicle(String registration, int driver, int equip, int cliente);
-}
-
 public class App {
     private JPAContext context = null;
     private final HashMap<InterfaceOptions, DbOperation> DB_METHODS = new HashMap<>();
@@ -35,18 +30,7 @@ public class App {
         DB_METHODS.put(InterfaceOptions.REMOVE_CLIENT_PART, () -> Table.createTable(new String[]{"removed_cliente_particular"}, in, removeClient()));
         DB_METHODS.put(InterfaceOptions.TOTAL_ALARMS, () -> Table.createTable(new String[]{"alarm_number"}, in, alarmNumber()));
         DB_METHODS.put(InterfaceOptions.PROCESS_REQUEST, this::requestProcess);
-        DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE, () -> Table.createTable(createVehicle(new VehicleFunctionCall() {
-
-            @Override
-            public List<Veiculo> createVehicle(String registration, int driver, int equip, int cliente, int raio, BigDecimal lat, BigDecimal log) {
-                return context.procedure_createVehicle(registration, driver, equip, cliente, raio, lat, log);
-            }
-
-            @Override
-            public List<Veiculo> createVehicle(String registration, int driver, int equip, int cliente) {
-                return context.procedure_createVehicle(registration, driver, equip, cliente);
-            }
-        }), in, Veiculo::toArray));
+        DB_METHODS.put(InterfaceOptions.CREATE_VEHICLE, () -> Table.createTable(createVehicle(), in, Veiculo::toArray));
         DB_METHODS.put(InterfaceOptions.CREATE_VIEW, () -> Table.createTable(viewCreation(), in, TodosAlarmes::toArray));
         DB_METHODS.put(InterfaceOptions.INSERT_VIEW, () -> Table.createTable(insertView(), in, TodosAlarmes::toArray));
         DB_METHODS.put(InterfaceOptions.DELETE_INVALID_RES, this::invalidDeletion);
@@ -141,8 +125,12 @@ public class App {
         in.nextLine();
     }
 
-    private List<Veiculo> createVehicle(VehicleFunctionCall func) {
+    private List<Veiculo> createVehicle() {
         clearConsole();
+        System.out.println("Would you like to use the procedure?");
+        String procedure = checkAnswer(in.nextLine());
+
+
         System.out.print("Please introduce the Vehicle's registration: ");
         String registration = in.nextLine();
         System.out.println();
@@ -163,7 +151,10 @@ public class App {
         String answer = checkAnswer(in.nextLine());
         if(answer.equalsIgnoreCase("no")) {
             try {
-                return func.createVehicle(registration, driver, equipment, client);
+                if(procedure.equals("yes")) {
+                    return context.procedure_createVehicle(registration, driver, equipment, client, null, null, null);
+                }
+                return context.procedure_createVehicle(registration, driver, equipment, client, null, null, null);
             } catch (Exception e) {
                 onError(e);
                 return null;
@@ -184,7 +175,10 @@ public class App {
         in.nextLine();
         System.out.println();
         try {
-            return func.createVehicle(registration, driver, equipment, client, radius, latitude, longitude);
+            if(procedure.equals("yes")) {
+                return context.procedure_createVehicle(registration, driver, equipment, client, radius, latitude, longitude);
+            }
+            return context.procedure_createVehicle(registration, driver, equipment, client, radius, latitude, longitude);
         } catch (Exception e) {
             onError(e);
             return null;

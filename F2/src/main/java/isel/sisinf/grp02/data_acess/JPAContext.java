@@ -335,35 +335,21 @@ public class JPAContext implements IContext {
         return true;
     }
 
-    public List<Veiculo> procedure_createVehicle(String registration, int driver, int equip, int cliente) {
-        if(registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
-        if(getNumberSize(driver) < 9) throw new IllegalArgumentException("The driver's CC is not correct!");
-        if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
-
-        beginTransaction();
-        Query q = _em.createNativeQuery("Call createVehicle (?1, ?2, ?3, ?4)");
-        q.setParameter(1, registration);
-        q.setParameter(2, driver);
-        q.setParameter(3, equip);
-        q.setParameter(4, cliente);
-
-        q.executeUpdate();
-        commit();
-
-        beginTransaction();
-        Veiculo insertedVeiculo = readVeiculo(registration);
-        commit();
-
-        return Collections.singletonList(insertedVeiculo);
-    }
-
-    public List<Veiculo> procedure_createVehicle(String registration, int driver, int equip, int cliente, int raio, BigDecimal lat, BigDecimal log) {
+    public List<Veiculo> procedure_createVehicle(String registration, int driver, int equip, int cliente, Integer raio, BigDecimal lat, BigDecimal log) {
         if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
         if(getNumberSize(driver) < 9) throw new IllegalArgumentException("The driver's CC is not correct!");
         if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
 
         beginTransaction();
-        Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
+        Query q;
+        if(raio == null || lat == null || log == null) {
+            q = _em.createNativeQuery("Call createVehicle (?1, ?2, ?3, ?4)");
+            q.setParameter(1, registration);
+            q.setParameter(2, driver);
+            q.setParameter(3, equip);
+            q.setParameter(4, cliente);
+        } else {
+            q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
             q.setParameter(1, registration);
             q.setParameter(2, driver);
             q.setParameter(3, equip);
@@ -371,6 +357,7 @@ public class JPAContext implements IContext {
             q.setParameter(5, raio);
             q.setParameter(6, lat);
             q.setParameter(7, log);
+        }
 
         q.executeUpdate();
         commit();
