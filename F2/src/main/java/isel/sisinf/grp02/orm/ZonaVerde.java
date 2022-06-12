@@ -3,6 +3,8 @@ package isel.sisinf.grp02.orm;
 import isel.sisinf.grp02.orm.interfaces.IZonaVerde;
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @NamedQuery(name = "Zona_Verde.findByKey",
         query = "SELECT c FROM ZonaVerde c WHERE c.id =:key")
@@ -46,6 +48,22 @@ public class ZonaVerde implements IZonaVerde {
     public void setCoordenadas(Coordenadas coordenadas) { this.coordenadas = coordenadas; }
     public void setVeiculo(Veiculo veiculo) { this.veiculo = veiculo; }
     public void getRaio(int raio) { this.raio = raio; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ZonaVerde zonaVerde = (ZonaVerde) obj;
+        return raio == zonaVerde.raio &&
+                Objects.equals(id, zonaVerde.id) &&
+                Objects.equals(coordenadas, zonaVerde.coordenadas) &&
+                Objects.equals(veiculo, zonaVerde.veiculo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, coordenadas, veiculo, raio);
+    }
 
     @Override
     public String toString() {

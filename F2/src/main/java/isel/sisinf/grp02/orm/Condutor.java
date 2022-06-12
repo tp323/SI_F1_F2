@@ -4,6 +4,7 @@ import isel.sisinf.grp02.orm.interfaces.ICondutor;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -35,6 +36,21 @@ public class Condutor implements ICondutor {
     public void setNome(String nome) {this.nome = nome;}
     public void setContacto(String contacto) {this.contacto = contacto;}
     public void setVeiculos(Set<Veiculo> veiculos) {this.veiculos = veiculos;}
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Condutor condutor = (Condutor) obj;
+        return Objects.equals(cc, condutor.cc) &&
+                Objects.equals(nome, condutor.nome) &&
+                Objects.equals(contacto, condutor.contacto);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cc, nome, contacto, veiculos);
+    }
 
     @Override
     public String toString() {

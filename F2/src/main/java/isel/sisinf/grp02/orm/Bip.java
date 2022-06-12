@@ -4,6 +4,7 @@ import isel.sisinf.grp02.orm.interfaces.IBip;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 
 @NamedStoredProcedureQuery(
@@ -60,6 +61,25 @@ public class Bip implements IBip {
     public void setMarcaTemporal(Timestamp marcaTemporal) { this.marcaTemporal = marcaTemporal; }
     public void setCoordenadas(Coordenadas coordenadas) { this.coordenadas = coordenadas; }
     public void setAlarme(Boolean alarme) { this.alarme = alarme; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Bip other = (Bip) obj;
+        return id == other.id && alarme == other.alarme &&
+                Objects.equals(equipamento, other.equipamento) &&
+                Objects.equals(marcaTemporal, other.marcaTemporal) &&
+                Objects.equals(coordenadas, other.coordenadas) &&
+                Objects.equals(alarme, other.alarme);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, equipamento, marcaTemporal, coordenadas, alarme);
+    }
 
     @Override
     public String toString() {

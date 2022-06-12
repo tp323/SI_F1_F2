@@ -4,6 +4,7 @@ import isel.sisinf.grp02.orm.interfaces.IEquipamento;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -57,6 +58,20 @@ public class EquipamentoEletronico implements IEquipamento {
     public void setEstado(String status) { this.estado = status; }
     public void setVeiculo(Veiculo veiculo) { this.veiculo = veiculo; }
     public void setBips(Set<Bip> bips) { this.bips = bips; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        EquipamentoEletronico that = (EquipamentoEletronico) obj;
+        return id == that.id &&
+                Objects.equals(estado, that.estado);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, estado, veiculo, bips);
+    }
 
     @Override
     public String toString() {

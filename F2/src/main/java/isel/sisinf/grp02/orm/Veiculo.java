@@ -3,6 +3,7 @@ package isel.sisinf.grp02.orm;
 import isel.sisinf.grp02.orm.interfaces.IVeiculo;
 import jakarta.persistence.*;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -100,6 +101,23 @@ public class Veiculo implements IVeiculo {
         this.alarms = alarms;
     }
     public void setZonasVerdes(Set<ZonaVerde> zonasVerdes) { this.zonasVerdes = zonasVerdes; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Veiculo veiculo = (Veiculo) obj;
+        return Objects.equals(matricula, veiculo.matricula) &&
+                Objects.equals(condutor, veiculo.condutor) &&
+                Objects.equals(equipamento, veiculo.equipamento) &&
+                Objects.equals(cliente, veiculo.cliente) &&
+                Objects.equals(alarms, veiculo.alarms);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(matricula, condutor, equipamento, cliente, zonasVerdes, alarms);
+    }
 
     @Override
     public String toString() {

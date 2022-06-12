@@ -4,6 +4,7 @@ import isel.sisinf.grp02.orm.interfaces.ICoordenadas;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -55,6 +56,21 @@ public class Coordenadas implements ICoordenadas {
     public void setLongitude(float longitude) { this.longitude = longitude; }
     public void setBip(Bip bip) { this.bip = bip; }
     public void setZonaVerde(Set<ZonaVerde> zonas) { this.zonas = zonas; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Coordenadas that = (Coordenadas) obj;
+        return Float.compare(that.latitude, latitude) == 0 &&
+                Float.compare(that.longitude, longitude) == 0 &&
+                Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, latitude, longitude, zonas, bip);
+    }
 
     @Override
     public String toString() {

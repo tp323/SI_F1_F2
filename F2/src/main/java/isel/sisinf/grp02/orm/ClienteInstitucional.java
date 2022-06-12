@@ -3,6 +3,8 @@ package isel.sisinf.grp02.orm;
 import isel.sisinf.grp02.orm.interfaces.IClienteInstitucional;
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @NamedQuery(name="Cliente_Institucional.findByKey", query="SELECT c FROM ClienteInstitucional c WHERE c.cliente =:key")
 @NamedQuery(name="Cliente_Institucional.findAll",
@@ -25,6 +27,20 @@ public class ClienteInstitucional implements IClienteInstitucional {
 
     public void setNomeContacto(String nomeContacto) { this.nomeContacto = nomeContacto; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ClienteInstitucional that = (ClienteInstitucional) obj;
+        return Objects.equals(nomeContacto, that.nomeContacto) &&
+                Objects.equals(cliente, that.cliente);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nomeContacto, cliente);
+    }
 
     @Override
     public String toString() {

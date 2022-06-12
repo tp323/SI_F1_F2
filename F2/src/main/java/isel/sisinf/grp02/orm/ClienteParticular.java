@@ -3,6 +3,7 @@ package isel.sisinf.grp02.orm;
 import isel.sisinf.grp02.orm.interfaces.IClienteParticular;
 import jakarta.persistence.*;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -40,6 +41,20 @@ public class ClienteParticular implements IClienteParticular {
     public void setCC(int cc) { this.cc = cc;}
     public void setCliente(Cliente client) { this.cliente = client; }
     public void setReferred(Set<Cliente> referred) { this.referred = referred; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ClienteParticular that = (ClienteParticular) obj;
+        return cc == that.cc &&
+                Objects.equals(cliente, that.cliente);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cc, cliente, referred);
+    }
 
     @Override
     public String toString() {

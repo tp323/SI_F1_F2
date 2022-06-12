@@ -5,6 +5,7 @@ import isel.sisinf.grp02.orm.interfaces.ICliente;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -82,6 +83,37 @@ public class Cliente implements ICliente {
     public void setClienteInstitucional(ClienteInstitucional cliente_institucional) { this.cliente_institucional = cliente_institucional; }
     public void setAtivo(boolean ativo) {this.ativo = ativo;}
     public void setVeiculos(Set<Veiculo> veiculos) {this.veiculos = veiculos;}
+/*
+ public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Bip other = (Bip) obj;
+        return id == other.id && alarme == other.alarme &&
+                Objects.equals(equipamento, other.equipamento) &&
+                Objects.equals(marcaTemporal, other.marcaTemporal) &&
+                Objects.equals(coordenadas, other.coordenadas) &&
+                Objects.equals(alarme, other.alarme);
+    }
+* */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Cliente cliente = (Cliente) obj;
+        return nif == cliente.nif &&
+                ativo == cliente.ativo &&
+                Objects.equals(nome, cliente.nome) &&
+                Objects.equals(morada, cliente.morada) &&
+                Objects.equals(telefone, cliente.telefone) &&
+                Objects.equals(refCliente, cliente.refCliente);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nif, nome, morada, telefone, refCliente, ativo, cliente_particular, cliente_institucional, veiculos);
+    }
 
     @Override
     public String toString() {
