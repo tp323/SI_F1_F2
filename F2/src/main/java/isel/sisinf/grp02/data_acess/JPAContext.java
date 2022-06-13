@@ -221,7 +221,6 @@ public class JPAContext implements IContext {
         return getVeiculo().create(veiculo);
     }
 
-
     public Long createZonaVerde(ZonaVerde zonaVerde) {
         return getZonaVerde().create(zonaVerde);
     }
@@ -348,23 +347,37 @@ public class JPAContext implements IContext {
         if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
 
         beginTransaction();
-        Query q;
-        if(raio == null || lat == null || log == null) {
-            q = _em.createNativeQuery("Call createVehicle (?1, ?2, ?3, ?4)");
-            q.setParameter(1, registration);
-            q.setParameter(2, driver);
-            q.setParameter(3, equip);
-            q.setParameter(4, cliente);
-        } else {
-            q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
-            q.setParameter(1, registration);
-            q.setParameter(2, driver);
-            q.setParameter(3, equip);
-            q.setParameter(4, cliente);
-            q.setParameter(5, raio);
-            q.setParameter(6, lat);
-            q.setParameter(7, log);
-        }
+        Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)")
+            .setParameter(1, registration)
+            .setParameter(2, driver)
+            .setParameter(3, equip)
+            .setParameter(4, cliente)
+            .setParameter(5, raio)
+            .setParameter(6, lat)
+            .setParameter(7, log);
+
+        q.executeUpdate();
+        commit();
+
+        beginTransaction();
+        Veiculo insertedVeiculo = readVeiculo(registration);
+        commit();
+
+        return Collections.singletonList(insertedVeiculo);
+    }
+
+
+    public List<Veiculo> procedure_createVehicle(String registration, int driver, int equip, int cliente) {
+        if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
+        if(getNumberSize(driver) < 9) throw new IllegalArgumentException("The driver's CC is not correct!");
+        if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
+
+        beginTransaction();
+        Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4)")
+            .setParameter(1, registration)
+            .setParameter(2, driver)
+            .setParameter(3, equip)
+            .setParameter(4, cliente);
 
         q.executeUpdate();
         commit();
@@ -479,6 +492,44 @@ public class JPAContext implements IContext {
         commit();
 
         return new String[][]{{Integer.toString(clienteId)}};
+    }
+
+    public List<Veiculo> createVehicleWithProcedure(String mat, int cond, int eq, int c,Integer raio,BigDecimal lat,BigDecimal longit){
+
+        if(raio!=null || lat!=null || longit!=null){
+            /***    ADICIONA ZONA VERDE     ***/
+            return procedure_createVehicle(mat,cond,eq,c, raio, lat,longit);
+        }else{
+            return procedure_createVehicle(mat,cond,eq,c);
+        }
+
+    }
+
+    public List<Veiculo> createVehicleWithoutProcedure(String matricula,int ccCondutor, int idEquip ,int nifCliente, Integer raio, BigDecimal lat, BigDecimal log){
+        Condutor condutor = readCondutor(ccCondutor);
+        if(condutor == null) throw new IllegalArgumentException("Driver not found");
+        EquipamentoEletronico equip = readEquipamentoEletronico(idEquip);
+        if(equip == null) throw new IllegalArgumentException("Equipment not found");
+        Cliente cliente = readCliente(nifCliente);
+        if(cliente == null) throw new IllegalArgumentException("Client not found");
+        Veiculo v = new Veiculo(matricula, condutor, equip, cliente);
+        createVeiculo(v);
+        if(lat!=null && log != null && raio != null) {
+            float latitude = lat.floatValue();
+            float longitude = log.floatValue();
+            try {
+                Coordenadas coordInDb = getCoordenadas().findByLatLong(latitude, longitude);
+                ZonaVerde zv = new ZonaVerde(coordInDb, v, raio);
+                createZonaVerde(zv);
+            } catch(Exception NoResultException){
+                Coordenadas c = new Coordenadas(latitude, longitude);
+                ZonaVerde zv = new ZonaVerde(c, v, raio);
+                createCoordenada(c);
+                createZonaVerde(zv);
+            }
+
+        }
+        return Collections.singletonList(v);
     }
 
     public List<TodosAlarmes> createView() {

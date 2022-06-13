@@ -62,6 +62,7 @@ DROP PROCEDURE IF EXISTS alarm_number_testing;
 DROP PROCEDURE IF EXISTS alarmcounter_testing;
 DROP PROCEDURE IF EXISTS client_testing;
 DROP PROCEDURE IF EXISTS createvehicle_testing;
+DROP PROCEDURE IF EXISTS clienteParticularRestrictionVeiculo_testing;
 DROP PROCEDURE IF EXISTS delete_clientes_testing;
 DROP PROCEDURE IF EXISTS deleteinvalids_testing;
 DROP PROCEDURE IF EXISTS insert_view_alarme_testing;

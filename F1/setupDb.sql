@@ -62,6 +62,7 @@ DROP PROCEDURE IF EXISTS alarm_number_testing;
 DROP PROCEDURE IF EXISTS alarmcounter_testing;
 DROP PROCEDURE IF EXISTS client_testing;
 DROP PROCEDURE IF EXISTS createvehicle_testing;
+DROP PROCEDURE IF EXISTS clienteParticularRestrictionVeiculo_testing;
 DROP PROCEDURE IF EXISTS delete_clientes_testing;
 DROP PROCEDURE IF EXISTS deleteinvalids_testing;
 DROP PROCEDURE IF EXISTS insert_view_alarme_testing;
@@ -195,7 +196,7 @@ ADD constraint ref_cliente_part foreign KEY (cliente) references Cliente(NIF) DE
 		BEGIN
 			select count(*) into is_particular from cliente_particular where cliente = new.cliente;
 			IF is_particular != 0 THEN
-				select count(matricula) into cnt from veiculo where cliente = new.cliente;
+				select count(*) into cnt from veiculo where cliente = new.cliente;
 				IF cnt >= 3 then
 					raise exception 'Cliente Particular ja alcançou numero maximo de veiculos permitidos 3';
 				END IF;
@@ -456,7 +457,6 @@ AS
         equipCheck int;
         clientCheck int;
         cords int;
-        num_vehicles INT;
     BEGIN
 
         SELECT matricula INTO registrationCheck
@@ -490,13 +490,6 @@ AS
         IF(clientCheck is null) then
             RAISE EXCEPTION 'This client reference does not exist!';
         end if;
-
-        IF(clientCheck IN (SELECT cliente FROM cliente_particular)) THEN
-            SELECT COUNT(*) INTO num_vehicles FROM veiculo WHERE cliente = clientCheck;
-            IF(num_vehicles >= 3) THEN
-                RAISE EXCEPTION 'This client cannot hold on to any more cars!';
-            END IF;
-        END IF;
 
         INSERT INTO veiculo VALUES (newRegistration, newDriver, newEquip, newClient);
 

@@ -105,8 +105,14 @@ public class App {
 
     private String[][] alarmNumber() {
         clearConsole();
+        System.out.print("Would you like to introduce the car's registration? ");
+        String answer = checkAnswer(in.nextLine());
+        System.out.println();
         System.out.print("Please introduce the car's registration: ");
-        String registration = in.nextLine();
+        String registration;
+        if(answer.equalsIgnoreCase("yes")) {
+            registration = in.nextLine();
+        } else registration = null;
         System.out.println();
         System.out.print("Please introduce the year: ");
         int year = checkUserInput(in::nextInt);
@@ -174,9 +180,9 @@ public class App {
             try {
                 context.connect();
                 if(procedure.equals("yes")) {
-                    return context.procedure_createVehicle(registration, driver, equipment, client, null, null, null);
+                    return context.createVehicleWithProcedure(registration, driver, equipment, client, null, null, null);
                 }
-                return context.procedure_createVehicle(registration, driver, equipment, client, null, null, null);
+                return context.createVehicleWithoutProcedure(registration, driver, equipment, client, null, null, null);
             } catch (Exception e) {
                 onError(e);
                 return null;
@@ -201,9 +207,9 @@ public class App {
         try {
             context.connect();
             if(procedure.equals("yes")) {
-                return context.procedure_createVehicle(registration, driver, equipment, client, radius, latitude, longitude);
+                return context.createVehicleWithProcedure(registration, driver, equipment, client, radius, latitude, longitude);
             }
-            return context.procedure_createVehicle(registration, driver, equipment, client, radius, latitude, longitude);
+            return context.createVehicleWithoutProcedure(registration, driver, equipment, client, radius, latitude, longitude);
         } catch (Exception e) {
             onError(e);
             return null;

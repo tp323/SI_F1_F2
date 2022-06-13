@@ -404,8 +404,9 @@ CREATE OR REPLACE PROCEDURE alarmCounter_testing() LANGUAGE plpgsql
 
         INSERT INTO equipamento_eletronico VALUES(234543, 'Activo');
         INSERT INTO bip_equipamento_eletronico VALUES(454643, 234543, '2022-03-30 10:31:35', 1);
+        CALL insert_cliente_particular(293458654, 'AS', '1qwef', '3421safad', NULL, 384548345);
 		
-        INSERT INTO veiculo VALUES('AS45FR', 111111116, 234543, 111222333);
+        INSERT INTO veiculo VALUES('AS45FR', 111111116, 234543, 293458654);
 
         SELECT alarms INTO alarm_count
         FROM veiculo
