@@ -243,6 +243,7 @@ AS
         equipCheck int;
         clientCheck int;
         cords int;
+        num_vehicles INT;
     BEGIN
 
         SELECT matricula INTO registrationCheck
@@ -276,6 +277,13 @@ AS
         IF(clientCheck is null) then
             RAISE EXCEPTION 'This client reference does not exist!';
         end if;
+
+        IF(clientCheck IN (SELECT cliente FROM cliente_particular)) THEN
+            SELECT COUNT(*) INTO num_vehicles FROM veiculo WHERE cliente = clientCheck;
+            IF(num_vehicles >= 3) THEN
+                RAISE EXCEPTION 'This client cannot hold on to any more cars!';
+            END IF;
+        END IF;
 
         INSERT INTO veiculo VALUES (newRegistration, newDriver, newEquip, newClient);
 

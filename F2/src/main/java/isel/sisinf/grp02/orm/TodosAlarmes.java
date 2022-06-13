@@ -7,11 +7,12 @@ import java.sql.Timestamp;
 
 @Entity
 @NamedQuery(name = "todos_alarmes.findByKey",
-        query = "SELECT t FROM TodosAlarmes t WHERE t.matricula =:key AND t.nome =:key AND t.latitude =:key AND t.longitude =:key AND t.marcaTemporal =:key")
+        query = "SELECT t FROM TodosAlarmes t WHERE t.matricula =:mat AND t.nome =:nome AND t.latitude =:lat AND t.longitude =:log AND t.marcaTemporal =:temp")
 @NamedQuery(name="todos_alarmes.findAll",
         query="SELECT t FROM TodosAlarmes t")
 
 @Table(name = "todos_alarmes")
+@IdClass(TodosAlarmesKey.class)
 public class TodosAlarmes implements ITodosAlarmes {
 
     public TodosAlarmes(){}

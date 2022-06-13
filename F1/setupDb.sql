@@ -226,7 +226,7 @@ AS $$
     BEGIN
         INSERT INTO cliente VALUES (newNif,newNome,newMorada,newTelefone,newRef_cliente);
 		if(newNif not in (SELECT cliente.nif FROM cliente)) then
-        	RAISE NOTICE 'Cliente nao inserido';
+        	RAISE EXCEPTION 'Cliente nao inserido';
         END IF;
         INSERT INTO cliente_particular VALUES (newCC,newNif);
 		--check if cliente was correctly added to the DB
@@ -244,9 +244,9 @@ $$
     begin
 		--check if nif is valid
 		--not sure if this exception should exist
-		IF (nif_to_update NOT IN (SELECT nif FROM cliente)) then
-			RAISE NOTICE 'Nao existe cliente para este nif';
-		END IF;
+		IF (nif_to_update) NOT IN (SELECT cliente FROM cliente_particular) THEN
+            RAISE EXCEPTION 'Não é Cliente Particular!';
+        END IF;
        	UPDATE cliente SET nome = new_nome WHERE nif = nif_to_update;
        	UPDATE cliente SET morada = new_morada WHERE nif = nif_to_update;
        	UPDATE cliente SET telefone = new_telefone WHERE nif = nif_to_update;
@@ -288,14 +288,14 @@ CREATE OR REPLACE FUNCTION alarm_number(registration varchar(6), year numeric) R
             SELECT COUNT(*) INTO number
             FROM bip_equipamento_eletronico b
             INNER JOIN veiculo v on b.equipamento = v.equipamento
-            WHERE extract(YEAR FROM marca_temporal) = year AND matricula = target;
+            WHERE extract(YEAR FROM marca_temporal) = year AND matricula = target AND alarme = true;
             RETURN number;
 
         end if;
 
         SELECT COUNT(*) INTO number
         FROM bip_equipamento_eletronico bee
-        WHERE extract(YEAR FROM marca_temporal) = year;
+        WHERE extract(YEAR FROM marca_temporal) = year AND alarme = true;
 
         RETURN number;
     end;$$LANGUAGE plpgsql;
@@ -330,6 +330,8 @@ AS
 
     INSERT INTO bip_equipamento_eletronico(id, equipamento, marca_temporal, coordenadas)
     VALUES (DEFAULT, equip, requestMarca_temporal, cords);
+    DELETE FROM requests
+    WHERE id = requestID;
 
 end;
 $$;
@@ -454,6 +456,7 @@ AS
         equipCheck int;
         clientCheck int;
         cords int;
+        num_vehicles INT;
     BEGIN
 
         SELECT matricula INTO registrationCheck
@@ -487,6 +490,13 @@ AS
         IF(clientCheck is null) then
             RAISE EXCEPTION 'This client reference does not exist!';
         end if;
+
+        IF(clientCheck IN (SELECT cliente FROM cliente_particular)) THEN
+            SELECT COUNT(*) INTO num_vehicles FROM veiculo WHERE cliente = clientCheck;
+            IF(num_vehicles >= 3) THEN
+                RAISE EXCEPTION 'This client cannot hold on to any more cars!';
+            END IF;
+        END IF;
 
         INSERT INTO veiculo VALUES (newRegistration, newDriver, newEquip, newClient);
 

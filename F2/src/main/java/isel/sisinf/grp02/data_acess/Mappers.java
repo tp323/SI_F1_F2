@@ -141,7 +141,15 @@ class Mappers {
 
         @Override
         public Long update(EquipamentoEletronico entity) {
-            return null;
+            context.beginTransaction();
+            EquipamentoEletronico e = context._em.find(EquipamentoEletronico.class, entity.getId(), LockModeType.PESSIMISTIC_WRITE);
+            if(e == null) {
+                System.out.println("Equipamento Eletronico not found.");
+                return null;
+            }
+            e.setEstado(entity.getEstado());
+            context.commit();
+            return e.getId();
         }
 
         @Override

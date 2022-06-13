@@ -242,9 +242,13 @@ class Repositories {
     protected class ReadOnlyRepository implements IReadOnlyRepository {
 
         @Override
-        public TodosAlarmes findByKey(String key) {
+        public TodosAlarmes findByKey(TodosAlarmesKey key) {
             return context._em.createNamedQuery("todos_alarmes.findByKey", TodosAlarmes.class)
-                    .setParameter("key", key)
+                    .setParameter("mat", key.getMatricula())
+                    .setParameter("nome", key.getNome())
+                    .setParameter("lat", key.getLatitude())
+                    .setParameter("log", key.getLongitude())
+                    .setParameter("temp", key.getMarcaTemporal())
                     .getSingleResult();
         }
 

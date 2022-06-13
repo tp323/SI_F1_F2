@@ -35,6 +35,7 @@ public class App {
         DB_METHODS.put(InterfaceOptions.INSERT_VIEW, () -> Table.createTable(insertView(), in, TodosAlarmes::toArray));
         DB_METHODS.put(InterfaceOptions.DELETE_INVALID_RES, this::invalidDeletion);
         DB_METHODS.put(InterfaceOptions.DEACTIVATE_CLIENT, () -> Table.createTable(new String[]{"removed_cliente"}, in, deactivateClient()));
+        DB_METHODS.put(InterfaceOptions.EQUIPMENT_STATUS, () -> Table.createTable(changeEquipmentStatus(), in, EquipamentoEletronico::toArray));
     }
 
     private enum InterfaceOptions {
@@ -49,7 +50,8 @@ public class App {
         CREATE_VIEW,
         INSERT_VIEW,
         DELETE_INVALID_RES,
-        DEACTIVATE_CLIENT
+        DEACTIVATE_CLIENT,
+        EQUIPMENT_STATUS
     }
 
     private <T> T clientInfo(ClienteFunctionCall<T> func) {
@@ -74,10 +76,13 @@ public class App {
         System.out.println();
 
         try {
+            context.connect();
             return func.doClienteStuff(nif, name, residence, phone, refClient, cc);
         } catch (Exception e) {
             onError(e);
             return null;
+        } finally {
+            context.close();
         }
     }
 
@@ -88,10 +93,13 @@ public class App {
         in.nextLine();
         System.out.println();
         try {
+            context.connect();
             return context.deleteClienteParticularFromInput(nif);
         } catch (Exception e) {
             onError(e);
             return null;
+        } finally {
+            context.close();
         }
     }
 
@@ -105,20 +113,34 @@ public class App {
         in.nextLine();
         System.out.println();
         try {
+            context.connect();
             return new String[][]{{Integer.toString(context.procedure_getAlarmNumber(registration, year))}};
         } catch (Exception e) {
             onError(e);
             return null;
+        } finally {
+            context.close();
         }
     }
 
     private void requestProcess() {
+        clearConsole();
+        System.out.print("Would you like to use optimistic locking? ");
+        String answer = checkAnswer(in.nextLine());
+        System.out.println();
+
         boolean worked = false;
         try {
-            worked = context.procedure_fetchRequests();
+            context.connect();
+            if(answer.equalsIgnoreCase("yes")) {
+                worked = context.procedure_fetchRequests();
+            } else worked = context.procedure_fetchRequests();
         } catch (Exception e) {
             onError(e);
+        } finally {
+            context.close();
         }
+
         if (worked) System.out.println("Request process completed successfully!");
         else System.out.println("Request process was not successful.");
         System.out.print("Press enter to continue...");
@@ -127,10 +149,9 @@ public class App {
 
     private List<Veiculo> createVehicle() {
         clearConsole();
-        System.out.println("Would you like to use the procedure?");
+        System.out.print("Would you like to use the procedure? ");
         String procedure = checkAnswer(in.nextLine());
-
-
+        System.out.println();
         System.out.print("Please introduce the Vehicle's registration: ");
         String registration = in.nextLine();
         System.out.println();
@@ -151,6 +172,7 @@ public class App {
         String answer = checkAnswer(in.nextLine());
         if(answer.equalsIgnoreCase("no")) {
             try {
+                context.connect();
                 if(procedure.equals("yes")) {
                     return context.procedure_createVehicle(registration, driver, equipment, client, null, null, null);
                 }
@@ -158,6 +180,8 @@ public class App {
             } catch (Exception e) {
                 onError(e);
                 return null;
+            } finally {
+                context.close();
             }
         }
 
@@ -175,6 +199,7 @@ public class App {
         in.nextLine();
         System.out.println();
         try {
+            context.connect();
             if(procedure.equals("yes")) {
                 return context.procedure_createVehicle(registration, driver, equipment, client, radius, latitude, longitude);
             }
@@ -182,15 +207,20 @@ public class App {
         } catch (Exception e) {
             onError(e);
             return null;
+        } finally {
+            context.close();
         }
     }
 
     private List<TodosAlarmes> viewCreation() {
         try {
+            context.connect();
             return context.createView();
         } catch (Exception e) {
             onError(e);
             return null;
+        } finally {
+            context.close();
         }
     }
 
@@ -214,20 +244,27 @@ public class App {
         String date = in.nextLine();
         System.out.println();
         try {
+            context.connect();
             return context.insertView(registration, driverName, latitude, longitude, Timestamp.valueOf(date));
         } catch (Exception e) {
             onError(e);
             return null;
+        } finally {
+            context.close();
         }
     }
 
     private void invalidDeletion() {
         boolean worked = false;
         try {
+            context.connect();
             worked = context.procedure_clearRequests();
         } catch (Exception e) {
             onError(e);
+        } finally {
+            context.close();
         }
+
         if(worked) System.out.println("Invalid deletion was successful!");
         else System.out.println("Invalid deletion was not successful.");
         System.out.print("Press enter to continue...");
@@ -238,12 +275,36 @@ public class App {
         clearConsole();
         System.out.print("Please introduce the Client's NIF: ");
         int nif = checkUserInput(in::nextInt);
+        in.nextLine();
         System.out.println();
         try {
+            context.connect();
             return context.deleteClienteFromInput(nif);
         } catch (Exception e) {
             onError(e);
             return null;
+        } finally {
+            context.close();
+        }
+    }
+
+    private List<EquipamentoEletronico> changeEquipmentStatus() {
+        clearConsole();
+        System.out.print("What is the ID of the equipment which status you would like to change? ");
+        long id = checkUserInput(in::nextLong);
+        in.nextLine();
+        System.out.println();
+        System.out.print("What is the equipment new status? ");
+        String estado = in.nextLine();
+        System.out.println();
+        try {
+            context.connect();
+            return context.changeEquipmentStatus(id, estado);
+        } catch (Exception e) {
+            onError(e);
+            return null;
+        } finally {
+            context.close();
         }
     }
 
@@ -307,6 +368,7 @@ public class App {
         System.out.println(++i + ". Insert data into view");
         System.out.println(++i + ". Delete Invalid Requests");
         System.out.println(++i + ". Deactivate Client");
+        System.out.println(++i + ". Change Equipment Status");
         System.out.print(">");
     }
 

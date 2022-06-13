@@ -7,6 +7,7 @@ public interface IContext extends AutoCloseable {
     void commit();
     void rollback();
     void flush();
+    void connect();
 
     IClienteRepository getClientes();
     ICliente_ParticularRepository getClientesParticulares();
