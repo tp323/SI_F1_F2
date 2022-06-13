@@ -39,7 +39,7 @@ public class ClienteInstitucional implements IClienteInstitucional {
 
     @Override
     public int hashCode() {
-        return Objects.hash(nomeContacto, cliente);
+        return Objects.hash(nomeContacto, cliente.getNif());
     }
 
     @Override

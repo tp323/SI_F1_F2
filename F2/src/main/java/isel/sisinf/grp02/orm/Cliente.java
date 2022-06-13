@@ -83,20 +83,7 @@ public class Cliente implements ICliente {
     public void setClienteInstitucional(ClienteInstitucional cliente_institucional) { this.cliente_institucional = cliente_institucional; }
     public void setAtivo(boolean ativo) {this.ativo = ativo;}
     public void setVeiculos(Set<Veiculo> veiculos) {this.veiculos = veiculos;}
-/*
- public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null || getClass() != obj.getClass())
-            return false;
-        Bip other = (Bip) obj;
-        return id == other.id && alarme == other.alarme &&
-                Objects.equals(equipamento, other.equipamento) &&
-                Objects.equals(marcaTemporal, other.marcaTemporal) &&
-                Objects.equals(coordenadas, other.coordenadas) &&
-                Objects.equals(alarme, other.alarme);
-    }
-* */
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -112,7 +99,7 @@ public class Cliente implements ICliente {
 
     @Override
     public int hashCode() {
-        return Objects.hash(nif, nome, morada, telefone, refCliente, ativo, cliente_particular, cliente_institucional, veiculos);
+        return Objects.hash(nif, nome, morada, telefone, refCliente.getCC(), ativo, cliente_particular.getCC(), cliente_institucional.getCliente(), veiculos.hashCode());
     }
 
     @Override

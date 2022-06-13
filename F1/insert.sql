@@ -5,7 +5,7 @@ INSERT INTO Cliente (NIF, nome, morada, telefone, ref_cliente)
 VALUES (111222333, 'O maior da minha aldeia', 'Vila Nova de Robiães', '+351911222111', DEFAULT),
 (121222333, 'Limitada', 'Ali', '+351911333222', 121222333),
 (100000000, 'O menor da minha aldeia', 'Vila Velha de Robiães', '+351911332111', DEFAULT),
-(999999999, 'Aquele', 'ali', 911722111, DEFAULT);
+(999999999, 'Aquele', 'ali', '+351911722111', DEFAULT);
 
 	--Cliente_Particular(CC, cliente)
 INSERT INTO Cliente_Particular(CC, cliente)

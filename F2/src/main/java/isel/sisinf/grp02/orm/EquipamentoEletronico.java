@@ -41,6 +41,13 @@ public class EquipamentoEletronico implements IEquipamento {
         public String getEstado() {
             return estado;
         }
+
+        public static boolean isEstadoValido(String estadoToEvaluate) {
+            for(EstadosValidos estadosValidos : values()) {
+                if(estadosValidos.getEstado().equals(estadoToEvaluate)) return true;
+            }
+            return false;
+        }
     }
 
     @OneToOne(mappedBy = "equipamento", cascade = CascadeType.PERSIST)
@@ -70,7 +77,7 @@ public class EquipamentoEletronico implements IEquipamento {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, estado, veiculo, bips);
+        return Objects.hash(id, estado, veiculo.getMatricula(), bips.hashCode());
     }
 
     @Override

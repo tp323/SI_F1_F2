@@ -78,7 +78,7 @@ public class Bip implements IBip {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, equipamento, marcaTemporal, coordenadas, alarme);
+        return Objects.hash(id, equipamento.getId(), marcaTemporal, coordenadas.getId(), alarme);
     }
 
     @Override

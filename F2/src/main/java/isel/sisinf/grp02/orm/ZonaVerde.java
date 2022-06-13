@@ -65,7 +65,7 @@ public class ZonaVerde implements IZonaVerde {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, coordenadas, veiculo, raio);
+        return Objects.hash(id, coordenadas.getId(), veiculo.getMatricula(), raio);
     }
 
     @Override

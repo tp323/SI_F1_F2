@@ -5,13 +5,13 @@ import isel.sisinf.grp02.orm.*;
 import isel.sisinf.grp02.repositories.*;
 import jakarta.persistence.*;
 
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 
 public class JPAContext implements IContext {
+    private final String persistentCtx;
     private EntityManagerFactory _emf;
     protected EntityManager _em;
 
@@ -86,10 +86,29 @@ public class JPAContext implements IContext {
 
     @Override
     public void close() {
-        if(_tx != null)
+        if(_tx != null && _tx.isActive()) {
             _tx.rollback();
-        _em.close();
-        _emf.close();
+            _txcount = 0;
+        }
+        if(_em != null && _em.isOpen()) _em.close();
+        if(_emf != null && _emf.isOpen()) _emf.close();
+    }
+
+    public void connect() {
+        try {
+            if(_tx != null && _tx.isActive()) {
+                _tx.rollback();
+                _txcount = 0;
+            }
+            if(_emf == null || !_emf.isOpen()) this._emf = Persistence.createEntityManagerFactory(persistentCtx);
+            if(_em == null || !_em.isOpen()) this._em = _emf.createEntityManager();
+        } catch (PersistenceException exception) {
+            System.out.println(exception.getMessage() + ".");
+            System.out.println("Please check the name of the persistence in the Persistence.xml file located in resources/META-INF!");
+            System.out.println("The name of the persistence in there should match the name for the Factory instance to run!");
+            System.out.println("If that doesn't work, delete the target folder and rebuild the project!");
+            System.exit(1);
+        }
     }
 
 
@@ -98,22 +117,10 @@ public class JPAContext implements IContext {
         this(System.getenv("POSTGRES_PERSISTENCE_NAME"));
     }
 
-    /** TODO: Does it make sense to build the whole object each time a call to a function is made or should it just
-     * re-initialize _emf and _em
-     */
     public JPAContext(String persistentCtx) {
         super();
 
-        try {
-            this._emf = Persistence.createEntityManagerFactory(persistentCtx);
-            this._em = _emf.createEntityManager();
-        } catch (PersistenceException exception) {
-            System.out.println(exception.getMessage() + ".");
-            System.out.println("Please check the name of the persistence in the Persistence.xml file located in resources/META-INF!");
-            System.out.println("The name of the persistence in there should match the name for the Factory instance to run!");
-            System.out.println("If that doesn't work, delete the target folder and rebuild the project!");
-            System.exit(1);
-        }
+        this.persistentCtx = persistentCtx;
 
         Repositories repositories = new Repositories(this);
         this._clienteRepository = repositories.new ClienteRepository();
@@ -289,8 +296,8 @@ public class JPAContext implements IContext {
 
     /***                PROCEDURES                ***/
 
-    public int function_getAlarmNumber(String registration, int year) {
-        _em.getTransaction().begin();
+    public int procedure_getAlarmNumber(String registration, int year) {
+        beginTransaction();
         if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
 
         StoredProcedureQuery pQuery =
@@ -301,13 +308,13 @@ public class JPAContext implements IContext {
 
         pQuery.execute();
         int numbAlarms = (int) pQuery.getOutputParameterValue(3);
-        _em.getTransaction().commit();
+        commit();
 
         return numbAlarms;
     }
 
-    public int function_getAlarmNumber(int year) {
-        _em.getTransaction().begin();
+    public int procedure_getAlarmNumber(int year) {
+        beginTransaction();
 
         StoredProcedureQuery pQuery =
                 _em.createNamedStoredProcedureQuery("alarm_number")
@@ -317,7 +324,7 @@ public class JPAContext implements IContext {
 
         pQuery.execute();
         int numbAlarms = (int) pQuery.getOutputParameterValue(3);
-        _em.getTransaction().commit();
+        commit();
 
         return numbAlarms;
     }
@@ -401,7 +408,9 @@ public class JPAContext implements IContext {
         Cliente c = new Cliente(nif, name, residence, phone, true);
         ClienteParticular cp = new ClienteParticular(cc, c);
         if(refClient != 0) {
+            beginTransaction();
             ClienteParticular ref = readClienteParticular(refClient);
+            commit();
             if(ref == null) throw new IllegalArgumentException("Referred client does not exist!");
             c.setRefCliente(ref);
         }
@@ -423,7 +432,9 @@ public class JPAContext implements IContext {
 
         Cliente client = new Cliente(nif, name, residence, phone, true);
         if(refClient != 0) {
+            beginTransaction();
             ClienteParticular ref = readClienteParticular(refClient);
+            commit();
             if(ref == null) throw new IllegalArgumentException("Referred client does not exist!");
             client.setRefCliente(ref);
         }
@@ -493,7 +504,7 @@ public class JPAContext implements IContext {
     public List<Veiculo> createVehicleWithProcedure(String mat, int cond, int eq, int c,Integer raio,BigDecimal lat,BigDecimal longit){
 
         if(raio!=null || lat!=null || longit!=null){
-            /***    ADICIONAR ZONA VERDE     ***/
+            /***    ADDS ZONA VERDE     ***/
             return procedure_createVehicle(mat,cond,eq,c, raio, lat,longit);
         }else{
             return procedure_createVehicle(mat,cond,eq,c);
@@ -513,11 +524,11 @@ public class JPAContext implements IContext {
         if(lat!=null && log != null && raio != null) {
             float latitude = lat.floatValue();
             float longitude = log.floatValue();
-            try{
+            try {
                 Coordenadas coordInDb = getCoordenadas().findByLatLong(latitude, longitude);
                 ZonaVerde zv = new ZonaVerde(coordInDb, v, raio);
                 createZonaVerde(zv);
-            }catch(Exception NoResultException){
+            } catch(Exception NoResultException){
                 Coordenadas c = new Coordenadas(latitude, longitude);
                 ZonaVerde zv = new ZonaVerde(c, v, raio);
                 createCoordenada(c);
@@ -561,6 +572,23 @@ public class JPAContext implements IContext {
         commit();
 
         return Collections.singletonList(insertedAlarm);
+    }
+
+    public List<EquipamentoEletronico> changeEquipmentStatus(long id, String estado) {
+        if(!EquipamentoEletronico.EstadosValidos.isEstadoValido(estado)) throw new IllegalArgumentException("Estado is not valid!");
+
+        EquipamentoEletronico equipamentoEletronico = new EquipamentoEletronico();
+        equipamentoEletronico.setID(id);
+        equipamentoEletronico.setEstado(estado);
+
+        beginTransaction();
+        long equipamentoID = getEquipamento().update(equipamentoEletronico);
+        commit();
+        beginTransaction();
+        EquipamentoEletronico updatedEquipamento = getEquipamento().read(equipamentoID);
+        commit();
+
+        return Collections.singletonList(updatedEquipamento);
     }
 
     private static int getNumberSize(int number) {

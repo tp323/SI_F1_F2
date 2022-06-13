@@ -12,11 +12,10 @@ import static org.junit.Assert.*;
 /*** tests based on initial data from db set by initial insert ***/
 public class AppTest {
 
-    private final JPAContext ctx = new JPAContext();
-
     @Test
     public void ClienteCreate(){
         try(JPAContext ctx = new JPAContext()) {
+            ctx.connect();
             ctx.beginTransaction();
             Cliente c = new Cliente(254256431, "Rapaz da Aldeia", "Aldeia", "923453432");
             ctx.createCliente(c);
@@ -33,6 +32,7 @@ public class AppTest {
     @Test
     public void ClienteParticularCreateWithoutRef(){
         try(JPAContext ctx = new JPAContext()) {
+            ctx.connect();
             ctx.beginTransaction();
             ctx.buildClienteFromInput(254256431, "Rapaz da Aldeia", "Aldeia", "923453432",0,787565333);
             Cliente c = new Cliente(254256431, "Rapaz da Aldeia", "Aldeia", "923453432");
@@ -52,6 +52,7 @@ public class AppTest {
     @Test
     public void ClienteParticularCreateWithRef(){
         try(JPAContext ctx = new JPAContext()) {
+            ctx.connect();
             ctx.beginTransaction();
             ctx.buildClienteFromInput(254256431, "Rapaz da Aldeia", "Aldeia", "923453432",121222333,787565333);
             Cliente c = new Cliente(254256431, "Rapaz da Aldeia", "Aldeia", "923453432");
@@ -73,6 +74,7 @@ public class AppTest {
     @Test
     public void ClienteUpdateWithoutRef(){
         try(JPAContext ctx = new JPAContext()) {
+            ctx.connect();
             ctx.beginTransaction();
             ctx.updateClienteFromInput(111222333, "Rapaz da Aldeia", "Aldeia", "923453432",0,121222333);
             Cliente c = new Cliente(111222333, "Rapaz da Aldeia", "Aldeia", "923453432");
@@ -92,6 +94,7 @@ public class AppTest {
     @Test
     public void ClienteUpdateWitRef() {
         try (JPAContext ctx = new JPAContext()) {
+            ctx.connect();
             ctx.beginTransaction();
             ctx.updateClienteFromInput(111222333, "Rapaz da Aldeia", "Aldeia", "923453432", 999999999, 121222333);
             Cliente c = new Cliente(111222333, "Rapaz da Aldeia", "Aldeia", "923453432");
@@ -112,6 +115,7 @@ public class AppTest {
     @Test
     public void ClienteDelete() {
         try (JPAContext ctx = new JPAContext()) {
+            ctx.connect();
             ctx.beginTransaction();
             if(ctx.readClienteParticular(787565333)==null) {
                 ctx.buildClienteFromInput(254256431, "Rapaz da Aldeia", "Aldeia", "923453432", 121222333, 787565333);
@@ -137,7 +141,8 @@ public class AppTest {
     @Test
     public void TotalAlarmsForVehicle() {
         try (JPAContext ctx = new JPAContext()) {
-            int numbAlarms = ctx.getAlarmNumber("FF17FF", 2015);
+            ctx.connect();
+            int numbAlarms = ctx.procedure_getAlarmNumber("FF17FF", 2015);
             assertEquals(1, numbAlarms);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -148,8 +153,9 @@ public class AppTest {
     @Test
     public void TotalAlarmsForYear() {
         try (JPAContext ctx = new JPAContext()) {
-            int numbAlarms = ctx.getAlarmNumber(null,2015);
-            assertEquals(2, numbAlarms);
+            ctx.connect();
+            int numbAlarms = ctx.procedure_getAlarmNumber(2015);
+            assertEquals(1, numbAlarms);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw e;
@@ -161,6 +167,7 @@ public class AppTest {
     @Test
     public void CreateVehicleWithProcedureWithNewZonaVerdeWithProcedure() {
         try (JPAContext ctx = new JPAContext()) {
+            ctx.connect();
             ctx.beginTransaction();
             ctx.createVehicleWithProcedure("zz24zz",111111113,3,999999999, 3,new BigDecimal(6), new BigDecimal(6));
 
@@ -193,6 +200,7 @@ public class AppTest {
     @Test
     public void CreateVehicleWithProcedureWithoutNewZonaVerdeWithProcedure() {
         try (JPAContext ctx = new JPAContext()) {
+            ctx.connect();
             ctx.beginTransaction();
             ctx.createVehicleWithProcedure("zz24zz",111111113,3,999999999, null, null, null);
 
@@ -215,6 +223,7 @@ public class AppTest {
     @Test
     public void CreateVehicleWithProcedureWithNewZonaVerdeWithoutProcedure() {
         try (JPAContext ctx = new JPAContext()) {
+            ctx.connect();
             ctx.beginTransaction();
             ctx.createVehicleWithoutProcedure("zz24zz",111111113,3,999999999, 3, new BigDecimal(6), new BigDecimal(6));
 
@@ -248,6 +257,7 @@ public class AppTest {
     @Test
     public void CreateVehicleWithProcedureWithoutNewZonaVerdeWithoutProcedure() {
         try (JPAContext ctx = new JPAContext()) {
+            ctx.connect();
             ctx.beginTransaction();
             ctx.createVehicleWithoutProcedure("zz24zz",111111113,3,999999999, null, null, null);
 

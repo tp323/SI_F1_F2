@@ -53,7 +53,7 @@ public class ClienteParticular implements IClienteParticular {
 
     @Override
     public int hashCode() {
-        return Objects.hash(cc, cliente, referred);
+        return Objects.hash(cc, cliente.getNif(), referred.hashCode());
     }
 
     @Override

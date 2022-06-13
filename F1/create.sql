@@ -125,7 +125,7 @@ ADD constraint ref_cliente_part foreign KEY (cliente) references Cliente(NIF) DE
 		BEGIN
 			select count(*) into is_particular from cliente_particular where cliente = new.cliente;
 			IF is_particular != 0 THEN
-				select count(matricula) into cnt from veiculo where cliente = new.cliente;
+				select count(*) into cnt from veiculo where cliente = new.cliente;
 				IF cnt >= 3 then
 					raise exception 'Cliente Particular ja alcançou numero maximo de veiculos permitidos 3';
 				END IF;

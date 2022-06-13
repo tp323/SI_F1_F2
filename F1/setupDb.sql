@@ -62,6 +62,7 @@ DROP PROCEDURE IF EXISTS alarm_number_testing;
 DROP PROCEDURE IF EXISTS alarmcounter_testing;
 DROP PROCEDURE IF EXISTS client_testing;
 DROP PROCEDURE IF EXISTS createvehicle_testing;
+DROP PROCEDURE IF EXISTS clienteParticularRestrictionVeiculo_testing;
 DROP PROCEDURE IF EXISTS delete_clientes_testing;
 DROP PROCEDURE IF EXISTS deleteinvalids_testing;
 DROP PROCEDURE IF EXISTS insert_view_alarme_testing;
@@ -195,7 +196,7 @@ ADD constraint ref_cliente_part foreign KEY (cliente) references Cliente(NIF) DE
 		BEGIN
 			select count(*) into is_particular from cliente_particular where cliente = new.cliente;
 			IF is_particular != 0 THEN
-				select count(matricula) into cnt from veiculo where cliente = new.cliente;
+				select count(*) into cnt from veiculo where cliente = new.cliente;
 				IF cnt >= 3 then
 					raise exception 'Cliente Particular ja alcançou numero maximo de veiculos permitidos 3';
 				END IF;
@@ -226,7 +227,7 @@ AS $$
     BEGIN
         INSERT INTO cliente VALUES (newNif,newNome,newMorada,newTelefone,newRef_cliente);
 		if(newNif not in (SELECT cliente.nif FROM cliente)) then
-        	RAISE NOTICE 'Cliente nao inserido';
+        	RAISE EXCEPTION 'Cliente nao inserido';
         END IF;
         INSERT INTO cliente_particular VALUES (newCC,newNif);
 		--check if cliente was correctly added to the DB
@@ -244,9 +245,9 @@ $$
     begin
 		--check if nif is valid
 		--not sure if this exception should exist
-		IF (nif_to_update NOT IN (SELECT nif FROM cliente)) then
-			RAISE NOTICE 'Nao existe cliente para este nif';
-		END IF;
+		IF (nif_to_update) NOT IN (SELECT cliente FROM cliente_particular) THEN
+            RAISE EXCEPTION 'Não é Cliente Particular!';
+        END IF;
        	UPDATE cliente SET nome = new_nome WHERE nif = nif_to_update;
        	UPDATE cliente SET morada = new_morada WHERE nif = nif_to_update;
        	UPDATE cliente SET telefone = new_telefone WHERE nif = nif_to_update;
@@ -288,14 +289,14 @@ CREATE OR REPLACE FUNCTION alarm_number(registration varchar(6), year numeric) R
             SELECT COUNT(*) INTO number
             FROM bip_equipamento_eletronico b
             INNER JOIN veiculo v on b.equipamento = v.equipamento
-            WHERE extract(YEAR FROM marca_temporal) = year AND matricula = target;
+            WHERE extract(YEAR FROM marca_temporal) = year AND matricula = target AND alarme = true;
             RETURN number;
 
         end if;
 
         SELECT COUNT(*) INTO number
         FROM bip_equipamento_eletronico bee
-        WHERE extract(YEAR FROM marca_temporal) = year;
+        WHERE extract(YEAR FROM marca_temporal) = year AND alarme = true;
 
         RETURN number;
     end;$$LANGUAGE plpgsql;
@@ -330,6 +331,8 @@ AS
 
     INSERT INTO bip_equipamento_eletronico(id, equipamento, marca_temporal, coordenadas)
     VALUES (DEFAULT, equip, requestMarca_temporal, cords);
+    DELETE FROM requests
+    WHERE id = requestID;
 
 end;
 $$;

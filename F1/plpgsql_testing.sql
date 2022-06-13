@@ -49,6 +49,14 @@ CREATE OR REPLACE PROCEDURE client_testing() LANGUAGE plpgsql
         ELSE
             RAISE WARNING 'Deleting Ernesto NOT OK';
         END IF;
+
+        INSERT INTO CLIENTE VALUES(234234534, 'Shouldnt Update', 'Nowhere', '+351999999999', NULL, true);
+
+        CALL update_cliente_particular(234234534, 'An actual person', 'Albal', '+351926021405', NULL);
+        RAISE WARNING 'Updating cliente not particular OK';
+        EXCEPTION
+            WHEN RAISE_EXCEPTION THEN
+                RAISE NOTICE 'Updating cliente not particular OK';
         --ROLLBACK;
     END;
     $$;
@@ -64,7 +72,7 @@ CREATE OR REPLACE PROCEDURE alarm_number_testing() LANGUAGE plpgsql
 	    
 		INSERT INTO equipamento_eletronico VALUES(234540, 'Activo');
 		INSERT INTO bip_equipamento_eletronico VALUES(454645, 234540, '2000-03-30 10:31:35', 1);
-        num = alarm_number(NULL, 2000);
+        num = alarm_number(NULL, 2015);
 		
         IF num = 1 THEN
             RAISE NOTICE 'Registration NULL test OK';
@@ -183,7 +191,7 @@ CREATE OR REPLACE PROCEDURE newBIP_testing() LANGUAGE plpgsql
     $$;
 
 
---------------- PONTO H Test ---------------
+--------------- PONTO H Tests ---------------
 
 CREATE OR REPLACE PROCEDURE createVehicle_testing() LANGUAGE plpgsql
     AS
@@ -231,8 +239,28 @@ CREATE OR REPLACE PROCEDURE createVehicle_testing() LANGUAGE plpgsql
     END;
     $$;
 
+CREATE OR REPLACE PROCEDURE clienteParticularRestrictionVeiculo_testing() LANGUAGE plpgsql
+    AS
+    $$
+    BEGIN
 
---------------- PONTO I ---------------
+        CALL insert_cliente_particular(734753354, 'Joaozinho', 'Alem', '9532345341', NULL, 845743745);
+
+        INSERT INTO veiculo VALUES('AA12AA', 111111113, 2, 734753354);
+        INSERT INTO veiculo VALUES('BB23BB', 111111113, 2, 734753354);
+        INSERT INTO veiculo VALUES('CC34AA', 111111113, 2, 734753354);
+
+        CALL createVehicle('FF40AS', 111111113, 1, 734753354);
+        RAISE WARNING 'Cliente Particular cannot have more than 3 vehicles NOT OK';
+        --ROLLBACK;
+        EXCEPTION
+            WHEN RAISE_EXCEPTION THEN
+                RAISE NOTICE 'Cliente Particular cannot have more than 3 vehicles OK';
+                --ROLLBACK;
+    END;
+    $$;
+
+--------------- PONTO I Test ---------------
 
 CREATE OR REPLACE PROCEDURE todos_alarmes_testing() LANGUAGE plpgsql
     AS
@@ -264,7 +292,7 @@ CREATE OR REPLACE PROCEDURE todos_alarmes_testing() LANGUAGE plpgsql
     END;
     $$;
 
---------------- PONTO J ---------------
+--------------- PONTO J Test ---------------
 
 CREATE OR REPLACE PROCEDURE insert_view_alarme_testing() LANGUAGE plpgsql
     AS
@@ -295,7 +323,7 @@ CREATE OR REPLACE PROCEDURE insert_view_alarme_testing() LANGUAGE plpgsql
     END;
     $$;
 
---------------- PONTO K ---------------
+--------------- PONTO K Test ---------------
 
 CREATE OR REPLACE PROCEDURE deleteInvalids_testing() LANGUAGE plpgsql
     AS
@@ -335,7 +363,7 @@ CREATE OR REPLACE PROCEDURE deleteInvalids_testing() LANGUAGE plpgsql
     $$;
 
 
---------------- PONTO L ---------------
+--------------- PONTO L Test ---------------
 
 CREATE OR REPLACE PROCEDURE delete_clientes_testing() LANGUAGE plpgsql
     AS
@@ -365,7 +393,7 @@ CREATE OR REPLACE PROCEDURE delete_clientes_testing() LANGUAGE plpgsql
     END;
     $$;
 
---------------- PONTO M ---------------
+--------------- PONTO M Test ---------------
 
 CREATE OR REPLACE PROCEDURE alarmCounter_testing() LANGUAGE plpgsql
     AS
@@ -376,8 +404,9 @@ CREATE OR REPLACE PROCEDURE alarmCounter_testing() LANGUAGE plpgsql
 
         INSERT INTO equipamento_eletronico VALUES(234543, 'Activo');
         INSERT INTO bip_equipamento_eletronico VALUES(454643, 234543, '2022-03-30 10:31:35', 1);
+        CALL insert_cliente_particular(293458654, 'AS', '1qwef', '3421safad', NULL, 384548345);
 		
-        INSERT INTO veiculo VALUES('AS45FR', 111111116, 234543, 111222333);
+        INSERT INTO veiculo VALUES('AS45FR', 111111116, 234543, 293458654);
 
         SELECT alarms INTO alarm_count
         FROM veiculo
@@ -418,6 +447,7 @@ BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 CALL client_testing();
 CALL alarm_number_testing();
 CALL createVehicle_testing();
+CALL clienteParticularRestrictionVeiculo_testing();
 CALL insert_view_alarme_testing();
 CALL delete_clientes_testing();
 CALL alarmCounter_testing();
