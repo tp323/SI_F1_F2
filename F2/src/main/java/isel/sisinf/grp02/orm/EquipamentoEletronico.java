@@ -77,7 +77,7 @@ public class EquipamentoEletronico implements IEquipamento {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, estado, veiculo, bips);
+        return Objects.hash(id, estado, veiculo.getMatricula(), bips.hashCode());
     }
 
     @Override

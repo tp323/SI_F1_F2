@@ -116,7 +116,7 @@ public class Veiculo implements IVeiculo {
 
     @Override
     public int hashCode() {
-        return Objects.hash(matricula, condutor, equipamento, cliente, zonasVerdes, alarms);
+        return Objects.hash(matricula, condutor.getCC(), equipamento.getId(), cliente.getNif(), zonasVerdes.hashCode(), alarms);
     }
 
     @Override

@@ -49,7 +49,7 @@ public class Condutor implements ICondutor {
 
     @Override
     public int hashCode() {
-        return Objects.hash(cc, nome, contacto, veiculos);
+        return Objects.hash(cc, nome, contacto, veiculos.hashCode());
     }
 
     @Override

@@ -69,7 +69,7 @@ public class Coordenadas implements ICoordenadas {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, latitude, longitude, zonas, bip);
+        return Objects.hash(id, latitude, longitude, zonas.hashCode(), bip.getID());
     }
 
     @Override

@@ -88,7 +88,7 @@ public class JPAContext implements IContext {
     public void close() {
         if(_tx != null && _tx.isActive()) {
             _tx.rollback();
-            _tx = null;
+            _txcount = 0;
         }
         if(_em != null && _em.isOpen()) _em.close();
         if(_emf != null && _emf.isOpen()) _emf.close();
@@ -98,7 +98,7 @@ public class JPAContext implements IContext {
         try {
             if(_tx != null && _tx.isActive()) {
                 _tx.rollback();
-                _tx = null;
+                _txcount = 0;
             }
             if(_emf == null || !_emf.isOpen()) this._emf = Persistence.createEntityManagerFactory(persistentCtx);
             if(_em == null || !_em.isOpen()) this._em = _emf.createEntityManager();
