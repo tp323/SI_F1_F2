@@ -81,7 +81,7 @@ public class AppTest {
             assertNotNull(nc);
             assertNotNull(ncp);
             c.setClienteParticular(ncp);
-            assertTrue(c.equals(nc));
+            assertEquals(c, nc);
             ctx.rollback();
         }catch(Exception e) {
             System.out.println(e.getMessage());
@@ -101,7 +101,7 @@ public class AppTest {
             assertNotNull(ncp);
             c.setClienteParticular(ncp);
             c.setRefCliente(ctx.readClienteParticular(999999999));
-            assertTrue(c.equals(nc));
+            assertEquals(c, nc);
             ctx.rollback();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -159,10 +159,10 @@ public class AppTest {
     //TODO(test f with and without optimistic locking)
 
     @Test
-    public void CreateVehicleWithProcedureWithNewZonaVerde() {
+    public void CreateVehicleWithProcedureWithNewZonaVerdeWithProcedure() {
         try (JPAContext ctx = new JPAContext()) {
             ctx.beginTransaction();
-            ctx.procedure_createVehicle("zz24zz",111111113,3,999999999, 3,new BigDecimal(6), new BigDecimal(6));
+            ctx.createVehicleWithProcedure("zz24zz",111111113,3,999999999, 3,new BigDecimal(6), new BigDecimal(6));
 
             Condutor cond = ctx.readCondutor(111111113);
             EquipamentoEletronico eq = ctx.readEquipamentoEletronico(3);
@@ -179,8 +179,86 @@ public class AppTest {
 
             assertEquals(v, ctx.readVeiculo("zz24zz"));
             assertEquals(coord,ctx.getCoordenadas().findByLatLong(6f,6f));
+            //TODO(CHECK ZONAS VERDES findByParameter does not work)
             //assertEquals(zv,ctx.getZonasVerdes().findByParameters(6f,6f,"zz24zz",3));
-            ctx.commit();
+            ctx.rollback();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
+
+    @Test
+    public void CreateVehicleWithProcedureWithoutNewZonaVerdeWithProcedure() {
+        try (JPAContext ctx = new JPAContext()) {
+            ctx.beginTransaction();
+            ctx.createVehicleWithProcedure("zz24zz",111111113,3,999999999, null, null, null);
+
+            Condutor cond = ctx.readCondutor(111111113);
+            assertNotNull(cond);
+            EquipamentoEletronico eq = ctx.readEquipamentoEletronico(3);
+            Cliente c = ctx.readCliente(999999999);
+            Veiculo v = new Veiculo("zz24zz",cond,eq,c);
+
+            assertEquals(v, ctx.readVeiculo("zz24zz"));
+            ctx.rollback();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
+
+    @Test
+    public void CreateVehicleWithProcedureWithNewZonaVerdeWithoutProcedure() {
+        try (JPAContext ctx = new JPAContext()) {
+            ctx.beginTransaction();
+            ctx.createVehicleWithoutProcedure("zz24zz",111111113,3,999999999, 3, new BigDecimal(6), new BigDecimal(6));
+
+            Condutor cond = ctx.readCondutor(111111113);
+            EquipamentoEletronico eq = ctx.readEquipamentoEletronico(3);
+            Cliente c = ctx.readCliente(999999999);
+            Veiculo v = new Veiculo("zz24zz",cond,eq,c);
+            Coordenadas coord = new Coordenadas(6,6);
+
+            coord.setId(ctx.getCoordenadas().findByLatLong(6f,6f).getId());
+
+            ZonaVerde zv = new ZonaVerde(coord,v,3);
+
+            List<ZonaVerde> t = ctx.getZonasVerdes().findByParameters(6f,6f,"zz24zz",3);
+
+
+            assertEquals(v, ctx.readVeiculo("zz24zz"));
+            assertEquals(coord,ctx.getCoordenadas().findByLatLong(6f,6f));
+            //TODO(CHECK ZONAS VERDES findByParameter does not work)
+            //assertEquals(zv,ctx.getZonasVerdes().findByParameters(6f,6f,"zz24zz",3));
+            ctx.rollback();
+
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
+
+    @Test
+    public void CreateVehicleWithProcedureWithoutNewZonaVerdeWithoutProcedure() {
+        try (JPAContext ctx = new JPAContext()) {
+            ctx.beginTransaction();
+            ctx.createVehicleWithoutProcedure("zz24zz",111111113,3,999999999, null, null, null);
+
+            Condutor cond = ctx.readCondutor(111111113);
+            assertNotNull(cond);
+            EquipamentoEletronico eq = ctx.readEquipamentoEletronico(3);
+            Cliente c = ctx.readCliente(999999999);
+            Veiculo v = new Veiculo("zz24zz",cond,eq,c);
+
+            assertEquals(v, ctx.readVeiculo("zz24zz"));
+            ctx.rollback();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
