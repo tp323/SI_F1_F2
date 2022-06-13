@@ -137,7 +137,7 @@ public class AppTest {
     @Test
     public void TotalAlarmsForVehicle() {
         try (JPAContext ctx = new JPAContext()) {
-            int numbAlarms = ctx.procedure_getAlarmNumber("FF17FF", 2015);
+            int numbAlarms = ctx.getAlarmNumber("FF17FF", 2015);
             assertEquals(1, numbAlarms);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -148,7 +148,7 @@ public class AppTest {
     @Test
     public void TotalAlarmsForYear() {
         try (JPAContext ctx = new JPAContext()) {
-            int numbAlarms = ctx.procedure_getAlarmNumber(2015);
+            int numbAlarms = ctx.getAlarmNumber(null,2015);
             assertEquals(2, numbAlarms);
         } catch (Exception e) {
             System.out.println(e.getMessage());

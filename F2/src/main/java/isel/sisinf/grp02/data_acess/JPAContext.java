@@ -482,6 +482,14 @@ public class JPAContext implements IContext {
         return new String[][]{{Integer.toString(clienteId)}};
     }
 
+    public int getAlarmNumber(String registration, int year) {
+        if(registration!=null){
+            return procedure_getAlarmNumber(registration, year);
+        }else{
+            return procedure_getAlarmNumber(year);
+        }
+    }
+
     public List<Veiculo> createVehicleWithProcedure(String mat, int cond, int eq, int c,Integer raio,BigDecimal lat,BigDecimal longit){
 
         if(raio!=null || lat!=null || longit!=null){
