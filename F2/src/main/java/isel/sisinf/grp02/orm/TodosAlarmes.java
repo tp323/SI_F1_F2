@@ -8,11 +8,12 @@ import java.util.Objects;
 
 @Entity
 @NamedQuery(name = "todos_alarmes.findByKey",
-        query = "SELECT t FROM TodosAlarmes t WHERE t.matricula =:key")
+        query = "SELECT t FROM TodosAlarmes t WHERE t.matricula =:mat AND t.nome =:nome AND t.latitude =:lat AND t.longitude =:log AND t.marcaTemporal =:temp")
 @NamedQuery(name="todos_alarmes.findAll",
         query="SELECT t FROM TodosAlarmes t")
 
 @Table(name = "todos_alarmes")
+@IdClass(TodosAlarmesKey.class)
 public class TodosAlarmes implements ITodosAlarmes {
 
     public TodosAlarmes(){}
@@ -29,15 +30,19 @@ public class TodosAlarmes implements ITodosAlarmes {
     @Column(name = "matricula", nullable = false)
     private String matricula;
 
+    @Id
     @Column(name = "nome", nullable = false)
     private String nome;
 
+    @Id
     @Column(name = "latitude", nullable = false)
     private float latitude;
 
+    @Id
     @Column(name = "longitude", nullable = false)
     private float longitude;
 
+    @Id
     @Column(name = "marca_temporal", nullable = false)
     private Timestamp marcaTemporal;
 

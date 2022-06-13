@@ -54,7 +54,7 @@ public class JPAContext implements IContext {
 
     @Override
     public void beginTransaction() {
-        if(_tx == null) {
+        if(_tx == null || !_tx.isActive()) {
             _tx = _em.getTransaction();
             _tx.begin();
             _txcount=0;
@@ -86,20 +86,13 @@ public class JPAContext implements IContext {
 
     @Override
     public void close() {
-        if(_tx != null && _tx.isActive()) {
-            _tx.rollback();
-            _txcount = 0;
-        }
+        if(_tx != null && _tx.isActive()) _tx.rollback();
         if(_em != null && _em.isOpen()) _em.close();
         if(_emf != null && _emf.isOpen()) _emf.close();
     }
 
     public void connect() {
         try {
-            if(_tx != null && _tx.isActive()) {
-                _tx.rollback();
-                _txcount = 0;
-            }
             if(_emf == null || !_emf.isOpen()) this._emf = Persistence.createEntityManagerFactory(persistentCtx);
             if(_em == null || !_em.isOpen()) this._em = _emf.createEntityManager();
         } catch (PersistenceException exception) {
@@ -232,7 +225,7 @@ public class JPAContext implements IContext {
         return getBip().create(bip);
     }
 
-    public String createTodosAlarmes(TodosAlarmes todosAlarmes) {
+    public TodosAlarmesKey createTodosAlarmes(TodosAlarmes todosAlarmes) {
         return getTodosAlarmes().create(todosAlarmes);
     }
 
@@ -271,8 +264,8 @@ public class JPAContext implements IContext {
         return getVeiculo().read(matricula);
     }
 
-    public TodosAlarmes readTodosAlarmes(String matricula) {
-        return getTodosAlarmes().read(matricula);
+    public TodosAlarmes readTodosAlarmes(TodosAlarmesKey key) {
+        return getTodosAlarmes().read(key);
     }
 
 
@@ -566,9 +559,9 @@ public class JPAContext implements IContext {
 
         TodosAlarmes viewAlarmes = new TodosAlarmes(registration, driverName, latitude, longitude, date);
 
-        String matricula = createTodosAlarmes(viewAlarmes);
+        TodosAlarmesKey key = createTodosAlarmes(viewAlarmes);
         beginTransaction();
-        TodosAlarmes insertedAlarm = readTodosAlarmes(matricula);
+        TodosAlarmes insertedAlarm = readTodosAlarmes(key);
         commit();
 
         return Collections.singletonList(insertedAlarm);

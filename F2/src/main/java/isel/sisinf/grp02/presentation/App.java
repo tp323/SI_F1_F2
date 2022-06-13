@@ -34,7 +34,7 @@ public class App {
         DB_METHODS.put(InterfaceOptions.CREATE_VIEW, () -> Table.createTable(viewCreation(), in, TodosAlarmes::toArray));
         DB_METHODS.put(InterfaceOptions.INSERT_VIEW, () -> Table.createTable(insertView(), in, TodosAlarmes::toArray));
         DB_METHODS.put(InterfaceOptions.DELETE_INVALID_RES, this::invalidDeletion);
-        DB_METHODS.put(InterfaceOptions.DEACTIVATE_CLIENT, () -> Table.createTable(new String[]{"removed_cliente"}, in, deactivateClient()));
+        DB_METHODS.put(InterfaceOptions.DEACTIVATE_CLIENT, () -> Table.createTable(new String[]{"deactivated_cliente"}, in, deactivateClient()));
         DB_METHODS.put(InterfaceOptions.EQUIPMENT_STATUS, () -> Table.createTable(changeEquipmentStatus(), in, EquipamentoEletronico::toArray));
     }
 
@@ -372,7 +372,7 @@ public class App {
         System.out.println(++i + ". Show Alarms");
         System.out.println(++i + ". Process Requests");
         System.out.println(++i + ". Create Vehicle");
-        System.out.println(++i + ". Show view data");
+        System.out.println(++i + ". Create view");
         System.out.println(++i + ". Insert data into view");
         System.out.println(++i + ". Delete Invalid Requests");
         System.out.println(++i + ". Deactivate Client");
@@ -412,7 +412,7 @@ public class App {
         }
     }
 
-    private void getPersistenceName() {
+    private void getPersistence() {
         try {
             this.context = new JPAContext();
         } catch(Exception e) {
@@ -422,7 +422,7 @@ public class App {
     }
 
     public void runApp() {
-        getPersistenceName();
+        getPersistence();
         InterfaceOptions userInput;
 
         do {
