@@ -289,7 +289,7 @@ public class JPAContext implements IContext {
 
     /***                PROCEDURES                ***/
 
-    public int procedure_getAlarmNumber(String registration, int year) {
+    public int function_getAlarmNumber(String registration, int year) {
         _em.getTransaction().begin();
         if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
 
@@ -306,7 +306,7 @@ public class JPAContext implements IContext {
         return numbAlarms;
     }
 
-    public int procedure_getAlarmNumber(int year) {
+    public int function_getAlarmNumber(int year) {
         _em.getTransaction().begin();
 
         StoredProcedureQuery pQuery =
@@ -484,9 +484,9 @@ public class JPAContext implements IContext {
 
     public int getAlarmNumber(String registration, int year) {
         if(registration!=null){
-            return procedure_getAlarmNumber(registration, year);
+            return function_getAlarmNumber(registration, year);
         }else{
-            return procedure_getAlarmNumber(year);
+            return function_getAlarmNumber(year);
         }
     }
 

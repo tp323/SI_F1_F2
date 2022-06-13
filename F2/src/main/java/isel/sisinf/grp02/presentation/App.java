@@ -105,7 +105,7 @@ public class App {
         in.nextLine();
         System.out.println();
         try {
-            return new String[][]{{Integer.toString(context.procedure_getAlarmNumber(registration, year))}};
+            return new String[][]{{Integer.toString(context.function_getAlarmNumber(registration, year))}};
         } catch (Exception e) {
             onError(e);
             return null;

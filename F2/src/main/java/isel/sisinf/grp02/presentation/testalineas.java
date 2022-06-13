@@ -60,7 +60,7 @@ public class testalineas {
     }
 
     public static void e(JPAContext ctx){
-        System.out.println((ctx.procedure_getAlarmNumber("FF17FF", 2015)));
+        System.out.println((ctx.function_getAlarmNumber("FF17FF", 2015)));
     }
 
 
@@ -75,48 +75,5 @@ public class testalineas {
         //ctx.procedure_createVehicle(matricula,ccCondutor,idEquip,nifCliente, null, null,null);
 
         ctx.procedure_createVehicle(matricula,ccCondutor,idEquip,nifCliente, raio, latitude,longitude);
-    }
-
-
-    /*** SEGUIR PRESENTE LÓGICA DE ERROR HANDLING OU ENVOLVER EM TRY CATCH APENAS? ***/
-    public static void hnoproc(JPAContext ctx){
-        //TODO(convert bigdecimals from input to float)
-        String matricula = "zz24zz";
-        int ccCondutor = 111111113;
-        int idEquip = 3;
-        int nifCliente = 999999999;
-        Float latitude = 6.0f;
-        Float longitude = 9f;
-        Integer raio = 3;
-
-        Condutor condutor = ctx.readCondutor(ccCondutor);
-        /***    EXCEÇÃO SE O CARRO JÁ EXISTIR PARA AQUELA MATRICULA    ***/
-        if(condutor != null) throw new IllegalArgumentException("Driver not found");
-        EquipamentoEletronico equip = ctx.readEquipamentoEletronico(idEquip);
-        if(equip != null) throw new IllegalArgumentException("Equipment not found");
-        Cliente cliente = ctx.readCliente(nifCliente);
-        if(cliente != null) throw new IllegalArgumentException("Client not found");
-        Veiculo v = new Veiculo(matricula, condutor, equip, cliente);
-        ctx.createVeiculo(v);
-        if(latitude!=null && longitude != null && raio != null){
-            /***    add zona verde  ***/
-            /***    check if coordenadas already exist in db or just insert      ***/
-            Coordenadas coordInDb = ctx.getCoordenadas().findByLatLong(latitude,longitude);
-
-            if(coordInDb != null){
-                ZonaVerde zv = new ZonaVerde(coordInDb, v, raio);
-                ctx.createZonaVerde(zv);
-            }else{
-                Coordenadas c = new Coordenadas(latitude,longitude);
-                ZonaVerde zv = new ZonaVerde(c, v, raio);
-                ctx.createCoordenada(c);
-                ctx.createZonaVerde(zv);
-            }
-            /***        EM PRINCIPIO O TRECHO DE CÓDIGO A SEGUIR N DEVE SER PRECISO DEVIDO AO ON CASCADE     ***/
-            /*Set<Zona_Verde> setZV = new HashSet<Zona_Verde>();
-            setZV.add(zv);
-            v.setZonasVerdes(zv);*/
-
-        }
     }
 }
