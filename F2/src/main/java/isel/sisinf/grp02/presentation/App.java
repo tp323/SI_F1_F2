@@ -108,9 +108,9 @@ public class App {
         System.out.print("Would you like to introduce the car's registration? ");
         String answer = checkAnswer(in.nextLine());
         System.out.println();
-        System.out.print("Please introduce the car's registration: ");
         String registration;
         if(answer.equalsIgnoreCase("yes")) {
+            System.out.print("Please introduce the car's registration: ");
             registration = in.nextLine();
         } else registration = null;
         System.out.println();
@@ -120,7 +120,7 @@ public class App {
         System.out.println();
         try {
             context.connect();
-            return new String[][]{{Integer.toString(context.procedure_getAlarmNumber(registration, year))}};
+            return new String[][]{{Integer.toString(context.getAlarmNumber(registration, year))}};
         } catch (Exception e) {
             onError(e);
             return null;
@@ -139,6 +139,8 @@ public class App {
         try {
             context.connect();
             if(answer.equalsIgnoreCase("yes")) {
+                // The procedure with optimistic locking should be called here
+                // For now there is a placeholder
                 worked = context.procedure_fetchRequests();
             } else worked = context.procedure_fetchRequests();
         } catch (Exception e) {
@@ -411,12 +413,11 @@ public class App {
     }
 
     private void getPersistenceName() {
-        //System.out.print("Please introduce the persistence name: ");
         try {
-            //this.context = new JPAContext(in.nextLine());
             this.context = new JPAContext();
         } catch(Exception e) {
-            System.out.println("The persistent name given does not have a Persistence provider.");
+            System.out.println("Something went wrong with the initialization of the JPAContext.");
+            System.exit(1);
         }
     }
 
