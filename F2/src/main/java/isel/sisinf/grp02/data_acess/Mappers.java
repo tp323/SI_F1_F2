@@ -342,10 +342,10 @@ class Mappers {
         }
     }
 
-    protected class Pedido_InvalidMapper implements IPedido_InvalidoMapper{
+    protected class PedidoInvalidMapper implements IPedidoInvalidoMapper {
 
         @Override
-        public Long create(Pedido_Invalido entity) {
+        public Long create(PedidoInvalido entity) {
             context.beginTransaction();
             context._em.persist(entity);
             context.commit();
@@ -353,17 +353,17 @@ class Mappers {
         }
 
         @Override
-        public Pedido_Invalido read(Long id) { return context._em.find(Pedido_Invalido.class, id, LockModeType.OPTIMISTIC); }
+        public PedidoInvalido read(Long id) { return context._em.find(PedidoInvalido.class, id, LockModeType.OPTIMISTIC); }
 
         @Override
-        public Long update(Pedido_Invalido entity) {
+        public Long update(PedidoInvalido entity) {
             return null;
         }
 
         @Override
-        public Long delete(Pedido_Invalido entity) {
+        public Long delete(PedidoInvalido entity) {
             context.beginTransaction();
-            Pedido_Invalido p = context._em.find(Pedido_Invalido.class, entity.getID(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+            PedidoInvalido p = context._em.find(PedidoInvalido.class, entity.getID(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
             if (p == null){
                 System.out.println("Pedido not found.");
                 return null;

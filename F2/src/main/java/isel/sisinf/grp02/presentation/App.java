@@ -163,9 +163,7 @@ public class App {
         try {
             context.connect();
             if(answer.equalsIgnoreCase("yes")) {
-                // The procedure with optimistic locking should be called here
-                // For now there is a placeholder
-                worked = context.procedure_fetchRequests();
+                worked = context.optimistic_fetchRequest();
             } else worked = context.procedure_fetchRequests();
         } catch (Exception e) {
             onError(e);
