@@ -5,7 +5,6 @@ import isel.sisinf.grp02.orm.*;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
