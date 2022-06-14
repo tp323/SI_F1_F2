@@ -387,16 +387,38 @@ public class JPAContext implements IContext {
         return true;
     }
 
-    public void optimistic_fetchRequest(){
+    public boolean optimistic_fetchRequest(){
         beginTransaction();
         List<Pedido> pedidos = getPedidos().findAll();
-        Iterator<Pedido> iterator = pedidos.iterator();
-        while (iterator.hasNext()){
-            Pedido target = iterator.next();
-            if (target.getEquipamento() == null, target.getMarcaTemporal() == null, target.getLat()== null);
-                //TODO()
+        for (Pedido target : pedidos) {
+            if (target.getEquipamento() == null || target.getMarcaTemporal() == null || target.getLat() == null || target.getLong() == null || (target.getEquipamento() != null && getEquipamento().read(target.getEquipamento()) == null)) {
+                Pedido_Invalido invalido = new Pedido_Invalido();
+                invalido.setEquipamento(target.getEquipamento());
+                invalido.setMarcaTemporal(target.getMarcaTemporal());
+                invalido.setLat(target.getLat());
+                invalido.setLong(target.getLong());
+
+                getPedido_Invalido().create(invalido);
+                getPedido().delete(target);
+                continue;
+            }
+
+            EquipamentoEletronico equip = getEquipamento().read(target.getEquipamento());
+
+            Coordenadas cords = new Coordenadas();
+            cords.setLatitude(target.getLat());
+            cords.setLongitude(target.getLong());
+
+            Bip valid = new Bip();
+            valid.setCoordenadas(cords);
+            valid.setEquipamento(equip);
+            valid.setMarcaTemporal(valid.getMarcaTemporal());
+
+            getBip().create(valid);
+            getPedido().delete(target);
         }
         commit();
+        return true;
     }
 
     public List<Veiculo> procedure_createVehicle(String registration, int driver, int equip, int cliente, Integer raio, BigDecimal lat, BigDecimal log) {
