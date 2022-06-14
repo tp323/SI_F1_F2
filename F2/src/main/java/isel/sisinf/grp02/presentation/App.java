@@ -163,7 +163,7 @@ public class App {
         try {
             context.connect();
             if(answer.equalsIgnoreCase("yes")) {
-                worked = context.optimistic_fetchRequest();
+               // worked = context.optimistic_fetchRequest();
             } else worked = context.procedure_fetchRequests();
         } catch (Exception e) {
             onError(e);

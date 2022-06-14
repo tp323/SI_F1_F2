@@ -136,7 +136,7 @@ public class JPAContext implements IContext {
 
 
     public JPAContext() {
-        this(System.getenv("POSTGRES_PERSISTENCE_NAME"));
+        this("t42dg2");
     }
 
     public JPAContext(String persistentCtx) {
@@ -387,7 +387,7 @@ public class JPAContext implements IContext {
         return true;
     }
 
-    public void optimistic_fetchRequest(){
+    /*public void optimistic_fetchRequest(){
         beginTransaction();
         List<Pedido> pedidos = getPedidos().findAll();
         Iterator<Pedido> iterator = pedidos.iterator();
@@ -397,7 +397,7 @@ public class JPAContext implements IContext {
                 //TODO()
         }
         commit();
-    }
+    }*/
 
     public List<Veiculo> procedure_createVehicle(String registration, int driver, int equip, int cliente, Integer raio, BigDecimal lat, BigDecimal log) {
         beginTransaction();
