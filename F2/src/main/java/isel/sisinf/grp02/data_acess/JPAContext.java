@@ -392,7 +392,7 @@ public class JPAContext implements IContext {
         List<Pedido> pedidos = getPedidos().findAll();
         for (Pedido target : pedidos) {
             if (target.getEquipamento() == null || target.getMarcaTemporal() == null || target.getLat() == null || target.getLong() == null || (target.getEquipamento() != null && getEquipamento().read(target.getEquipamento()) == null)) {
-                Pedido_Invalido invalido = new Pedido_Invalido();
+                PedidoInvalido invalido = new PedidoInvalido();
                 invalido.setEquipamento(target.getEquipamento());
                 invalido.setMarcaTemporal(target.getMarcaTemporal());
                 invalido.setLat(target.getLat());
