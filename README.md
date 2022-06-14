@@ -168,11 +168,6 @@ Tendo em conta os objetivos de aprendizagem, deverão ser produzidos os seguinte
       
       (b) Teste de optimistic locking, apresentando uma mensagem de erro adequada em caso de alteração concorrente conflituante que inviabilize a operação. No relatório deve estar descrita a forma como as situações de erro foram criadas para teste desta alínea;
 
-   3. Pretende-se guardar em document store os relatórios semanais dos alarmes ocorridos. Estes relatórios terão existência independente dos dados que os originaram, isto é, devem continuar a existir, mesmo que os dados que lhes deram origem sejam apagados. Deve realizar as alterações necessárias à aplicação desenvolvida para permitir:
-      
-      a) Realizar o a criação do relatório semanal, dados o ano e a semana no ano cujo relatório se pretende.
-      
-      b) Obter informação dos alarmes relativos a um dado cliente num período de N semanas consecutivas, dado o ano e semana no ano relativo à primeira semana e o número de semanas pretendido.
 
 Notas:
 
@@ -180,6 +175,6 @@ Todas as alíneas devem ter tratamento de erros e, nos casos relevantes, gestão
 
 O código a desenvolver deverá estar organizado em vários projetos que reflitam a estrutura modular da aplicação, a qual deverá reduzir o acoplamento entre módulos e facilitar a identificação das dependências entre eles.
 
-**Data limite para entrega:** 06 de junho de 2022 até às 23:50.
+**Data limite para entrega:** 14 de junho de 2022 até às 23:50.
 
 A entrega tem de incluir um relatório (em formato PDF), os projetos MAVEN, o código Java e o código PL/<ins>pgSQL</ins>, entregues via moodle. O relatório deverá obedecer ao padrão fornecido pelos docentes.
