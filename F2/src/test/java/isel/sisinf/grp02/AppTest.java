@@ -181,13 +181,9 @@ public class AppTest {
 
             ZonaVerde zv = new ZonaVerde(coord,v,3);
 
-            List<ZonaVerde> t = ctx.getZonasVerdes().findByParameters(6f,6f,"zz24zz",3);
-
-
             assertEquals(v, ctx.readVeiculo("zz24zz"));
             assertEquals(coord,ctx.getCoordenadas().findByLatLong(6f,6f));
-            //TODO(CHECK ZONAS VERDES findByParameter does not work)
-            //assertEquals(zv,ctx.getZonasVerdes().findByParameters(6f,6f,"zz24zz",3));
+            assertEquals(zv,ctx.getZonasVerdes().findByParameters(coord,v,3));
             ctx.rollback();
 
         } catch (Exception e) {
@@ -237,13 +233,9 @@ public class AppTest {
 
             ZonaVerde zv = new ZonaVerde(coord,v,3);
 
-            List<ZonaVerde> t = ctx.getZonasVerdes().findByParameters(6f,6f,"zz24zz",3);
-
-
             assertEquals(v, ctx.readVeiculo("zz24zz"));
             assertEquals(coord,ctx.getCoordenadas().findByLatLong(6f,6f));
-            //TODO(CHECK ZONAS VERDES findByParameter does not work)
-            //assertEquals(zv,ctx.getZonasVerdes().findByParameters(6f,6f,"zz24zz",3));
+            assertEquals(zv,ctx.getZonasVerdes().findByParameters(coord,v,3));
             ctx.rollback();
 
 

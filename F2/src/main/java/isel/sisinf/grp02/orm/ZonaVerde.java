@@ -11,7 +11,7 @@ import java.util.Objects;
 @NamedQuery(name="Zona_Verde.findAll",
         query="SELECT zv FROM ZonaVerde zv")
 @NamedQuery(name="Zona_Verde.findByParameters",
-        query="SELECT zv FROM ZonaVerde zv JOIN Coordenadas c JOIN Veiculo v WHERE c.latitude =:lat AND c.longitude =:log AND v.matricula =:vei AND zv.raio=:r")
+        query="SELECT zv FROM ZonaVerde zv WHERE zv.coordenadas =:coordenadas AND zv.veiculo =:veiculo AND zv.raio=:r")
 
 @Table(name = "Zona_Verde")
 public class ZonaVerde implements IZonaVerde {
@@ -58,7 +58,7 @@ public class ZonaVerde implements IZonaVerde {
         if (obj == null || getClass() != obj.getClass()) return false;
         ZonaVerde zonaVerde = (ZonaVerde) obj;
         return raio == zonaVerde.raio &&
-                Objects.equals(id, zonaVerde.id) &&
+                //Objects.equals(id, zonaVerde.id) &&
                 Objects.equals(coordenadas, zonaVerde.coordenadas) &&
                 Objects.equals(veiculo, zonaVerde.veiculo);
     }
