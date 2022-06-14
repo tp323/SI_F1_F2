@@ -58,7 +58,7 @@ public class ZonaVerde implements IZonaVerde {
         if (obj == null || getClass() != obj.getClass()) return false;
         ZonaVerde zonaVerde = (ZonaVerde) obj;
         return raio == zonaVerde.raio &&
-                //Objects.equals(id, zonaVerde.id) &&
+                Objects.equals(id, zonaVerde.id) &&
                 Objects.equals(coordenadas, zonaVerde.coordenadas) &&
                 Objects.equals(veiculo, zonaVerde.veiculo);
     }
@@ -84,7 +84,6 @@ public class ZonaVerde implements IZonaVerde {
                 Long.toString(coordenadas.getId()),
                 veiculo.getMatricula(),
                 Integer.toString(raio)
-
         };
     }
 }

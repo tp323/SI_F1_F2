@@ -179,11 +179,15 @@ public class AppTest {
 
             coord.setId(ctx.getCoordenadas().findByLatLong(6f,6f).getId());
 
+            ZonaVerde nzv = ctx.getZonasVerdes().findByParameters(coord,v,3);
+            assertNotNull(nzv);
+
             ZonaVerde zv = new ZonaVerde(coord,v,3);
+            zv.setID(nzv.getID());
 
             assertEquals(v, ctx.readVeiculo("zz24zz"));
             assertEquals(coord,ctx.getCoordenadas().findByLatLong(6f,6f));
-            assertEquals(zv,ctx.getZonasVerdes().findByParameters(coord,v,3));
+            assertEquals(zv, nzv);
             ctx.rollback();
 
         } catch (Exception e) {
@@ -231,13 +235,16 @@ public class AppTest {
 
             coord.setId(ctx.getCoordenadas().findByLatLong(6f,6f).getId());
 
+            ZonaVerde nzv = ctx.getZonasVerdes().findByParameters(coord,v,3);
+            assertNotNull(nzv);
+
             ZonaVerde zv = new ZonaVerde(coord,v,3);
+            zv.setID(nzv.getID());
 
             assertEquals(v, ctx.readVeiculo("zz24zz"));
             assertEquals(coord,ctx.getCoordenadas().findByLatLong(6f,6f));
-            assertEquals(zv,ctx.getZonasVerdes().findByParameters(coord,v,3));
+            assertEquals(zv,nzv);
             ctx.rollback();
-
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
