@@ -7,9 +7,9 @@ import java.sql.Timestamp;
 
 @Entity
 @NamedQuery(name="Pedido_Invalido.findAll",
-        query="SELECT p FROM Pedido_Invalido p")
+        query="SELECT p FROM PedidoInvalido p")
 @Table(name = "invalid_requests")
-public class Pedido_Invalido  implements IRequests {
+public class PedidoInvalido implements IRequests {
 
     @Id
     @Column(name = "id")

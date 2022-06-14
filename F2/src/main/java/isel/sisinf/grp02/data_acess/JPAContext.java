@@ -44,8 +44,8 @@ public class JPAContext implements IContext {
     private int _txcount;
 
     private final IClienteRepository _clienteRepository;
-    private final ICliente_ParticularRepository _clienteParticularRepository;
-    private final ICliente_InstitucionalRepository _clienteInstitucionalRepository;
+    private final IClienteParticularRepository _clienteParticularRepository;
+    private final IClienteInstitucionalRepository _clienteInstitucionalRepository;
     private final IEquipamentoRepository _equipamentoRepository;
     private final IVeiculoRepository _veiculoRepository;
     private final ICondutorRepository _condutorRepository;
@@ -54,7 +54,7 @@ public class JPAContext implements IContext {
     private final IBipRepository _bipRepository;
     private final IReadOnlyRepository _todosAlarmesRepository;
     private final IPedidoRepository _pedidoRepository;
-    private final IPedido_InvalidoRepository _pedido_InvalidoRepository;
+    private final IPedidoInvalidoRepository _pedido_InvalidoRepository;
 
 
     private final IClienteMapper _clienteMapper;
@@ -68,7 +68,7 @@ public class JPAContext implements IContext {
     private final IBipMapper _bipMapper;
     private final IReadOnlyMapper _todosAlarmesMapper;
     private final IPedidoMapper _pedidoMapper;
-    private final IPedido_InvalidoMapper _pedido_invalidoMapper;
+    private final IPedidoInvalidoMapper _pedido_invalidoMapper;
 
 
 
@@ -156,7 +156,7 @@ public class JPAContext implements IContext {
         this._bipRepository = repositories.new BipRepository();
         this._todosAlarmesRepository = repositories.new ReadOnlyRepository();
         this._pedidoRepository = repositories.new PedidoRepository();
-        this._pedido_InvalidoRepository = repositories.new Pedido_InvalidoRepository();
+        this._pedido_InvalidoRepository = repositories.new PedidoInvalidoRepository();
 
         Mappers mappers = new Mappers(this);
         this._clienteMapper = mappers.new ClienteMapper();
@@ -170,7 +170,7 @@ public class JPAContext implements IContext {
         this._bipMapper = mappers.new BipMapper();
         this._todosAlarmesMapper = mappers.new ReadOnlyMapper();
         this._pedidoMapper = mappers.new PedidoMapper();
-        this._pedido_invalidoMapper = mappers.new Pedido_InvalidMapper();
+        this._pedido_invalidoMapper = mappers.new PedidoInvalidMapper();
     }
 
 
@@ -180,10 +180,10 @@ public class JPAContext implements IContext {
     public IClienteRepository getClientes() {return _clienteRepository;}
 
     @Override
-    public ICliente_ParticularRepository getClientesParticulares(){return _clienteParticularRepository;}
+    public IClienteParticularRepository getClientesParticulares(){return _clienteParticularRepository;}
 
     @Override
-    public ICliente_InstitucionalRepository getClientesInstitucionais(){return _clienteInstitucionalRepository;}
+    public IClienteInstitucionalRepository getClientesInstitucionais(){return _clienteInstitucionalRepository;}
 
     @Override
     public IEquipamentoRepository getEquipamentos() {return _equipamentoRepository;}
@@ -207,7 +207,7 @@ public class JPAContext implements IContext {
     public IPedidoRepository getPedidos() {return _pedidoRepository;}
 
     @Override
-    public IPedido_InvalidoRepository getInvalid_Pedidos() {return _pedido_InvalidoRepository;}
+    public IPedidoInvalidoRepository getInvalid_Pedidos() {return _pedido_InvalidoRepository;}
 
     public IReadOnlyRepository getTodosAlarmesRep() {return _todosAlarmesRepository;}
 
@@ -234,7 +234,7 @@ public class JPAContext implements IContext {
 
     public IPedidoMapper getPedido() {return _pedidoMapper;}
 
-    public IPedido_InvalidoMapper getPedido_Invalido() {return _pedido_invalidoMapper;}
+    public IPedidoInvalidoMapper getPedido_Invalido() {return _pedido_invalidoMapper;}
 
 
     /***                CREATE                ***/
@@ -313,7 +313,7 @@ public class JPAContext implements IContext {
 
     public Pedido readPedido(Long id) { return getPedido().read(id); }
 
-    public Pedido_Invalido readPedido_Invalido(Long id) { return getPedido_Invalido().read(id); }
+    public PedidoInvalido readPedido_Invalido(Long id) { return getPedido_Invalido().read(id); }
 
 
     /***                UPDATE                ***/
@@ -337,7 +337,7 @@ public class JPAContext implements IContext {
         return getPedido().delete(pedido);
     }
 
-    public Long deletePedido_Invalid(Pedido_Invalido pedido_invalido){
+    public Long deletePedido_Invalid(PedidoInvalido pedido_invalido){
         return getPedido_Invalido().delete(pedido_invalido);
     }
 

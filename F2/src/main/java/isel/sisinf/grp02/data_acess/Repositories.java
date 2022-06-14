@@ -61,7 +61,7 @@ class Repositories {
 
     }
 
-    protected class ClienteParticularRepository implements ICliente_ParticularRepository {
+    protected class ClienteParticularRepository implements IClienteParticularRepository {
 
         @Override
         public ClienteParticular findByKey(Integer key) {
@@ -82,7 +82,7 @@ class Repositories {
         }
     }
 
-    protected class ClienteInstitucionalRepository implements ICliente_InstitucionalRepository {
+    protected class ClienteInstitucionalRepository implements IClienteInstitucionalRepository {
 
         @Override
         public ClienteInstitucional findByKey(Integer key) {
@@ -308,20 +308,20 @@ class Repositories {
         }
     }
 
-    protected class Pedido_InvalidoRepository implements IPedido_InvalidoRepository{
+    protected class PedidoInvalidoRepository implements IPedidoInvalidoRepository {
         @Override
-        public Pedido_Invalido findByKey(Long key) {
+        public PedidoInvalido findByKey(Long key) {
             return null;
         }
 
         @Override
-        public Collection<Pedido_Invalido> find(String jpql, Object... params) {
+        public Collection<PedidoInvalido> find(String jpql, Object... params) {
             return null;
         }
 
         @Override
-        public List<Pedido_Invalido> findAll() {
-            return context._em.createNamedQuery("Pedido_Invalido.findAll", Pedido_Invalido.class)
+        public List<PedidoInvalido> findAll() {
+            return context._em.createNamedQuery("Pedido_Invalido.findAll", PedidoInvalido.class)
                     .getResultList();
         }
     }

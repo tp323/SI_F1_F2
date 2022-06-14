@@ -34,8 +34,8 @@ public interface IContext extends AutoCloseable {
     void connect();
 
     IClienteRepository getClientes();
-    ICliente_ParticularRepository getClientesParticulares();
-    ICliente_InstitucionalRepository getClientesInstitucionais();
+    IClienteParticularRepository getClientesParticulares();
+    IClienteInstitucionalRepository getClientesInstitucionais();
     IEquipamentoRepository getEquipamentos();
     IVeiculoRepository getVeiculos();
     ICondutorRepository getCondutores();
@@ -43,5 +43,5 @@ public interface IContext extends AutoCloseable {
     ICoordenadasRepository getCoordenadas();
     IBipRepository getBips();
     IPedidoRepository getPedidos();
-    IPedido_InvalidoRepository getInvalid_Pedidos();
+    IPedidoInvalidoRepository getInvalid_Pedidos();
 }
