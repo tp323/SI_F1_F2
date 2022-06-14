@@ -264,4 +264,41 @@ class Repositories {
                     .getResultList();
         }
     }
+
+    protected class PedidoRepository implements IPedidoRepository{
+
+        @Override
+        public Pedido findByKey(Long key) {
+            return null;
+        }
+
+        @Override
+        public Collection<Pedido> find(String jpql, Object... params) {
+            return null;
+        }
+
+        @Override
+        public List<Pedido> findAll() {
+            return context._em.createNamedQuery("Pedido.findAll", Pedido.class)
+                    .getResultList();
+        }
+    }
+
+    protected class Pedido_InvalidoRepository implements IPedido_InvalidoRepository{
+        @Override
+        public Pedido_Invalido findByKey(Long key) {
+            return null;
+        }
+
+        @Override
+        public Collection<Pedido_Invalido> find(String jpql, Object... params) {
+            return null;
+        }
+
+        @Override
+        public List<Pedido_Invalido> findAll() {
+            return context._em.createNamedQuery("Pedido_Invalido.findAll", Pedido_Invalido.class)
+                    .getResultList();
+        }
+    }
 }

@@ -18,5 +18,6 @@ public interface IContext extends AutoCloseable {
     IZonaVerdeRepository getZonasVerdes();
     ICoordenadasRepository getCoordenadas();
     IBipRepository getBips();
-
+    IPedidoRepository getPedidos();
+    IPedido_InvalidoRepository getInvalid_Pedidos();
 }

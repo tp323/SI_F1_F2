@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class JPAContext implements IContext {
@@ -28,6 +29,8 @@ public class JPAContext implements IContext {
     private final ICoordenadasRepository _coordenadasRepository;
     private final IBipRepository _bipRepository;
     private final IReadOnlyRepository _todosAlarmesRepository;
+    private final IPedidoRepository _pedidoRepository;
+    private final IPedido_InvalidoRepository _pedido_InvalidoRepository;
 
 
     private final IClienteMapper _clienteMapper;
@@ -40,6 +43,8 @@ public class JPAContext implements IContext {
     private final ICoordenadasMapper _coordenadasMapper;
     private final IBipMapper _bipMapper;
     private final IReadOnlyMapper _todosAlarmesMapper;
+    private final IPedidoMapper _pedidoMapper;
+    private final IPedido_InvalidoMapper _pedido_invalidoMapper;
 
 
 
@@ -126,6 +131,8 @@ public class JPAContext implements IContext {
         this._coordenadasRepository = repositories.new CoordenadasRepository();
         this._bipRepository = repositories.new BipRepository();
         this._todosAlarmesRepository = repositories.new ReadOnlyRepository();
+        this._pedidoRepository = repositories.new PedidoRepository();
+        this._pedido_InvalidoRepository = repositories.new Pedido_InvalidoRepository();
 
         Mappers mappers = new Mappers(this);
         this._clienteMapper = mappers.new ClienteMapper();
@@ -138,6 +145,8 @@ public class JPAContext implements IContext {
         this._coordenadasMapper = mappers.new CoordenadasMapper();
         this._bipMapper = mappers.new BipMapper();
         this._todosAlarmesMapper = mappers.new ReadOnlyMapper();
+        this._pedidoMapper = mappers.new PedidoMapper();
+        this._pedido_invalidoMapper = mappers.new Pedido_InvalidMapper();
     }
 
 
@@ -170,6 +179,12 @@ public class JPAContext implements IContext {
     @Override
     public IBipRepository getBips() {return _bipRepository;}
 
+    @Override
+    public IPedidoRepository getPedidos() {return _pedidoRepository;}
+
+    @Override
+    public IPedido_InvalidoRepository getInvalid_Pedidos() {return _pedido_InvalidoRepository;}
+
     public IReadOnlyRepository getTodosAlarmesRep() {return _todosAlarmesRepository;}
 
 
@@ -192,6 +207,10 @@ public class JPAContext implements IContext {
     public IBipMapper getBip() {return _bipMapper;}
 
     public IReadOnlyMapper getTodosAlarmes() {return _todosAlarmesMapper;}
+
+    public IPedidoMapper getPedido() {return _pedidoMapper;}
+
+    public IPedido_InvalidoMapper getPedido_Invalido() {return _pedido_invalidoMapper;}
 
 
     /***                CREATE                ***/
@@ -268,6 +287,10 @@ public class JPAContext implements IContext {
         return getTodosAlarmes().read(key);
     }
 
+    public Pedido readPedido(Long id) { return getPedido().read(id); }
+
+    public Pedido_Invalido readPedido_Invalido(Long id) { return getPedido_Invalido().read(id); }
+
 
     /***                UPDATE                ***/
 
@@ -284,6 +307,14 @@ public class JPAContext implements IContext {
 
     public int deleteClienteParticular(ClienteParticular cliente_particular) {
         return getClienteParticular().delete(cliente_particular);
+    }
+
+    public Long deletePedido(Pedido pedido){
+        return getPedido().delete(pedido);
+    }
+
+    public Long deletePedido_Invalid(Pedido_Invalido pedido_invalido){
+        return getPedido_Invalido().delete(pedido_invalido);
     }
 
 
@@ -326,11 +357,22 @@ public class JPAContext implements IContext {
         beginTransaction();
 
         Query q = _em.createNativeQuery("CALL processRequests()");
-
         q.executeUpdate();
         commit();
 
         return true;
+    }
+
+    public void optimistic_fetchRequest(){
+        beginTransaction();
+        List<Pedido> pedidos = getPedidos().findAll();
+        Iterator<Pedido> iterator = pedidos.iterator();
+        while (iterator.hasNext()){
+            Pedido target = iterator.next();
+            if (target.getEquipamento() == null, target.getMarcaTemporal() == null, target.getLat()== null);
+                //TODO()
+        }
+        commit();
     }
 
     public List<Veiculo> procedure_createVehicle(String registration, int driver, int equip, int cliente, Integer raio, BigDecimal lat, BigDecimal log) {

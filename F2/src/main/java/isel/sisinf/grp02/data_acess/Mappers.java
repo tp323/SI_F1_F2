@@ -307,4 +307,70 @@ class Mappers {
             return null;
         }
     }
+
+    protected class PedidoMapper implements IPedidoMapper{
+
+        @Override
+        public Long create(Pedido entity) {
+            context.beginTransaction();
+            context._em.persist(entity);
+            context.commit();
+            return entity.getID();
+        }
+
+        @Override
+        public Pedido read(Long id) {
+            return context._em.find(Pedido.class, id, LockModeType.OPTIMISTIC);
+        }
+
+        @Override
+        public Long update(Pedido entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Pedido entity) {
+            context.beginTransaction();
+            Pedido p = context._em.find(Pedido.class, entity.getID(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+            if (p == null){
+                System.out.println("Pedido not found.");
+                return null;
+            }
+            context._em.remove(p);
+            context.commit();
+            return p.getID();
+        }
+    }
+
+    protected class Pedido_InvalidMapper implements IPedido_InvalidoMapper{
+
+        @Override
+        public Long create(Pedido_Invalido entity) {
+            context.beginTransaction();
+            context._em.persist(entity);
+            context.commit();
+            return entity.getID();
+        }
+
+        @Override
+        public Pedido_Invalido read(Long id) { return context._em.find(Pedido_Invalido.class, id, LockModeType.OPTIMISTIC); }
+
+        @Override
+        public Long update(Pedido_Invalido entity) {
+            return null;
+        }
+
+        @Override
+        public Long delete(Pedido_Invalido entity) {
+            context.beginTransaction();
+            Pedido_Invalido p = context._em.find(Pedido_Invalido.class, entity.getID(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+            if (p == null){
+                System.out.println("Pedido not found.");
+                return null;
+            }
+            context._em.remove(p);
+            context.commit();
+            return p.getID();
+        }
+    }
 }
