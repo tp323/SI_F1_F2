@@ -334,10 +334,6 @@ public class JPAContext implements IContext {
     }
 
     public List<Veiculo> procedure_createVehicle(String registration, int driver, int equip, int cliente, Integer raio, BigDecimal lat, BigDecimal log) {
-        if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
-        if(getNumberSize(driver) < 9) throw new IllegalArgumentException("The driver's CC is not correct!");
-        if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
-
         beginTransaction();
         Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4, ?5, ?6, ?7)")
             .setParameter(1, registration)
@@ -360,10 +356,6 @@ public class JPAContext implements IContext {
 
 
     public List<Veiculo> procedure_createVehicle(String registration, int driver, int equip, int cliente) {
-        if (registration.length() != 6) throw new IllegalArgumentException("Invalid registration!");
-        if(getNumberSize(driver) < 9) throw new IllegalArgumentException("The driver's CC is not correct!");
-        if(getNumberSize(cliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
-
         beginTransaction();
         Query q = _em.createNativeQuery("call createVehicle(?1, ?2, ?3, ?4)")
             .setParameter(1, registration)
@@ -496,6 +488,10 @@ public class JPAContext implements IContext {
 
     public List<Veiculo> createVehicleWithProcedure(String mat, int cond, int eq, int c,Integer raio,BigDecimal lat,BigDecimal longit){
 
+        if (mat.length() != 6) throw new IllegalArgumentException("Invalid registration!");
+        if(getNumberSize(cond) < 9) throw new IllegalArgumentException("The driver's CC is not correct!");
+        if(getNumberSize(c) < 9) throw new IllegalArgumentException("The NIF is not correct!");
+
         if(raio!=null || lat!=null || longit!=null){
             /***    ADDS ZONA VERDE     ***/
             return procedure_createVehicle(mat,cond,eq,c, raio, lat,longit);
@@ -506,6 +502,10 @@ public class JPAContext implements IContext {
     }
 
     public List<Veiculo> createVehicleWithoutProcedure(String matricula,int ccCondutor, int idEquip ,int nifCliente, Integer raio, BigDecimal lat, BigDecimal log){
+        if (matricula.length() != 6) throw new IllegalArgumentException("Invalid registration!");
+        if(getNumberSize(ccCondutor) < 9) throw new IllegalArgumentException("The driver's CC is not correct!");
+        if(getNumberSize(nifCliente) < 9) throw new IllegalArgumentException("The NIF is not correct!");
+
         Condutor condutor = readCondutor(ccCondutor);
         if(condutor == null) throw new IllegalArgumentException("Driver not found");
         EquipamentoEletronico equip = readEquipamentoEletronico(idEquip);
